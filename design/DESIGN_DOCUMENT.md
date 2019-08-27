@@ -24,7 +24,7 @@ The object of the game is to make enough money to:
 If bi-weekly and monthly objectives aren't met, various bad things happen:
 
 - Workers quit
-- The bank seizes the restaurant (this ends the game)
+- The bank seizes the restaurant (this ends the game immediately)
 
 ## Game Mechanics
 
