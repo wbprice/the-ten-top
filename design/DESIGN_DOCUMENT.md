@@ -38,12 +38,11 @@ Patrons are people who are willing to exchange money for food.
 - If the restaurant caters to their craving, they will enter the restaurant
 - The patron will order food
 - The patron will wait for the food to be ready
-    - Each patron has a set amount of satisfaction
-    - Patron satisfaction decreases as they wait for food
-    - If the food isn't delivered in a reasonable time, they might ask for a refund and leave
-    - If they like the food, patron satisfaction goes up and their chances of coming back to the
-      restaurant increases.
-    - If patron satisfaction is high enough, they'll invite their friends!
+- Each patron has a set amount of satisfaction
+- Patron satisfaction decreases as they wait for food
+- If satisfaction is depleted, they will ask for a refund and leave
+- If satisfaction goes up, their chances of coming back to the restaurant is increased
+- If patron satisfaction is high enough, they'll invite their friends!
 
 ### Worker Behaviors
 
@@ -62,8 +61,8 @@ The restaurant owner employs some number of workers to help them handle Patron r
 - Each worker begins the day with a set amount of satisfaction
 - Satisfaction decreases as time goes on
 - Satisfaction is boosted whenever the worker gets tips
-- Satisfaction is decreased if a patron complains to them
-
+- Satisfaction is decreased if a patron complains
+- If satisfaction is depleted, they will stop working for the day
 
 ## Inspirations
 
