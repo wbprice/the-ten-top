@@ -30,12 +30,54 @@ If bi-weekly and monthly objectives aren't met, various bad things happen:
 
 The primary way players achieve the objectives is to sell food at a profit to patrons.
 
+### Example Game Activities
+
+#### Situation A
+
+1. A Patron is attracted by the cuisine offered by the restaurant
+2. The Patron enters the store and gets in line
+3. The Patron waits in line until they get to talk to the Worker at the register
+4. The Worker receives an order for a hamburger and money
+5. The Worker leaves the cash register to make food for the Patron
+6. The Worker completes making food and brings it back to the Patron
+7. The Patron accepts the food. Their satisfaction is increased!
+8. The Patron sits down and eats their food
+9. The Patron is satisfied because the food was tasty.  They make an effort to clean up after themselves
+10. The Patron leaves
+11. A Worker cleans up after the Patron
+
+#### Situation B
+
+1. A patron is attracted by the cuisine offered by the restaurant
+2. The patron enters the store and gets in line
+3. The patron waits in line until their satisfaction is depleted
+4. They leave in a huff!
+
+#### Situation C
+
+1. A patron is attracted by the cuisine offered by the restaurant
+2. The patron enters the store and gets in line
+3. The patron waits in line until they get to talk to the Worker at the register
+4. The Worker receives an order for a hamburger and money.
+5. The Worker has a great many other hamburger orders to fill.
+6. The Patron's satisfaction decreases until they demand a refund and storm out.
+7. The Worker's satisfaction decreases
+
+#### Situation D
+
+1. A Patron stops by the restaurant, but they don't see anything on the menu they want to eat.
+2. The Patron keeps walking.
+
 ### Menu Design
 
 The player character is able to design a menu to attrack Patrons.
 
 - If the restaurnant can make burgers, it will attrack Patrons who want burgers.
 - If the restaurant makes tacos, it will attrack Patrons who want tacos.
+
+However, they must buy the equipment needed to make some kinds of items.
+
+- To make stirfry, a wok is required.
 
 ### Entities
 
@@ -144,6 +186,17 @@ The player character operates a small sit-down restasurant with 10 seats.
 - Patrons are able to order food "to-go"
 
 ### Events
+
+Sometimes, good and bad things happen randomly.  This affects operations of the restaurant.
+
+#### Good Events
+
+- A Food Critic wrote nice things about the restaurant.  Surely more people will visit this week!
+
+#### Bad Events
+
+- A Food Critic wrote bad things about the restaurant! Fewer people will visit this week.
+- A worker called in sick.  Fewer workers are available today
 
 ## Inspirations
 
