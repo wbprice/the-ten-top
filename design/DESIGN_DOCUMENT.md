@@ -30,7 +30,14 @@ If bi-weekly and monthly objectives aren't met, various bad things happen:
 
 The primary way players achieve the objectives is to sell food at a profit to patrons.
 
-### Patron Behaviors
+### Units
+
+There are two types of entity in the game:
+
+- Patrons
+- Workers
+
+#### Patron Behaviors
 
 Patrons are people who are willing to exchange money for food.
 
@@ -44,7 +51,7 @@ Patrons are people who are willing to exchange money for food.
 - If satisfaction goes up, their chances of coming back to the restaurant is increased
 - If patron satisfaction is high enough, they'll invite their friends!
 
-### Worker Behaviors
+#### Worker Behaviors
 
 Workers are people who are willing to exhange time for money.
 The restaurant owner employs some number of workers to help them handle Patron requests.
@@ -63,6 +70,7 @@ The restaurant owner employs some number of workers to help them handle Patron r
 - Satisfaction is boosted whenever the worker gets tips
 - Satisfaction is decreased if a patron complains
 - If satisfaction is depleted, they will stop working for the day
+- If workers can't be paid, they won't come to work
 
 ## Inspirations
 
