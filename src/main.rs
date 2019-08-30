@@ -10,6 +10,17 @@ use amethyst::{
 };
 
 mod state;
+mod systems;
+mod entities;
+mod components;
+
+use crate::{
+    components::{
+        Patron,
+        Food,
+        Worker
+    }
+}
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
