@@ -7,6 +7,15 @@ use amethyst::{
     window::ScreenDimensions,
 };
 
+use crate::{
+    components::{
+        Patron
+    },
+    entities::{
+        init_patron
+    }
+};
+
 use log::info;
 
 pub struct MyState;
@@ -29,6 +38,9 @@ impl SimpleState for MyState {
         // Load our sprites and display them
         let sprites = load_sprites(world);
         init_sprites(world, &sprites, &dimensions);
+
+        world.register::<Patron>();
+        init_patron(world, spire)
     }
 
     fn handle_event(

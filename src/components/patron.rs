@@ -3,17 +3,7 @@ use amethyst::ecs::prelude::{
     DenseVecStorage
 };
 
-enum Food {
-    HAMBURGER,
-    HOT_DOG,
-    TACO,
-    ELOTE
-    TAKOYAKI,
-    FISHBALLS,
-    BANH_MI,
-    PHO
-    // and others, I guess
-}
+use crate::components::Food;
 
 struct Patron {
     satisfaction: u8,

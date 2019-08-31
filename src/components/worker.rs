@@ -11,7 +11,7 @@ enum Task {
 
 struct Worker {
     satisfaction: u8,
-    velocity: f[f32; 2],
+    velocity: [f32; 2],
     task: Task
 }
 

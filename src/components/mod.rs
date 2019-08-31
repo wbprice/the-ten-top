@@ -3,5 +3,6 @@ use patron;
 use worker;
 
 pub use::self::{
-    patron::Patron
+    patron::Patron,
+    food:Food
 }
