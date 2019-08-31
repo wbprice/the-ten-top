@@ -9,18 +9,12 @@ use amethyst::{
     utils::application_root_dir,
 };
 
+mod components;
+mod entities;
 mod state;
 mod systems;
-mod entities;
-mod components;
 
-use crate::{
-    components::{
-        Patron,
-        Food,
-        Worker
-    }
-};
+use crate::components::{Food, Patron, Worker};
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());

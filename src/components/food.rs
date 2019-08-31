@@ -6,5 +6,5 @@ pub enum Food {
     Takoyaki,
     Fishballs,
     BanhMi,
-    Pho
+    Pho,
 }
