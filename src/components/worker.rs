@@ -1,15 +1,15 @@
 use amethyst::ecs::prelude::{
     Component,
     DenseVecStorage
+};
+
+pub enum Task {
+    TakingOrder,
+    Cleaning,
+    Cooking
 }
 
-enum Task {
-    TAKING_ORDER,
-    CLEANING,
-    COOKING
-}
-
-struct Worker {
+pub struct Worker {
     satisfaction: u8,
     velocity: [f32; 2],
     task: Task

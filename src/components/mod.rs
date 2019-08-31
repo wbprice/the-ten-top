@@ -1,8 +1,9 @@
-use food;
-use patron;
-use worker;
+mod food;
+mod patron;
+mod worker;
 
-pub use::self::{
+pub use self::{
     patron::Patron,
-    food:Food
-}
+    food::Food,
+    worker::Worker
+};

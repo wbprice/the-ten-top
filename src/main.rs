@@ -20,7 +20,7 @@ use crate::{
         Food,
         Worker
     }
-}
+};
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());

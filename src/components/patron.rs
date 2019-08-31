@@ -5,7 +5,7 @@ use amethyst::ecs::prelude::{
 
 use crate::components::Food;
 
-struct Patron {
+pub struct Patron {
     satisfaction: u8,
     velocity: [f32; 2],
     craving: Food

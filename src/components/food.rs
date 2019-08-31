@@ -1,10 +1,10 @@
-enum Food {
+pub enum Food {
     Hamburger,
-    Hot_dog,
+    HotDog,
     Taco,
-    Elote
+    Elote,
     Takoyaki,
     Fishballs,
-    Banh_mi,
+    BanhMi,
     Pho
 }
