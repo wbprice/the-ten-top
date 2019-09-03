@@ -6,12 +6,10 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Food, Patron, SimpleAnimation};
-
-pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
     local_transform.set_translation_xyz(12.0, 24.0, 0.);
-
+    
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
         sprite_number: 0,
@@ -25,7 +23,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
             velocity: [25.0, 0.0],
             craving: Food::Hamburger,
         })
-        .with(SimpleAnimation::new(1, 6, 0.1))
+        .with(SimpleAnimation::new(0, 6, 0.1))
         .with(local_transform)
         .build();
 }
