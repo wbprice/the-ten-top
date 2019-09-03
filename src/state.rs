@@ -9,11 +9,11 @@ use amethyst::{
 
 use crate::{
     components::{
-        ThoughtBubble
+        ThoughtBubble,
+        Parent
     },
     entities::{
-        init_patron,
-        init_thought_bubble
+        init_patron
     }
 };
 
@@ -33,15 +33,14 @@ impl SimpleState for MyState {
         // pass the world mutably to the following functions.
         let dimensions = world.read_resource::<ScreenDimensions>().clone();
 
-        // To remove after the ThoughtBubble system is implemented.
-        world.register::<ThoughtBubble>();
+        // To remove after the Parent system is implemented.
+        world.register::<Parent>();
 
         // Place the camera
         init_camera(world, &dimensions);
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        init_thought_bubble(world, sprite_sheet_handle.clone());
         init_patron(world, sprite_sheet_handle.clone());
     }
 

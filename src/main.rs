@@ -16,7 +16,7 @@ mod systems;
 
 use crate::{
     components::{Food, Patron, Worker},
-    systems::{MovePatronSystem, SimpleAnimationSystem},
+    systems::{MovePatronSystem, SimpleAnimationSystem, MoveThoughtBubbleSystem},
 };
 
 fn main() -> amethyst::Result<()> {
@@ -41,6 +41,11 @@ fn main() -> amethyst::Result<()> {
         .with(
             SimpleAnimationSystem,
             "simple_animation_system",
+            &["move_patron_system"],
+        )
+        .with(
+            MoveThoughtBubbleSystem,
+            "thought_bubble_system",
             &["move_patron_system"],
         );
 
