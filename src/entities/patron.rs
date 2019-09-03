@@ -25,7 +25,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
             velocity: [25.0, 0.0],
             craving: Food::Hamburger,
         })
-        .with(SimpleAnimation::new(0, 2, 0.3))
+        .with(SimpleAnimation::new(0, 6, 0.1))
         .with(local_transform)
         .build();
 }
