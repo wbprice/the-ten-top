@@ -6,9 +6,13 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
+use crate::components::{
+    ThoughtBubble
+};
+
 pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(12.0, 24.0, 0.);
+    local_transform.set_translation_xyz(12.0, 48.0, 0.);
     
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
@@ -18,12 +22,9 @@ pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<Sprite
     world
         .create_entity()
         .with(sprite_render)
-        .with(Patron {
-            satisfaction: 100,
-            velocity: [25.0, 0.0],
-            craving: Food::Hamburger,
+        .with(ThoughtBubble {
+            offset: [0.0, 12.0]
         })
-        .with(SimpleAnimation::new(0, 6, 0.1))
         .with(local_transform)
         .build();
 }

@@ -7,7 +7,12 @@ use amethyst::{
     window::ScreenDimensions,
 };
 
-use crate::{components::Patron, entities::init_patron};
+use crate::{
+    entities::{
+        init_patron,
+        init_thought_bubble
+    }
+};
 
 use log::info;
 
@@ -30,7 +35,8 @@ impl SimpleState for MyState {
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        init_patron(world, sprite_sheet_handle);
+        init_thought_bubble(world, sprite_sheet_handle.clone());
+        init_patron(world, sprite_sheet_handle.clone());
     }
 
     fn handle_event(
