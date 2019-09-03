@@ -8,6 +8,9 @@ use amethyst::{
 };
 
 use crate::{
+    components::{
+        ThoughtBubble
+    },
     entities::{
         init_patron,
         init_thought_bubble
@@ -29,6 +32,9 @@ impl SimpleState for MyState {
         // place our sprites correctly later. We'll clone this since we'll
         // pass the world mutably to the following functions.
         let dimensions = world.read_resource::<ScreenDimensions>().clone();
+
+        // To remove after the ThoughtBubble system is implemented.
+        world.register::<ThoughtBubble>();
 
         // Place the camera
         init_camera(world, &dimensions);

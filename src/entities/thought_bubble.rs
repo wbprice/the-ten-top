@@ -16,15 +16,13 @@ pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<Sprite
     
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
-        sprite_number: 0,
+        sprite_number: 6,
     };
 
     world
         .create_entity()
         .with(sprite_render)
-        .with(ThoughtBubble {
-            offset: [0.0, 12.0]
-        })
+        .with(ThoughtBubble {})
         .with(local_transform)
         .build();
 }
