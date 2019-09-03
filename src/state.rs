@@ -1,11 +1,13 @@
 use amethyst::{
-    assets::{AssetStorage, Loader},
+    assets::{AssetStorage, Handle, Loader},
     core::transform::Transform,
     input::{get_key, is_close_requested, is_key_down, VirtualKeyCode},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
     window::ScreenDimensions,
 };
+
+use crate::{components::Patron, entities::init_patron};
 
 use log::info;
 
@@ -26,9 +28,9 @@ impl SimpleState for MyState {
         // Place the camera
         init_camera(world, &dimensions);
 
-        // Load our sprites and display them
-        let sprites = load_sprites(world);
-        init_sprites(world, &sprites, &dimensions);
+        let sprite_sheet_handle = load_sprite_sheet(world);
+
+        init_patron(world, sprite_sheet_handle);
     }
 
     fn handle_event(
@@ -70,61 +72,29 @@ fn init_camera(world: &mut World, dimensions: &ScreenDimensions) {
         .build();
 }
 
-fn load_sprites(world: &mut World) -> Vec<SpriteRender> {
-    // Load the texture for our sprites. We'll later need to
-    // add a handle to this texture to our `SpriteRender`s, so
-    // we need to keep a reference to it.
+fn load_sprite_sheet(world: &mut World) -> Handle<SpriteSheet> {
+    // Load the sprite sheet necessary to render the graphics.
+    // The texture is the pixel data
+    // `sprite_sheet` is the layout of the sprites on the image
+    // `texture_handle` is a cloneable reference to the texture
+
     let texture_handle = {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
         loader.load(
-            "sprites/logo.png",
+            "sprites/spritesheet.png",
             ImageFormat::default(),
             (),
             &texture_storage,
         )
     };
 
-    // Load the spritesheet definition file, which contains metadata on our
-    // spritesheet texture.
-    let sheet_handle = {
-        let loader = world.read_resource::<Loader>();
-        let sheet_storage = world.read_resource::<AssetStorage<SpriteSheet>>();
-        loader.load(
-            "sprites/logo.ron",
-            SpriteSheetFormat(texture_handle),
-            (),
-            &sheet_storage,
-        )
-    };
-
-    // Create our sprite renders. Each will have a handle to the texture
-    // that it renders from. The handle is safe to clone, since it just
-    // references the asset.
-    (0..3)
-        .map(|i| SpriteRender {
-            sprite_sheet: sheet_handle.clone(),
-            sprite_number: i,
-        })
-        .collect()
-}
-
-fn init_sprites(world: &mut World, sprites: &[SpriteRender], dimensions: &ScreenDimensions) {
-    for (i, sprite) in sprites.iter().enumerate() {
-        // Center our sprites around the center of the window
-        let x = (i as f32 - 1.) * 100. + dimensions.width() * 0.5;
-        let y = (i as f32 - 1.) * 100. + dimensions.height() * 0.5;
-        let mut transform = Transform::default();
-        transform.set_translation_xyz(x, y, 0.);
-
-        // Create an entity for each sprite and attach the `SpriteRender` as
-        // well as the transform. If you want to add behaviour to your sprites,
-        // you'll want to add a custom `Component` that will identify them, and a
-        // `System` that will iterate over them. See https://book.amethyst.rs/stable/concepts/system.html
-        world
-            .create_entity()
-            .with(sprite.clone())
-            .with(transform)
-            .build();
-    }
+    let loader = world.read_resource::<Loader>();
+    let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
+    loader.load(
+        "sprites/spritesheet.ron",         // Here we load the associated ron file
+        SpriteSheetFormat(texture_handle), // We pass it the texture we want it to use
+        (),
+        &sprite_sheet_store,
+    )
 }
