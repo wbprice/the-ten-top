@@ -84,7 +84,7 @@ fn load_sprite_sheet(world: &mut World) -> Handle<SpriteSheet> {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
         loader.load(
-            "sprites/logo.png",
+            "sprites/spritesheet.png",
             ImageFormat::default(),
             (),
             &texture_storage,
@@ -94,7 +94,7 @@ fn load_sprite_sheet(world: &mut World) -> Handle<SpriteSheet> {
     let loader = world.read_resource::<Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
     loader.load(
-        "sprites/logo.ron",                // Here we load the associated ron file
+        "sprites/spritesheet.ron",         // Here we load the associated ron file
         SpriteSheetFormat(texture_handle), // We pass it the texture we want it to use
         (),
         &sprite_sheet_store,
