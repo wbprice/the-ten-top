@@ -16,7 +16,7 @@ mod systems;
 
 use crate::{
     components::{Food, Patron, Worker},
-    systems::{MovePatronSystem}
+    systems::{MovePatronSystem, SimpleAnimationSystem},
 };
 
 fn main() -> amethyst::Result<()> {
@@ -37,7 +37,12 @@ fn main() -> amethyst::Result<()> {
                 )
                 .with_plugin(RenderFlat2D::default()),
         )?
-        .with(MovePatronSystem, "move_patron_system", &[]);
+        .with(MovePatronSystem, "move_patron_system", &[])
+        .with(
+            SimpleAnimationSystem,
+            "simple_animation_system",
+            &["move_patron_system"],
+        );
 
     let mut game = Application::new(resources, state::MyState, game_data)?;
     game.run();
