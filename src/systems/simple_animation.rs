@@ -1,7 +1,6 @@
 use amethyst::{
     core::timing::Time,
-    core::transform::Transform,
-    ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Join, Read, System, WriteStorage},
     renderer::SpriteRender,
 };
 
@@ -24,7 +23,6 @@ impl<'s> System<'s> for SimpleAnimationSystem {
                 anim.current_frame = frame_count;
                 sprite_render.sprite_number = frame_count;
             }
-            println!("{}", frame_count);
         }
     }
 }
