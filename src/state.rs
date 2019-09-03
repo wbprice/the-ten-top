@@ -28,8 +28,6 @@ impl SimpleState for MyState {
         // Place the camera
         init_camera(world, &dimensions);
 
-        world.register::<Patron>();
-
         let sprite_sheet_handle = load_sprite_sheet(world);
 
         init_patron(world, sprite_sheet_handle);

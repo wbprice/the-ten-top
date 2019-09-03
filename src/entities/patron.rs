@@ -22,7 +22,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
         .with(sprite_render)
         .with(Patron {
             satisfaction: 100,
-            velocity: [10.0, 0.0],
+            velocity: [25.0, 0.0],
             craving: Food::Hamburger,
         })
         .with(local_transform)
