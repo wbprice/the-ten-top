@@ -20,12 +20,12 @@ impl<'s> System<'s> for MovePatronSystem {
             local.prepend_translation_x(patron.velocity[0] * time.delta_seconds());
             local.prepend_translation_y(patron.velocity[1] * time.delta_seconds());
 
+            // While waiting for more clever behavior to be implemented
+            // Run off the screen but reset position
             let patron_x = local.translation().x;
             if patron_x > 160.0 {
                 local.set_translation_x(0.0);
             }
-
-            dbg!(patron_x);
         }
     }
 }
