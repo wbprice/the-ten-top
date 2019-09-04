@@ -47,12 +47,12 @@ fn main() -> amethyst::Result<()> {
             MoveThoughtBubbleSystem,
             "thought_bubble_system",
             &["move_patron_system"],
-        )
-        .with(
-            MoveFoodSystem,
-            "move_food_system",
-            &["thought_bubble_system"]
         );
+        // .with(
+        //     MoveFoodSystem,
+        //     "move_food_system",
+        //     &["thought_bubble_system"]
+        // );
 
     let mut game = Application::new(resources, state::MyState, game_data)?;
     game.run();
