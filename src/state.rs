@@ -36,7 +36,6 @@ impl SimpleState for MyState {
 
         // To remove after the Parent system is implemented.
         world.register::<Parent>();
-        world.register::<Food>();
 
         // Place the camera
         init_camera(world, &dimensions);
