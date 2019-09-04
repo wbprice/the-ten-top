@@ -14,7 +14,7 @@ use crate::components::{
     Parent
 };
 
-pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, parent: Entity) {
+pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, parent: Entity) -> Entity {
     let mut local_transform = Transform::default();
     local_transform.set_translation_xyz(12.0, 48.0, 0.);
     
@@ -31,5 +31,5 @@ pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<Sprite
             entity: parent
         })
         .with(local_transform)
-        .build();
+        .build()
 }

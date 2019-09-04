@@ -6,6 +6,6 @@ mod worker;
 mod parent;
 
 pub use self::{
-    food::Food, patron::Patron, simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble,
+    food::Food, food::Dish, patron::Patron, simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble,
     worker::Worker, parent::Parent
 };

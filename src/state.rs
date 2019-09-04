@@ -10,7 +10,8 @@ use amethyst::{
 use crate::{
     components::{
         ThoughtBubble,
-        Parent
+        Parent,
+        Food
     },
     entities::{
         init_patron
@@ -35,6 +36,7 @@ impl SimpleState for MyState {
 
         // To remove after the Parent system is implemented.
         world.register::<Parent>();
+        world.register::<Food>();
 
         // Place the camera
         init_camera(world, &dimensions);

@@ -1,5 +1,7 @@
+use amethyst::ecs::prelude::{Component, DenseVecStorage};
+
 #[derive(Debug)]
-pub enum Food {
+pub enum Dish {
     Hamburger,
     HotDog,
     Taco,
@@ -8,4 +10,12 @@ pub enum Food {
     Fishballs,
     BanhMi,
     Pho,
+}
+
+pub struct Food {
+    pub dish: Dish
+}
+
+impl Component for Food {
+    type Storage = DenseVecStorage<Self>;
 }
