@@ -7,11 +7,8 @@ use amethyst::{
 };
 
 use crate::{
-    entities::{
-        init_thought_bubble,
-        init_food
-    },
-    components::{Food, Patron, SimpleAnimation}
+    components::{Food, Patron, SimpleAnimation},
+    entities::{init_food, init_thought_bubble},
 };
 
 pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {

@@ -1,6 +1,6 @@
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
-    core::transform::{Transform, Parent},
+    core::transform::{Parent, Transform},
     input::{get_key, is_close_requested, is_key_down, VirtualKeyCode},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
@@ -8,13 +8,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{
-        ThoughtBubble,
-        Food
-    },
-    entities::{
-        init_patron
-    }
+    components::{Food, ThoughtBubble},
+    entities::init_patron,
 };
 
 use log::info;
@@ -32,10 +27,6 @@ impl SimpleState for MyState {
         // place our sprites correctly later. We'll clone this since we'll
         // pass the world mutably to the following functions.
         let dimensions = world.read_resource::<ScreenDimensions>().clone();
-
-        // To remove after the Parent system is implemented.
-        world.register::<Parent>();
-        world.register::<Food>();
 
         // Place the camera
         init_camera(world, &dimensions);

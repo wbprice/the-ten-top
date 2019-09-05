@@ -10,11 +10,11 @@ pub enum Dish {
     Fishballs,
     BanhMi,
     Pho,
-    Dumplings
+    Dumplings,
 }
 
 pub struct Food {
-    pub dish: Dish
+    pub dish: Dish,
 }
 
 impl Component for Food {

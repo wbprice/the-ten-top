@@ -1,16 +1,10 @@
 use amethyst::{
     core::timing::Time,
-    core::transform::{
-        Transform,
-        Parent
-    },
+    core::transform::{Parent, Transform},
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{
-    Food,
-    ThoughtBubble
-};
+use crate::components::{Food, ThoughtBubble};
 
 pub struct MoveFoodSystem;
 
@@ -20,7 +14,7 @@ impl<'s> System<'s> for MoveFoodSystem {
         WriteStorage<'s, Food>,
         ReadStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
-        Read<'s, Time>
+        Read<'s, Time>,
     );
 
     fn run(&mut self, (thought_bubbles, foods, parents, mut locals, time): Self::SystemData) {}

@@ -1,16 +1,10 @@
 use amethyst::{
     core::timing::Time,
-    core::transform::{
-        Transform,
-        Parent
-    },
+    core::transform::{Parent, Transform},
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{
-    Patron,
-    ThoughtBubble
-};
+use crate::components::{Patron, ThoughtBubble};
 
 pub struct MoveThoughtBubbleSystem;
 
@@ -20,7 +14,7 @@ impl<'s> System<'s> for MoveThoughtBubbleSystem {
         WriteStorage<'s, ThoughtBubble>,
         ReadStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
-        Read<'s, Time>
+        Read<'s, Time>,
     );
 
     fn run(&mut self, (patrons, thought_bubbles, parents, mut locals, time): Self::SystemData) {}
