@@ -10,6 +10,7 @@ pub enum Dish {
     Fishballs,
     BanhMi,
     Pho,
+    Dumplings
 }
 
 pub struct Food {
