@@ -4,7 +4,7 @@ use amethyst::{
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::Patron;
+use crate::components::{Patron, ThoughtBubble};
 
 pub struct MovePatronSystem;
 

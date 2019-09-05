@@ -16,7 +16,7 @@ mod systems;
 
 use crate::{
     components::{Food, Patron, Worker},
-    systems::{MovePatronSystem, SimpleAnimationSystem},
+    systems::{MoveFoodSystem, MovePatronSystem, MoveThoughtBubbleSystem, SimpleAnimationSystem},
 };
 
 fn main() -> amethyst::Result<()> {
@@ -42,6 +42,16 @@ fn main() -> amethyst::Result<()> {
             SimpleAnimationSystem,
             "simple_animation_system",
             &["move_patron_system"],
+        )
+        .with(
+            MoveThoughtBubbleSystem,
+            "thought_bubble_system",
+            &["move_patron_system"],
+        )
+        .with(
+            MoveFoodSystem,
+            "move_food_system",
+            &["thought_bubble_system"],
         );
 
     let mut game = Application::new(resources, state::MyState, game_data)?;

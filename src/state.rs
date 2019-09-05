@@ -1,13 +1,16 @@
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
-    core::transform::Transform,
+    core::transform::{Parent, Transform},
     input::{get_key, is_close_requested, is_key_down, VirtualKeyCode},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
     window::ScreenDimensions,
 };
 
-use crate::{components::Patron, entities::init_patron};
+use crate::{
+    components::{Food, ThoughtBubble},
+    entities::init_patron,
+};
 
 use log::info;
 
@@ -30,7 +33,7 @@ impl SimpleState for MyState {
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        init_patron(world, sprite_sheet_handle);
+        init_patron(world, sprite_sheet_handle.clone());
     }
 
     fn handle_event(
