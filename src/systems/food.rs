@@ -1,12 +1,14 @@
 use amethyst::{
     core::timing::Time,
-    core::transform::Transform,
+    core::transform::{
+        Transform,
+        Parent
+    },
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
 };
 
 use crate::components::{
     Food,
-    Parent,
     ThoughtBubble
 };
 

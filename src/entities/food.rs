@@ -1,6 +1,9 @@
 use amethyst::{
     assets::Handle,
-    core::transform::Transform,
+    core::transform::{
+        Transform,
+        Parent
+    },
     ecs::prelude::{
         World,
         Entity
@@ -12,12 +15,12 @@ use amethyst::{
 use crate::components::{
     Food,
     Dish,
-    Parent
 };
 
 pub fn init_food(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, parent: Entity) -> Entity {
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(12.0, 52.0, 0.5);
+    local_transform.prepend_translation_y(24.0);
+    local_transform.prepend_translation_z(5.0);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,

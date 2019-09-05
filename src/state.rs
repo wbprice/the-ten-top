@@ -1,6 +1,6 @@
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
-    core::transform::Transform,
+    core::transform::{Transform, Parent},
     input::{get_key, is_close_requested, is_key_down, VirtualKeyCode},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
@@ -10,7 +10,6 @@ use amethyst::{
 use crate::{
     components::{
         ThoughtBubble,
-        Parent,
         Food
     },
     entities::{
