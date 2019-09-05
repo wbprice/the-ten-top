@@ -19,12 +19,12 @@ use crate::components::{
 
 pub fn init_food(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, parent: Entity) -> Entity {
     let mut local_transform = Transform::default();
-    local_transform.prepend_translation_y(0.0);
+    local_transform.prepend_translation_y(3.0);
     local_transform.prepend_translation_z(0.1);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
-        sprite_number: 7
+        sprite_number: 8
     };
 
     world

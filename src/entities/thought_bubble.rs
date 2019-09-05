@@ -18,7 +18,7 @@ use crate::components::{
 
 pub fn init_thought_bubble(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, parent: Entity) -> Entity {
     let mut local_transform = Transform::default();
-    local_transform.prepend_translation_y(24.0);
+    local_transform.prepend_translation_y(20.0);
     
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
