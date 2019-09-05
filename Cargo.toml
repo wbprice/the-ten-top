@@ -1,11 +1,11 @@
 [package]
-name = "amethyst-starter-2d"
+name = "the-ten-top"
 version = "0.1.0"
-authors = ["Hilmar Wiegand <me@hwgnd.de>"]
+authors = ["Blaine Price <1wbprice@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-amethyst = { version = "0.12.0", features = ["nightly"] }
+amethyst = { version = "0.12.0" }
 log = { version = "0.4.6", features = ["serde"] }
 
 [features]

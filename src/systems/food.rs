@@ -23,9 +23,5 @@ impl<'s> System<'s> for MoveFoodSystem {
         Read<'s, Time>
     );
 
-    fn run(&mut self, (thought_bubbles, foods, parents, mut locals, time): Self::SystemData) {
-        for (food, parent, local) in (&foods, &parents, &mut locals).join() {
-
-        }
-    }
+    fn run(&mut self, (thought_bubbles, foods, parents, mut locals, time): Self::SystemData) {}
 }
