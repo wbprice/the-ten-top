@@ -8,7 +8,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Food, ThoughtBubble},
+    components::{Patron},
     entities::init_patron,
 };
 
@@ -33,7 +33,10 @@ impl SimpleState for MyState {
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        init_patron(world, sprite_sheet_handle.clone());
+        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
     }
 
     fn handle_event(
