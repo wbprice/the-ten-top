@@ -15,7 +15,7 @@ pub fn init_food(
 ) -> Entity {
     let mut local_transform = Transform::default();
     local_transform.prepend_translation_y(3.0);
-    local_transform.prepend_translation_z(0.1);
+    local_transform.prepend_translation_z(0.01);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,

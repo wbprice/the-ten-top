@@ -23,11 +23,11 @@ impl<'s> System<'s> for MovePatronSystem {
             // While waiting for more clever behavior to be implemented
             // Run off the screen but reset position
             let patron_x = local.translation().x;
-            if patron_x > 160.0 {
+            if patron_x > 200.0 {
                 local.set_translation_x(0.0);
             }
 
-            if patron_x < 0.0 {
+            if patron_x < -40.0 {
                 local.set_translation_x(160.0);
             }
         }
