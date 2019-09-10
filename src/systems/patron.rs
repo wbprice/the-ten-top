@@ -4,7 +4,7 @@ use amethyst::{
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Patron, ThoughtBubble};
+use crate::components::Patron;
 
 pub struct MovePatronSystem;
 
@@ -20,8 +20,8 @@ impl<'s> System<'s> for MovePatronSystem {
             local.prepend_translation_x(patron.velocity[0] * time.delta_seconds());
             local.prepend_translation_y(patron.velocity[1] * time.delta_seconds());
 
-            // While waiting for more clever behavior to be implemented
-            // Run off the screen but reset position
+            // Allow patrons to run off the screen
+            // If they do so, update their position to the opposite edge of the screen.
             let patron_x = local.translation().x;
             if patron_x > 200.0 {
                 local.set_translation_x(0.0);
