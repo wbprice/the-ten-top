@@ -13,7 +13,7 @@ use crate::{
 
 pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, patron: Patron) {
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(patron.origin[0], patron.origin[1], 0.0);
+    local_transform.set_translation_xyz(patron.origin[0], patron.origin[1], -patron.origin[1]);
 
     // If horizontal velocity is negative, flip the sprites
     if patron.velocity[0] < 0.0 {

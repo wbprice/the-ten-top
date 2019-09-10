@@ -7,10 +7,7 @@ use amethyst::{
     window::ScreenDimensions,
 };
 
-use crate::{
-    components::{Patron},
-    entities::init_patron,
-};
+use crate::{components::Patron, entities::init_patron};
 
 use log::info;
 
