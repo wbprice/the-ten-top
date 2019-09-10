@@ -26,6 +26,10 @@ impl<'s> System<'s> for MovePatronSystem {
             if patron_x > 160.0 {
                 local.set_translation_x(0.0);
             }
+
+            if patron_x < 0.0 {
+                local.set_translation_x(160.0);
+            }
         }
     }
 }
