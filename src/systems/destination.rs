@@ -14,8 +14,13 @@ pub struct DestinationSystem;
 impl<'s> System<'s> for DestinationSystem {
     type SystemData = (
         WriteStorage<'s, Patron>,
+        ReadStorage<'s, Transform>,
         ReadStorage<'s, Destination>
     );
 
-    fn run(&mut self, (mut patrons, destinations): Self::SystemData) {}
+    fn run(&mut self, (mut patrons, locals, destinations): Self::SystemData) {
+        for (patron) in (&patrons, &locals, &destinations).join() {
+            dbg!(patron);
+        }
+    }
 }
