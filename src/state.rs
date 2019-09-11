@@ -34,9 +34,9 @@ impl SimpleState for MyState {
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_register(world, sprite_sheet_handle.clone());
     }

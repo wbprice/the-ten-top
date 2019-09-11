@@ -11,7 +11,7 @@ use crate::components::{
 
 pub struct DestinationSystem;
 
-impl<'s> System<'s> for MoveFoodSystem {
+impl<'s> System<'s> for DestinationSystem {
     type SystemData = (
         WriteStorage<'s, Patron>,
         ReadStorage<'s, Destination>
