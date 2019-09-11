@@ -6,11 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::{
-    components::{
-        Register
-    }
-};
+use crate::components::Register;
 
 pub fn init_register(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
@@ -18,7 +14,7 @@ pub fn init_register(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
-        sprite_number: 9
+        sprite_number: 9,
     };
 
     world

@@ -1,6 +1,9 @@
 mod food;
 mod patron;
-mod thought_bubble;
 mod register;
+mod thought_bubble;
 
-pub use self::{food::init_food, patron::init_patron, thought_bubble::init_thought_bubble, register::init_register};
+pub use self::{
+    food::init_food, patron::init_patron, register::init_register,
+    thought_bubble::init_thought_bubble,
+};

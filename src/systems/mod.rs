@@ -1,11 +1,12 @@
+mod destination;
 mod food;
 mod patron;
+mod register;
 mod simple_animation;
 mod thought_bubble;
-mod register;
-mod destination;
 
 pub use self::{
-    food::MoveFoodSystem, patron::MovePatronSystem, simple_animation::SimpleAnimationSystem,
-    thought_bubble::MoveThoughtBubbleSystem, register::RegisterSystem, destination::DestinationSystem
+    destination::DestinationSystem, food::MoveFoodSystem, patron::MovePatronSystem,
+    register::RegisterSystem, simple_animation::SimpleAnimationSystem,
+    thought_bubble::MoveThoughtBubbleSystem,
 };

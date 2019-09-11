@@ -4,10 +4,7 @@ use amethyst::{
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{
-    Patron,
-    Velocity
-};
+use crate::components::{Patron, Velocity};
 
 pub struct MovePatronSystem;
 

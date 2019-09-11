@@ -23,10 +23,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, 
     let patron = world
         .create_entity()
         .with(patron)
-        .with(Velocity {
-            x: 15.0,
-            y: 0.0
-        })
+        .with(Velocity { x: 15.0, y: 0.0 })
         .with(sprite_render)
         .with(SimpleAnimation::new(1, 6, 0.1))
         .with(local_transform)
