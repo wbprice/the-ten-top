@@ -19,8 +19,9 @@ impl<'s> System<'s> for DestinationSystem {
     );
 
     fn run(&mut self, (mut patrons, locals, destinations): Self::SystemData) {
-        for (patron) in (&patrons, &locals, &destinations).join() {
+        for (patron, patron_local, destination) in (&patrons, &locals, &destinations).join() {
             dbg!(patron);
+            dbg!(destination);
         }
     }
 }
