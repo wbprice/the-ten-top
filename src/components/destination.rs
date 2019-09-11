@@ -2,7 +2,8 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 #[derive(Debug)]
 pub struct Destination {
-    pub destination: [f32; 2]
+    pub x: f32,
+    pub y: f32
 }
 
 impl Component for Destination {
