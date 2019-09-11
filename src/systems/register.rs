@@ -34,6 +34,9 @@ impl<'s> System<'s> for RegisterSystem {
 
                 // If there's a match, attract the patron
                 if register_x.floor() == patron_x.floor() {
+
+                    // Updating the Patron's destination will cause it to walk
+                    // towards the register
                     destinations.insert(patron_entity, Destination {
                         destination: [0.0, 0.0]
                     }).unwrap();
