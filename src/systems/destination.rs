@@ -29,22 +29,39 @@ impl<'s> System<'s> for DestinationSystem {
         {
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
-            if pos.x == destination.x && pos.y == destination.y {
+            if pos.x.floor() == destination.x && pos.y.floor() == destination.y {
+                dbg!("Made it!");
                 // If so, remove the destination and zero out velocity.
                 destinations_to_remove.push(entity.clone());
                 velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
+
+                dbg!(pos.x - destination.x);
+                dbg!(pos.y - destination.y);
+
+                // If getting close, start to slow down.
+                if ((pos.x - destination.x).abs() < 3.0 &&
+                    (pos.y - destination.y).abs() < 3.0) {
+                    *velocity = velocity.set_displacement(
+                        velocity.get_displacement() / 2.0
+                    );
+                }
+                
                 // If not, change their velocity
-                velocities_to_insert.push((
+                let new_velocity = velocity.turn(
+                    Destination { x: pos.x, y: pos.y },
+                    Destination {
+                        x: destination.x,
+                        y: destination.y,
+                    },
+                );
+                dbg!(new_velocity.get_displacement());
+                let new_velocity_entity = (
                     entity,
-                    velocity.turn(
-                        Destination { x: pos.x, y: pos.y },
-                        Destination {
-                            x: destination.x,
-                            y: destination.y,
-                        },
-                    ),
-                ));
+                    new_velocity
+                );
+                dbg!(new_velocity_entity.clone());
+                velocities_to_insert.push(new_velocity_entity);
             }
         }
 
