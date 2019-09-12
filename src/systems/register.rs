@@ -27,7 +27,7 @@ impl<'s> System<'s> for RegisterSystem {
             // Check to see if a patron is in range by looking at x value of register...
             let register_translation = register_local.translation();
             let register_x = register_translation.x;
-            let register_y = register_translation.y - 24.0;
+            let register_y = register_translation.y;
 
             for (patron_entity, patron, patron_local) in (&*entities, &mut patrons, &locals).join()
             {

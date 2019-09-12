@@ -8,6 +8,13 @@ use crate::components::{Destination, Patron, Velocity};
 
 pub struct DestinationSystem;
 
+fn get_distance_between_two_points(point_a: [f32; 2], point_b: [f32; 2]) -> f32 {
+    let x = point_a[0] - point_b[0];
+    let y = point_a[1] - point_b[1];
+    let c : f32 = x.powi(2) + y.powi(2);
+    c.sqrt()
+}
+
 impl<'s> System<'s> for DestinationSystem {
     type SystemData = (
         Entities<'s>,
@@ -29,20 +36,25 @@ impl<'s> System<'s> for DestinationSystem {
         {
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
-            if pos.x.floor() == destination.x.floor() && pos.y.floor() == destination.y.floor() {
-                dbg!("Made it!");
+
+            let dist = get_distance_between_two_points([pos.x, pos.y], [destination.x, destination.y]);
+            let close_enough : bool = dist < 2.0;
+            if close_enough {
                 // If so, remove the destination and zero out velocity.
                 destinations_to_remove.push(entity);
                 velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
 
-                dbg!(pos.x - destination.x);
-                dbg!(pos.y - destination.y);
-
                 // If getting close, start to slow down.
-                if ((pos.x - destination.x).abs() < 2.0 &&
-                    (pos.y - destination.y).abs() < 2.0) {
-                    *velocity = velocity.set_displacement(2.0);
+                if ((pos.x - destination.x).abs() < 8.0 &&
+                    (pos.y - destination.y).abs() < 8.0) {
+
+                    let mut new_displacement = velocity.get_displacement() * 0.99;
+                    if new_displacement < 8.0 {
+                        new_displacement = 8.0;
+                    }
+
+                    *velocity = velocity.set_displacement(new_displacement);
                 }
                 
                 // If not, change their velocity
@@ -53,19 +65,19 @@ impl<'s> System<'s> for DestinationSystem {
                         y: destination.y,
                     },
                 );
-                dbg!(new_velocity.get_displacement());
+
                 let new_velocity_entity = (
                     entity,
                     new_velocity
                 );
-                dbg!(new_velocity_entity.clone());
+
                 velocities_to_insert.push(new_velocity_entity);
             }
         }
 
         // Clean up entities
         for entity in destinations_to_remove {
-            destinations.remove(entity);
+            destinations.remove(entity).unwrap();
         }
 
         // Update velocities
