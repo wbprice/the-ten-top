@@ -19,7 +19,7 @@ impl Velocity {
         let heading = (self.y).atan2(self.x);
         Velocity {
             x: displacement * heading.cos(),
-            y: displacement * heading.sin()
+            y: displacement * heading.sin(),
         }
     }
 
