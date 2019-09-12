@@ -29,10 +29,10 @@ impl<'s> System<'s> for DestinationSystem {
         {
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
-            if pos.x.floor() == destination.x && pos.y.floor() == destination.y {
+            if pos.x.floor() == destination.x.floor() && pos.y.floor() == destination.y.floor() {
                 dbg!("Made it!");
                 // If so, remove the destination and zero out velocity.
-                destinations_to_remove.push(entity.clone());
+                destinations_to_remove.push(entity);
                 velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
 
@@ -40,11 +40,9 @@ impl<'s> System<'s> for DestinationSystem {
                 dbg!(pos.y - destination.y);
 
                 // If getting close, start to slow down.
-                if ((pos.x - destination.x).abs() < 3.0 &&
-                    (pos.y - destination.y).abs() < 3.0) {
-                    *velocity = velocity.set_displacement(
-                        velocity.get_displacement() / 2.0
-                    );
+                if ((pos.x - destination.x).abs() < 2.0 &&
+                    (pos.y - destination.y).abs() < 2.0) {
+                    *velocity = velocity.set_displacement(2.0);
                 }
                 
                 // If not, change their velocity
