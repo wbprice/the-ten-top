@@ -22,31 +22,41 @@ impl<'s> System<'s> for DestinationSystem {
         (entities, mut patrons, mut velocities, locals, mut destinations): Self::SystemData,
     ) {
         let mut destinations_to_remove: Vec<Entity> = vec![];
+        let mut velocities_to_insert: Vec<(Entity, Velocity)> = vec![];
 
-        for (entity, patron, patron_local, destination) in
-            (&entities, &patrons, &locals, &destinations).join()
+        for (entity, patron, velocity, patron_local, destination) in
+            (&entities, &patrons, &mut velocities, &locals, &destinations).join()
         {
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
             if pos.x.floor() == destination.x.floor() && pos.y.floor() == destination.y.floor() {
-                dbg!("arrived");
                 // If so, remove the destination and zero out velocity.
                 destinations_to_remove.push(entity.clone());
-                velocities
-                    .insert(entity, Velocity { x: 0.0, y: 0.0 })
-                    .unwrap();
+                velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0}));
             } else {
-                dbg!(patron);
-                dbg!()
-                // If not, are they going the right way?
-
                 // If not, change their velocity
+                velocities_to_insert.push((entity, 
+                    velocity.turn(
+                    Destination {
+                        x: pos.x,
+                        y: pos.y
+                    },
+                    Destination {
+                        x: destination.x,
+                        y: destination.y
+                    }
+                )));
             }
         }
 
         // Clean up entities
         for entity in destinations_to_remove {
             destinations.remove(entity);
+        }
+
+        // Update velocities
+        for (entity, velocity) in velocities_to_insert {
+            velocities.insert(entity, velocity).unwrap();
         }
     }
 }

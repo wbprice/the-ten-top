@@ -13,7 +13,7 @@ use crate::{
 
 pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, patron: Patron) {
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(12.0, 24.0, 0.0);
+    local_transform.set_translation_xyz(12.0, 24.0, 0.2);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle.clone(),

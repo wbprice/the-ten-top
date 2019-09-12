@@ -25,7 +25,9 @@ impl<'s> System<'s> for RegisterSystem {
         // For each register
         for (register, register_local) in (&registers, &locals).join() {
             // Check to see if a patron is in range by looking at x value of register...
-            let register_x = register_local.translation().x;
+            let register_translation = register_local.translation();
+            let register_x = register_translation.x;
+            let register_y = register_translation.y - 24.0;
 
             for (patron_entity, patron, patron_local) in (&*entities, &mut patrons, &locals).join()
             {
@@ -37,7 +39,10 @@ impl<'s> System<'s> for RegisterSystem {
                     // Updating the Patron's destination will cause it to walk
                     // towards the register
                     destinations
-                        .insert(patron_entity, Destination { x: 130.0, y: 24.0 })
+                        .insert(patron_entity, Destination { 
+                            x: register_x, 
+                            y: register_y
+                        })
                         .unwrap();
                 }
             }
