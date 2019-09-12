@@ -1,9 +1,7 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use std::f32::consts::PI;
 
-use crate::components::{
-    Destination
-};
+use crate::components::Destination;
 
 #[derive(Copy, Clone)]
 pub struct Velocity {
@@ -22,7 +20,7 @@ impl Velocity {
         let heading = (point_b.y - point_a.y).atan2(point_b.x - point_a.x) * 180.0 / PI;
         Velocity {
             x: displacement * heading.cos(),
-            y: displacement * heading.sin()
+            y: displacement * heading.sin(),
         }
     }
 }

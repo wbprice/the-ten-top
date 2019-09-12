@@ -29,23 +29,22 @@ impl<'s> System<'s> for DestinationSystem {
         {
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
-            if pos.x.floor() == destination.x.floor() && pos.y.floor() == destination.y.floor() {
+            if pos.x == destination.x && pos.y == destination.y {
                 // If so, remove the destination and zero out velocity.
                 destinations_to_remove.push(entity.clone());
-                velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0}));
+                velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
                 // If not, change their velocity
-                velocities_to_insert.push((entity, 
+                velocities_to_insert.push((
+                    entity,
                     velocity.turn(
-                    Destination {
-                        x: pos.x,
-                        y: pos.y
-                    },
-                    Destination {
-                        x: destination.x,
-                        y: destination.y
-                    }
-                )));
+                        Destination { x: pos.x, y: pos.y },
+                        Destination {
+                            x: destination.x,
+                            y: destination.y,
+                        },
+                    ),
+                ));
             }
         }
 

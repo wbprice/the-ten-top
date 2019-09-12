@@ -39,10 +39,13 @@ impl<'s> System<'s> for RegisterSystem {
                     // Updating the Patron's destination will cause it to walk
                     // towards the register
                     destinations
-                        .insert(patron_entity, Destination { 
-                            x: register_x, 
-                            y: register_y
-                        })
+                        .insert(
+                            patron_entity,
+                            Destination {
+                                x: register_x,
+                                y: register_y,
+                            },
+                        )
                         .unwrap();
                 }
             }
