@@ -9,9 +9,7 @@ use crate::components::{Feeling, ThoughtBubble};
 pub struct MoveFeelingSystem;
 
 impl<'s> System<'s> for MoveFeelingSystem {
-    type SystemData = (
-        ReadStorage<'s, Feeling>
-    );
+    type SystemData = (ReadStorage<'s, Feeling>);
 
     fn run(&mut self, (feelings): Self::SystemData) {}
 }

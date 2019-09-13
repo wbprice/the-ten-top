@@ -6,7 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Dish, Feeling, Emotion};
+use crate::components::{Dish, Emotion, Feeling};
 
 pub fn init_feeling(
     world: &mut World,

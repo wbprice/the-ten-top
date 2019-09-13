@@ -1,12 +1,10 @@
 use amethyst::{
     core::timing::Time,
-    core::transform::{Transform, Parent},
+    core::transform::{Parent, Transform},
     ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::{
-    components::{Destination, Patron, Register, Food}
-};
+use crate::components::{Destination, Food, Patron, Register};
 
 pub struct RegisterSystem;
 
@@ -48,26 +46,26 @@ impl<'s> System<'s> for RegisterSystem {
                 let patron_x = patron_translation.x;
                 let patron_y = patron_translation.y;
 
-                let dist = get_distance_between_two_points([register_x, register_y],[patron_x, patron_y]);
-                let is_close_enough : bool = dist < 2.0;
+                let dist =
+                    get_distance_between_two_points([register_x, register_y], [patron_x, patron_y]);
+                let is_close_enough: bool = dist < 2.0;
                 if is_close_enough {
                     // Determine if any unattached food entities of the right type exists.
 
                     // If so, attach a Parent component to it, passing the patron entity.
                     for (food_entity, food) in (&entities, &foods).join() {
-                        parents.insert(food_entity, Parent {
-                            entity: patron_entity
-                        }).unwrap();
-                        destinations
+                        parents
                             .insert(
-                                patron_entity,
-                                Destination {
-                                    x: 0.0,
-                                    y: 0.0
-                                }
-                            ).unwrap();
+                                food_entity,
+                                Parent {
+                                    entity: patron_entity,
+                                },
+                            )
+                            .unwrap();
+                        destinations
+                            .insert(patron_entity, Destination { x: 0.0, y: 0.0 })
+                            .unwrap();
                     }
-
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
                     // Updating the Patron's destination will cause it to walk

@@ -8,8 +8,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Patron, Food},
-    entities::{init_patron, init_register, init_food},
+    components::{Food, Patron},
+    entities::{init_food, init_patron, init_register},
 };
 
 use log::info;

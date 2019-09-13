@@ -1,8 +1,6 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-use crate::components::{
-    Dish
-};
+use crate::components::Dish;
 
 #[derive(Debug)]
 pub enum Emotion {
@@ -11,7 +9,7 @@ pub enum Emotion {
     Sad,
     Neutral,
     Fearful,
-    Craving(Dish)
+    Craving(Dish),
 }
 
 pub struct Feeling {
