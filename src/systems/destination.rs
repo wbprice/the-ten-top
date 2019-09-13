@@ -18,18 +18,18 @@ fn get_distance_between_two_points(point_a: [f32; 2], point_b: [f32; 2]) -> f32 
 impl<'s> System<'s> for DestinationSystem {
     type SystemData = (
         Entities<'s>,
-        WriteStorage<'s, Patron>,
+        ReadStorage<'s, Patron>,
         WriteStorage<'s, Velocity>,
-        WriteStorage<'s, Transform>,
+        ReadStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
     );
 
     fn run(
         &mut self,
-        (entities, mut patrons, mut velocities, mut locals, mut destinations): Self::SystemData,
+        (entities, mut patrons, mut velocities, locals, mut destinations): Self::SystemData,
     ) {
         let mut velocities_to_insert: Vec<(Entity, Velocity)> = vec![];
-        let mut destinations_to_insert: Vec<(Entity, Destination)> = vec![];
+        let mut destinations_to_remove: Vec<Entity> = vec![];
 
         for (entity, patron, velocity, patron_local, dest) in (
             &entities,
@@ -40,7 +40,6 @@ impl<'s> System<'s> for DestinationSystem {
         )
             .join()
         {
-
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
             let dist = get_distance_between_two_points([pos.x, pos.y], [dest.x, dest.y]);
@@ -50,7 +49,7 @@ impl<'s> System<'s> for DestinationSystem {
                 // If so,
                 // - remove the destination
                 // - zero out velocity
-                // - snap the patron to the destination
+                destinations_to_remove.push(entity);
                 velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
                 // If getting close, start to slow down.
@@ -62,7 +61,7 @@ impl<'s> System<'s> for DestinationSystem {
                     *velocity = velocity.set_displacement(displacement);
                 }
 
-                // If not, prepare to change velocity
+                // If not, change velocity so the patron is heading the right direction
                 velocities_to_insert.push((
                     entity,
                     velocity.turn(
@@ -79,6 +78,11 @@ impl<'s> System<'s> for DestinationSystem {
         // Update velocities
         for (entity, velocity) in velocities_to_insert {
             velocities.insert(entity, velocity).unwrap();
+        }
+
+        // Remove destinations
+        for entity in destinations_to_remove {
+            destinations.remove(entity);
         }
     }
 }
