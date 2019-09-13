@@ -6,9 +6,10 @@ mod simple_animation;
 mod thought_bubble;
 mod velocity;
 mod worker;
+mod food;
 
 pub use self::{
-    destination::Destination, feeling::Dish, feeling::Feeling, patron::Patron, register::Register,
+    destination::Destination, food::Dish, food::Food, feeling::Feeling, feeling::Emotion, patron::Patron, register::Register,
     simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble, velocity::Direction,
-    velocity::Velocity, worker::Worker,
+    velocity::Velocity, worker::Worker
 };

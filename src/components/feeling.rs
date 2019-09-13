@@ -1,20 +1,21 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
+use crate::components::{
+    Dish
+};
+
 #[derive(Debug)]
-pub enum Dish {
-    Hamburger,
-    HotDog,
-    Taco,
-    Elote,
-    Takoyaki,
-    Fishballs,
-    BanhMi,
-    Pho,
-    Dumplings,
+pub enum Emotion {
+    Happy,
+    Angry,
+    Sad,
+    Neutral,
+    Fearful,
+    Craving(Dish)
 }
 
 pub struct Feeling {
-    pub symbol: Dish,
+    pub symbol: Emotion,
 }
 
 impl Component for Feeling {

@@ -6,7 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Dish, Feeling};
+use crate::components::{Dish, Feeling, Emotion};
 
 pub fn init_feeling(
     world: &mut World,
@@ -26,7 +26,7 @@ pub fn init_feeling(
         .create_entity()
         .with(sprite_render)
         .with(Feeling {
-            symbol: Dish::Hamburger,
+            symbol: Emotion::Craving(Dish::Hamburger),
         })
         .with(Parent { entity: parent })
         .with(local_transform)
