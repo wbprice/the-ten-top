@@ -15,7 +15,7 @@ pub enum Dish {
 
 #[derive(Debug)]
 pub struct Food {
-    dish: Dish
+    pub dish: Dish
 }
 
 impl Component for Food {
