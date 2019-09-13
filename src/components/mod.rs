@@ -9,6 +9,6 @@ mod worker;
 
 pub use self::{
     destination::Destination, food::Dish, food::Food, patron::Patron, register::Register,
-    simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble, velocity::Velocity,
-    worker::Worker,
+    simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble, velocity::Direction,
+    velocity::Velocity, worker::Worker,
 };

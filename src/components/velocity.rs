@@ -9,6 +9,13 @@ pub struct Velocity {
     pub y: f32,
 }
 
+pub enum Direction {
+    Up,
+    Right,
+    Down,
+    Left,
+}
+
 impl Velocity {
     pub fn get_displacement(self) -> f32 {
         let c: f32 = self.x.powi(2) + self.y.powi(2);
@@ -20,6 +27,25 @@ impl Velocity {
         Velocity {
             x: displacement * heading.cos(),
             y: displacement * heading.sin(),
+        }
+    }
+
+    pub fn get_direction(self) -> Direction {
+        let x = self.x;
+        let y = self.y;
+
+        if y > x {
+            // If mostly going up or down...
+            if y > 0.0 {
+                return Direction::Up;
+            }
+            return Direction::Down;
+        } else {
+            // All other cases
+            if x > 0.0 {
+                return Direction::Right;
+            }
+            return Direction::Left;
         }
     }
 
