@@ -13,8 +13,8 @@ pub fn init_food(
     sprite_sheet_handle: Handle<SpriteSheet>
 ) -> Entity {
     let mut local_transform = Transform::default();
-    local_transform.prepend_translation_y(56.0);
-    local_transform.prepend_translation_z(80.00);
+    local_transform.prepend_translation_x(56.0);
+    local_transform.prepend_translation_y(80.0);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
