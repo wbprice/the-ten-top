@@ -25,7 +25,7 @@ pub fn init_food(
         .create_entity()
         .with(sprite_render)
         .with(Food {
-            dish: Dish::Hamburger,
+            dish: Dish::HotDog,
         })
         .with(local_transform)
         .build()
