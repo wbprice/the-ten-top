@@ -13,10 +13,10 @@ pub enum Dish {
     Dumplings,
 }
 
-pub struct Food {
-    pub dish: Dish,
+pub struct Feeling {
+    pub symbol: Dish,
 }
 
-impl Component for Food {
+impl Component for Feeling {
     type Storage = DenseVecStorage<Self>;
 }
