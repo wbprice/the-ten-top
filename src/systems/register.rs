@@ -23,15 +23,18 @@ impl<'s> System<'s> for RegisterSystem {
         ReadStorage<'s, Register>,
         ReadStorage<'s, Food>,
         WriteStorage<'s, Parent>,
-        ReadStorage<'s, Transform>,
+        WriteStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
         Read<'s, Time>,
     );
 
     fn run(
         &mut self,
-        (entities, mut patrons, registers, foods, mut parents, locals, mut destinations, time): Self::SystemData,
+        (entities, mut patrons, registers, foods, mut parents, mut locals, mut destinations, time): Self::SystemData,
     ) {
+
+        let mut food_locals_to_reset : Vec<(Entity, Transform)> = vec![];
+
         // For each register
         for (register, register_local) in (&registers, &locals).join() {
             // Check to see if a patron is in range by looking at x value of register...
@@ -53,7 +56,7 @@ impl<'s> System<'s> for RegisterSystem {
                     // Determine if any unattached food entities of the right type exists.
 
                     // If so, attach a Parent component to it, passing the patron entity.
-                    for (food_entity, food) in (&entities, &foods).join() {
+                    for (food_entity, food, food_local) in (&entities, &foods, &locals).join() {
                         parents
                             .insert(
                                 food_entity,
@@ -65,6 +68,11 @@ impl<'s> System<'s> for RegisterSystem {
                         destinations
                             .insert(patron_entity, Destination { x: 0.0, y: 0.0 })
                             .unwrap();
+                        let mut local = Transform::default();
+                        local.prepend_translation_z(0.2);
+                        local.prepend_translation_x(8.0);
+                        local.prepend_translation_y(-8.0);
+                        food_locals_to_reset.push((food_entity, local));
                     }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
@@ -81,6 +89,11 @@ impl<'s> System<'s> for RegisterSystem {
                         .unwrap();
                 }
             }
+
+        }
+
+        for (entity, local) in food_locals_to_reset {
+            locals.insert(entity, local).unwrap();
         }
     }
 }
