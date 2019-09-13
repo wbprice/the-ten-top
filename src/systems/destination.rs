@@ -35,7 +35,7 @@ impl<'s> System<'s> for DestinationSystem {
             &entities,
             &patrons,
             &mut velocities,
-            &mut locals,
+            &locals,
             &mut destinations,
         )
             .join()
@@ -44,23 +44,21 @@ impl<'s> System<'s> for DestinationSystem {
             // Did patron arrive at their destination?
             let pos = patron_local.translation();
             let dist = get_distance_between_two_points([pos.x, pos.y], [dest.x, dest.y]);
-            let is_getting_close: bool = dist < 8.0;
-            let is_close_enough: bool = dist < 4.0;
+            let is_getting_close: bool = dist < 4.0;
+            let is_close_enough: bool = dist < 2.0;
             if (is_close_enough) {
                 // If so,
                 // - remove the destination
                 // - zero out velocity
                 // - snap the patron to the destination
-                patron_local.set_translation_xyz(dest.x, dest.y, pos.z);
                 velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
                 // If getting close, start to slow down.
                 if (is_getting_close) {
-                    let mut displacement = velocity.get_displacement() * 0.99;
+                    let mut displacement = velocity.get_displacement() * 0.90;
                     if displacement < 4.0 {
                         displacement = 4.0;
                     }
-
                     *velocity = velocity.set_displacement(displacement);
                 }
 
