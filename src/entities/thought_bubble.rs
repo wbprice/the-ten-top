@@ -18,7 +18,7 @@ pub fn init_thought_bubble(
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
-        sprite_number: 6,
+        sprite_number: 10,
     };
 
     world
