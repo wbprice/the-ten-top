@@ -7,7 +7,10 @@ use amethyst::{
     window::ScreenDimensions,
 };
 
-use crate::{components::Patron, entities::init_patron};
+use crate::{
+    components::Patron,
+    entities::{init_patron, init_register},
+};
 
 use log::info;
 
@@ -30,10 +33,11 @@ impl SimpleState for MyState {
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
+        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
+        init_register(world, sprite_sheet_handle.clone());
     }
 
     fn handle_event(
