@@ -2,20 +2,27 @@ use amethyst::{
     core::timing::Time,
     core::transform::{Parent, Transform},
     ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
+    renderer::SpriteRender,
 };
 
-use crate::components::{Food, ThoughtBubble};
+use crate::components::{Dish, Food};
 
-pub struct MoveFoodSystem;
+pub struct FoodSystem;
 
-impl<'s> System<'s> for MoveFoodSystem {
-    type SystemData = (
-        ReadStorage<'s, ThoughtBubble>,
-        WriteStorage<'s, Food>,
-        ReadStorage<'s, Parent>,
-        WriteStorage<'s, Transform>,
-        Read<'s, Time>,
-    );
+impl<'s> System<'s> for FoodSystem {
+    type SystemData = (ReadStorage<'s, Food>, WriteStorage<'s, SpriteRender>);
 
-    fn run(&mut self, (thought_bubbles, foods, parents, mut locals, time): Self::SystemData) {}
+    fn run(&mut self, (foods, mut sprites): Self::SystemData) {
+        for (food, sprite) in (&foods, &mut sprites).join() {
+            // What kind of food is this?
+            match food.dish {
+                Dish::HotDog => {
+                    sprite.sprite_number = 8;
+                }
+                _ => {
+                    sprite.sprite_number = 7;
+                }
+            }
+        }
+    }
 }

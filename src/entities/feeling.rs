@@ -6,22 +6,29 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Dish, Food};
+use crate::components::{Dish, Emotion, Feeling};
 
-pub fn init_food(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) -> Entity {
+pub fn init_feeling(
+    world: &mut World,
+    sprite_sheet_handle: Handle<SpriteSheet>,
+    parent: Entity,
+) -> Entity {
     let mut local_transform = Transform::default();
-    local_transform.prepend_translation_x(56.0);
-    local_transform.prepend_translation_y(80.0);
+    local_transform.prepend_translation_y(3.0);
+    local_transform.prepend_translation_z(0.01);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
-        sprite_number: 7,
+        sprite_number: 8,
     };
 
     world
         .create_entity()
         .with(sprite_render)
-        .with(Food { dish: Dish::HotDog })
+        .with(Feeling {
+            symbol: Emotion::Craving(Dish::Hamburger),
+        })
+        .with(Parent { entity: parent })
         .with(local_transform)
         .build()
 }

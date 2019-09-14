@@ -1,4 +1,5 @@
 mod destination;
+mod feeling;
 mod food;
 mod patron;
 mod register;
@@ -8,7 +9,7 @@ mod velocity;
 mod worker;
 
 pub use self::{
-    destination::Destination, food::Dish, food::Food, patron::Patron, register::Register,
-    simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble, velocity::Direction,
-    velocity::Velocity, worker::Worker,
+    destination::Destination, feeling::Emotion, feeling::Feeling, food::Dish, food::Food,
+    patron::Patron, register::Register, simple_animation::SimpleAnimation,
+    thought_bubble::ThoughtBubble, velocity::Direction, velocity::Velocity, worker::Worker,
 };
