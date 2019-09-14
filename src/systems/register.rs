@@ -32,8 +32,7 @@ impl<'s> System<'s> for RegisterSystem {
         &mut self,
         (entities, mut patrons, registers, foods, mut parents, mut locals, mut destinations, time): Self::SystemData,
     ) {
-
-        let mut food_locals_to_reset : Vec<(Entity, Transform)> = vec![];
+        let mut food_locals_to_reset: Vec<(Entity, Transform)> = vec![];
 
         // For each register
         for (register, register_local) in (&registers, &locals).join() {
@@ -68,6 +67,7 @@ impl<'s> System<'s> for RegisterSystem {
                         destinations
                             .insert(patron_entity, Destination { x: 0.0, y: 0.0 })
                             .unwrap();
+
                         let mut local = Transform::default();
                         local.prepend_translation_z(0.2);
                         local.prepend_translation_x(8.0);
@@ -89,7 +89,6 @@ impl<'s> System<'s> for RegisterSystem {
                         .unwrap();
                 }
             }
-
         }
 
         for (entity, local) in food_locals_to_reset {
