@@ -28,15 +28,18 @@ impl<'s> System<'s> for MoveFeelingSystem {
                             sprite.sprite_number = 8;
                         }
                         _ => {
-                            // everything else
+                            sprite.sprite_number = 13;
                         }
                     }
                 }
                 Emotion::Happy => {
-                    sprite.sprite_number = 8;
+                    sprite.sprite_number = 11;
+                },
+                Emotion::Sad => {
+                    sprite.sprite_number = 12;
                 }
                 _ => {
-                    // everything else
+                    sprite.sprite_number = 13;
                 }
             }
         }

@@ -5,13 +5,12 @@ use crate::components::Dish;
 #[derive(Debug)]
 pub enum Emotion {
     Happy,
-    Angry,
     Sad,
     Neutral,
-    Fearful,
     Craving(Dish),
 }
 
+#[derive(Debug)]
 pub struct Feeling {
     pub symbol: Emotion,
 }
