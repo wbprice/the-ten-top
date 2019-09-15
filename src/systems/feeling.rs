@@ -5,43 +5,48 @@ use amethyst::{
     renderer::SpriteRender,
 };
 
-use crate::components::{Dish, Emotion, Feeling, ThoughtBubble};
+use crate::components::{Patron, Dish, Emotion, Feeling, ThoughtBubble};
 
 pub struct MoveFeelingSystem;
 
 impl<'s> System<'s> for MoveFeelingSystem {
     type SystemData = (
         Entities<'s>,
-        ReadStorage<'s, Feeling>,
-        WriteStorage<'s, SpriteRender>,
+        ReadStorage<'s, Patron>,
+        ReadStorage<'s, Feeling>
     );
 
-    fn run(&mut self, (entities, feelings, mut sprites): Self::SystemData) {
-        for (entity, feeling, sprite) in (&entities, &feelings, &mut sprites).join() {
-            match &feeling.symbol {
-                Emotion::Craving(craving) => {
-                    match craving {
-                        Dish::HotDog => {
-                            sprite.sprite_number = 7;
-                        }
-                        Dish::Hamburger => {
-                            sprite.sprite_number = 8;
-                        }
-                        _ => {
-                            sprite.sprite_number = 13;
-                        }
-                    }
-                }
-                Emotion::Happy => {
-                    sprite.sprite_number = 11;
-                },
-                Emotion::Sad => {
-                    sprite.sprite_number = 12;
-                }
-                _ => {
-                    sprite.sprite_number = 13;
-                }
-            }
+    fn run(&mut self, (entities, patrons, feelings): Self::SystemData) {
+        for (patron_entity, patron, patron_feeling) in (&entities, &patrons, &feelings) {
+            // For each patron, spawn a thought bubble that shows what
+            // they are thinking.
+
+            // Does the thought bubble already exist?
+            // If so, don't recreate it.
+            // TODO
+
+            let mut thought_local = Transform::default();
+            thought_local.prepend_translation_y(20.0);
+
+            let thought_bubble = entities.build_entity()
+                .with(ThoughtBubble {})
+                .with(Parent {
+                    entity: patron_entity
+                })
+                .with(thought_local)
+                .build();
+
+            let mut feeling_local = Transform::default();
+            local_transform.prepend_translation_y(3.0);
+            local_transform.prepend_translation_z(0.01);
+            
+            let feeling = entities.build_entity()
+                .with(feeling)
+                .with(Parent {
+                    entity: thought_bubble
+                })
+                .with(feeling_local)
+                .build();
         }
     }
 }
