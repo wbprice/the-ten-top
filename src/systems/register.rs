@@ -4,7 +4,7 @@ use amethyst::{
     ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Destination, Food, Patron, Register};
+use crate::components::{Destination, Food, Patron, Register, Velocity};
 
 pub struct RegisterSystem;
 
@@ -25,12 +25,23 @@ impl<'s> System<'s> for RegisterSystem {
         WriteStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
+        WriteStorage<'s, Velocity>,
         Read<'s, Time>,
     );
 
     fn run(
         &mut self,
-        (entities, mut patrons, registers, foods, mut parents, mut locals, mut destinations, time): Self::SystemData,
+        (
+            entities,
+            mut patrons,
+            registers,
+            foods,
+            mut parents,
+            mut locals,
+            mut destinations,
+            mut velocities,
+            time,
+        ): Self::SystemData,
     ) {
         let mut food_locals_to_reset: Vec<(Entity, Transform)> = vec![];
 
@@ -73,6 +84,8 @@ impl<'s> System<'s> for RegisterSystem {
                         local.prepend_translation_x(8.0);
                         local.prepend_translation_y(-8.0);
                         food_locals_to_reset.push((food_entity, local));
+                        let mut velocity = velocities.get(patron_entity).unwrap();
+                        velocities.insert(patron_entity, velocity.set_displacement(15.0)).unwrap();
                     }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
