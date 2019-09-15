@@ -4,7 +4,7 @@ use amethyst::{
     ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Destination, Food, Patron, Register};
+use crate::components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity};
 
 pub struct RegisterSystem;
 
@@ -25,12 +25,25 @@ impl<'s> System<'s> for RegisterSystem {
         WriteStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
+        WriteStorage<'s, Velocity>,
+        WriteStorage<'s, Feeling>,
         Read<'s, Time>,
     );
 
     fn run(
         &mut self,
-        (entities, mut patrons, registers, foods, mut parents, mut locals, mut destinations, time): Self::SystemData,
+        (
+            entities,
+            mut patrons,
+            registers,
+            foods,
+            mut parents,
+            mut locals,
+            mut destinations,
+            mut velocities,
+            mut feelings,
+            time,
+        ): Self::SystemData,
     ) {
         let mut food_locals_to_reset: Vec<(Entity, Transform)> = vec![];
 
@@ -53,8 +66,9 @@ impl<'s> System<'s> for RegisterSystem {
                 let is_close_enough: bool = dist < 2.0;
                 if is_close_enough {
                     // Determine if any unattached food entities of the right type exists.
+                    // TODO
 
-                    // If so, attach a Parent component to it, passing the patron entity.
+                    // If so, attach the available food item to the patron and send them off.
                     for (food_entity, food, food_local) in (&entities, &foods, &locals).join() {
                         parents
                             .insert(
@@ -68,11 +82,30 @@ impl<'s> System<'s> for RegisterSystem {
                             .insert(patron_entity, Destination { x: 0.0, y: 0.0 })
                             .unwrap();
 
+                        // Arrange the food item relative to the person
                         let mut local = Transform::default();
                         local.prepend_translation_z(0.2);
                         local.prepend_translation_x(8.0);
                         local.prepend_translation_y(-8.0);
                         food_locals_to_reset.push((food_entity, local));
+
+                        // Reset the patron's walking speed
+                        let mut velocity = velocities.get(patron_entity).unwrap();
+                        velocities
+                            .insert(patron_entity, velocity.set_displacement(15.0))
+                            .unwrap();
+
+                        // Update the patron's thought to happiness
+                        // TODO: This won't work because it's tricky
+                        // to traverse down from a parent to a child entity
+                        // match feelings.get_mut(patron_entity) {
+                        //     Some(feeling) => {
+
+                        //     },
+                        //     None => {
+                        //         dbg!("no feelings");
+                        //     }
+                        // };
                     }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
