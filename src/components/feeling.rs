@@ -12,6 +12,7 @@ pub enum Emotion {
     Craving(Dish),
 }
 
+#[derive(Debug)]
 pub struct Feeling {
     pub symbol: Emotion,
 }

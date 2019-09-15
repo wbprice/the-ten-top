@@ -106,6 +106,10 @@ impl<'s> System<'s> for RegisterSystem {
                         //         dbg!("no feelings");
                         //     }
                         // };
+
+                        for (feeling_entity, feeling, parent) in (&entities, &mut feelings, &parents).join() {
+                            feeling.symbol = Emotion::Happy;
+                        }
                     }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron

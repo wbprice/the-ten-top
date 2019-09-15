@@ -33,7 +33,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
                     }
                 }
                 Emotion::Happy => {
-                    sprite.sprite_number = 8;
+                    sprite.sprite_number = 1;
                 }
                 _ => {
                     // everything else
