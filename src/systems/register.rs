@@ -1,9 +1,12 @@
 use amethyst::{
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Write, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity};
+use crate::{
+    components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity},
+    resources::GameState
+};
 
 pub struct RegisterSystem;
 
@@ -17,6 +20,7 @@ fn get_distance_between_two_points(point_a: [f32; 2], point_b: [f32; 2]) -> f32 
 
 impl<'s> System<'s> for RegisterSystem {
     type SystemData = (
+        Write<'s, GameState>,
         Entities<'s>,
         WriteStorage<'s, Patron>,
         ReadStorage<'s, Register>,
@@ -31,6 +35,7 @@ impl<'s> System<'s> for RegisterSystem {
     fn run(
         &mut self,
         (
+            game_state,
             entities,
             mut patrons,
             registers,
@@ -64,6 +69,9 @@ impl<'s> System<'s> for RegisterSystem {
                 if is_close_enough {
                     // Determine if any unattached food entities of the right type exists.
                     // TODO
+
+                    dbg!(&game_state.money);
+                    dbg!(&game_state.patron_orders);
 
                     // If so, attach the available food item to the patron and send them off.
                     for (food_entity, _, _) in (&entities, &foods, &locals).join() {
