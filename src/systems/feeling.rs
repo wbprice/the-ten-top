@@ -81,7 +81,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
                 // Does the feeling entity already exist?
                 // If so, don't recreate it.
                 let mut should_create_emotion = true;
-                for (feeling_entity, feeling, parent) in (&entities, &feelings, &parents).join() {
+                for (feeling_entity, _, parent) in (&entities, &feelings, &parents).join() {
                     if parent.entity.id() == feeling_entity.id() {
                         should_create_emotion = false;
                     }
@@ -117,82 +117,53 @@ impl<'s> System<'s> for MoveFeelingSystem {
             }
 
             let patron_feeling = feelings.get(patron_entity).unwrap();
-            if let Some(thought_bubble_entity) = match (&entities, &thought_bubbles, &parents)
+            let thought_bubble_entity = match (&entities, &thought_bubbles, &parents)
                 .join()
                 .find(|(_, _, parent)| parent.entity.id() == patron_entity.id()) {
                     Some((thought_bubble_entity, _, _)) => Some(thought_bubble_entity),
                     None => None
-                } {
+                };
 
-                    if let Some(feeling_entity) = match (&entities, &feelings, &parents, &sprites)
-                        .join()
-                        .find(|(_, _, parent, _)| parent.entity.id() == thought_bubble_entity.id()) {
-                            Some((feeling_entity, _, _, _)) => Some(feeling_entity),
-                            None => None
-                        } {
+            let feeling_entity = match (&entities, &feelings, &parents, &sprites)
+                .join()
+                .find(|(_, _, parent, _)| parent.entity.id() == thought_bubble_entity.unwrap().id()) {
+                    Some((feeling_entity, _, _, _)) => Some(feeling_entity),
+                    None => None
+                };
 
-                            let feeling = feelings.get(feeling_entity).unwrap();
-                            if feeling.symbol != patron_feeling.symbol {
-                                feelings.insert(feeling_entity, Feeling {
-                                    symbol: patron_feeling.symbol
-                                }).unwrap();
+            let feeling = feelings.get(feeling_entity.unwrap()).unwrap();
+            if feeling.symbol != patron_feeling.symbol {
+                feelings.insert(feeling_entity.unwrap(), Feeling {
+                    symbol: patron_feeling.symbol
+                }).unwrap();
+            }
+
+            for (feeling, sprite, _) in (&feelings, &mut sprites, !&patrons).join() {
+                match &feeling.symbol {
+                    Emotion::Craving(craving) => {
+                        match craving {
+                            Dish::HotDog => {
+                                sprite.sprite_number = 7;
+                            }
+                            Dish::Hamburger => {
+                                sprite.sprite_number = 8;
+                            }
+                            _ => {
+                                sprite.sprite_number = 13;
                             }
                         }
                     }
-
-
-
-            // let (feeling_entity, mut feeling, parent) = (&entities, &feelings, &parents)
-            //     .join()
-            //     .find(|(feeling_entity, _, parent)| parent.entity.id() == thought_bubble_entity.id());
-
-
-            // Update feeling symbols as needed.
-            /*
-            let patron_feeling = feelings.get(patron_entity).unwrap();
-            for (thought_bubble_entity, thought_bubble, parent) in (&entities, &thought_bubbles, &parents).join() {
-                // If the parent component points to the patron entity...
-                if parent.entity.id() == patron_entity.id() {
-                    // Get the feeling for this thought bubble
-                    for (feeling_entity, feeling, parent, sprite) in (&entities, &mut feelings, &parents, &mut sprites).join() {
-                        // If the parent component points to the thought bubble entity...
-                        if parent.entity.id() == thought_bubble_entity.id() {
-                            if feeling.symbol != patron_feeling.symbol {
-                                // feelings_to_update.push((feeling_entity, patron_feeling.symbol));
-                                feelings.insert(feeling_entity, Feeling {
-                                    symbol: patron_feeling.symbol
-                                }).unwrap();
-
-                                // match &feeling.symbol {
-                                //     Emotion::Craving(craving) => {
-                                //         match craving {
-                                //             Dish::HotDog => {
-                                //                 sprite.sprite_number = 7;
-                                //             }
-                                //             Dish::Hamburger => {
-                                //                 sprite.sprite_number = 8;
-                                //             }
-                                //             _ => {
-                                //                 sprite.sprite_number = 13;
-                                //             }
-                                //         }
-                                //     }
-                                //     Emotion::Happy => {
-                                //         sprite.sprite_number = 11;
-                                //     },
-                                //     Emotion::Sad => {
-                                //         sprite.sprite_number = 12;
-                                //     }
-                                //     _ => {
-                                //         sprite.sprite_number = 13;
-                                //     }
-                                // }
-                           }
-                        }
+                    Emotion::Happy => {
+                        sprite.sprite_number = 11;
+                    },
+                    Emotion::Sad => {
+                        sprite.sprite_number = 12;
+                    }
+                    _ => {
+                        sprite.sprite_number = 13;
                     }
                 }
             }
-            */
         }
     }
 }
