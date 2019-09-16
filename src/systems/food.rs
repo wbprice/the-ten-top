@@ -1,7 +1,5 @@
 use amethyst::{
-    core::timing::Time,
-    core::transform::{Parent, Transform},
-    ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Join, ReadStorage, System, WriteStorage},
     renderer::SpriteRender,
 };
 

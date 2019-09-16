@@ -1,7 +1,6 @@
 use amethyst::{
-    core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, Component, Read, ReadExpect, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Join, ReadExpect, ReadStorage, System, WriteStorage},
     renderer::SpriteRender,
 };
 
@@ -37,7 +36,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
             mut locals,
         ): Self::SystemData,
     ) {
-        for (patron_entity, patron) in (&entities, &patrons).join() {
+        for (patron_entity, _) in (&entities, &patrons).join() {
             // For each patron, spawn a thought bubble that shows what
             // they are thinking.
 

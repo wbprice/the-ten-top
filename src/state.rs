@@ -1,14 +1,14 @@
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
-    core::transform::{Parent, Transform},
+    core::transform::Transform,
     input::{get_key, is_close_requested, is_key_down, VirtualKeyCode},
     prelude::*,
-    renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
+    renderer::{Camera, ImageFormat, SpriteSheet, SpriteSheetFormat, Texture},
     window::ScreenDimensions,
 };
 
 use crate::{
-    components::{Food, Patron},
+    components::{Patron},
     entities::{init_food, init_patron, init_register},
     resources::SpriteResource,
 };
@@ -38,9 +38,6 @@ impl SimpleState for MyState {
             sprite_sheet: sprite_sheet_handle.clone(),
         });
 
-        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
-        // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_register(world, sprite_sheet_handle.clone());
         init_food(world, sprite_sheet_handle.clone());

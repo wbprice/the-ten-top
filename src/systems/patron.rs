@@ -24,9 +24,7 @@ impl<'s> System<'s> for MovePatronSystem {
         &mut self,
         (entities, patrons, velocities, mut locals, mut animations, mut sprites, time): Self::SystemData,
     ) {
-        let mut sprites_to_insert: Vec<(Entity, SpriteRender)> = vec![];
-
-        for (entity, patron, velocity, local) in
+        for (entity, _, velocity, local) in
             (&entities, &patrons, &velocities, &mut locals).join()
         {
             local.prepend_translation_x(velocity.x * time.delta_seconds());
@@ -55,7 +53,7 @@ impl<'s> System<'s> for MovePatronSystem {
                 match velocity.get_direction() {
                     Direction::Up => {
                         // TODO: Update with walking up sprites
-                        if (animation.start_sprite_index != 1) {
+                        if animation.start_sprite_index != 1 {
                             println!("Change to walking up");
                             animations
                                 .insert(entity, SimpleAnimation::new(1, 6, 0.1))
@@ -64,7 +62,7 @@ impl<'s> System<'s> for MovePatronSystem {
                     }
                     Direction::Down => {
                         // TODO: Update with walking down sprites
-                        if (animation.start_sprite_index != 1) {
+                        if animation.start_sprite_index != 1 {
                             println!("Change to walking down");
                             animations
                                 .insert(entity, SimpleAnimation::new(1, 6, 0.1))
@@ -73,7 +71,7 @@ impl<'s> System<'s> for MovePatronSystem {
                     }
                     Direction::Left => {
                         // TODO: Update with walking left sprites
-                        if (animation.start_sprite_index != 1) {
+                        if animation.start_sprite_index != 1 {
                             println!("Change to walking left");
                             animations
                                 .insert(entity, SimpleAnimation::new(1, 6, 0.1))
@@ -81,7 +79,7 @@ impl<'s> System<'s> for MovePatronSystem {
                         }
                     }
                     _ => {
-                        if (animation.start_sprite_index != 1) {
+                        if animation.start_sprite_index != 1 {
                             println!("Change to walking right");
                             animations
                                 .insert(entity, SimpleAnimation::new(1, 6, 0.1))

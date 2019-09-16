@@ -1,7 +1,5 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-use crate::components::Velocity;
-
 #[derive(Debug, Copy, Clone)]
 pub struct Destination {
     pub x: f32,

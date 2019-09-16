@@ -1,7 +1,6 @@
 use amethyst::{
-    core::timing::Time,
-    core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
+    core::transform::Transform,
+    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
 };
 
 use crate::components::{Destination, Patron, Velocity};
@@ -26,12 +25,12 @@ impl<'s> System<'s> for DestinationSystem {
 
     fn run(
         &mut self,
-        (entities, mut patrons, mut velocities, locals, mut destinations): Self::SystemData,
+        (entities, patrons, mut velocities, locals, mut destinations): Self::SystemData,
     ) {
         let mut velocities_to_insert: Vec<(Entity, Velocity)> = vec![];
         let mut destinations_to_remove: Vec<Entity> = vec![];
 
-        for (entity, patron, velocity, patron_local, dest) in (
+        for (entity, _, velocity, patron_local, dest) in (
             &entities,
             &patrons,
             &mut velocities,
@@ -45,7 +44,7 @@ impl<'s> System<'s> for DestinationSystem {
             let dist = get_distance_between_two_points([pos.x, pos.y], [dest.x, dest.y]);
             let is_getting_close: bool = dist < 4.0;
             let is_close_enough: bool = dist < 2.0;
-            if (is_close_enough) {
+            if is_close_enough {
                 // If so,
                 // - remove the destination
                 // - zero out velocity
@@ -53,7 +52,7 @@ impl<'s> System<'s> for DestinationSystem {
                 velocities_to_insert.push((entity, Velocity { x: 0.0, y: 0.0 }));
             } else {
                 // If getting close, start to slow down.
-                if (is_getting_close) {
+                if is_getting_close {
                     let mut displacement = velocity.get_displacement() * 0.90;
                     if displacement < 4.0 {
                         displacement = 4.0;
