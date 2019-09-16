@@ -118,35 +118,34 @@ impl<'s> System<'s> for MoveFeelingSystem {
                                     symbol: patron_feeling.symbol
                                 }).unwrap();
 
-                            }
-                        }
-
-                    for (feeling, sprite, _) in (&feelings, &mut sprites, !&patrons).join() {
-                        match &feeling.symbol {
-                            Emotion::Craving(craving) => {
-                                match craving {
-                                    Dish::HotDog => {
-                                        sprite.sprite_number = 7;
-                                    }
-                                    Dish::Hamburger => {
-                                        sprite.sprite_number = 8;
-                                    }
-                                    _ => {
-                                        sprite.sprite_number = 13;
+                                for (feeling, sprite, _) in (&feelings, &mut sprites, !&patrons).join() {
+                                    match &feeling.symbol {
+                                        Emotion::Craving(craving) => {
+                                            match craving {
+                                                Dish::HotDog => {
+                                                    sprite.sprite_number = 7;
+                                                }
+                                                Dish::Hamburger => {
+                                                    sprite.sprite_number = 8;
+                                                }
+                                                _ => {
+                                                    sprite.sprite_number = 13;
+                                                }
+                                            }
+                                        }
+                                        Emotion::Happy => {
+                                            sprite.sprite_number = 11;
+                                        },
+                                        Emotion::Sad => {
+                                            sprite.sprite_number = 12;
+                                        }
+                                        _ => {
+                                            sprite.sprite_number = 13;
+                                        }
                                     }
                                 }
                             }
-                            Emotion::Happy => {
-                                sprite.sprite_number = 11;
-                            },
-                            Emotion::Sad => {
-                                sprite.sprite_number = 12;
-                            }
-                            _ => {
-                                sprite.sprite_number = 13;
-                            }
                         }
-                    }
                 }
             }
         }
