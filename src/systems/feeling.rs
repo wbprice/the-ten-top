@@ -133,8 +133,9 @@ impl<'s> System<'s> for MoveFeelingSystem {
 
                             let feeling = feelings.get(feeling_entity).unwrap();
                             if feeling.symbol != patron_feeling.symbol {
-                                let sprite = sprites.get_mut(feeling_entity).unwrap();
-                                sprite.sprite_number = 11;
+                                feelings.insert(feeling_entity, Feeling {
+                                    symbol: patron_feeling.symbol
+                                }).unwrap();
                             }
                         }
                     }
