@@ -1,7 +1,4 @@
-use amethyst::{
-    assets::Handle,
-    renderer::SpriteSheet,
-};
+use amethyst::{assets::Handle, renderer::SpriteSheet};
 
 #[derive(Clone)]
 pub struct SpriteResource {

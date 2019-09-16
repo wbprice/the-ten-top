@@ -7,7 +7,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Feeling, Dish, Emotion, Patron, SimpleAnimation, Velocity},
+    components::{Dish, Emotion, Feeling, Patron, SimpleAnimation, Velocity},
     entities::{init_feeling, init_thought_bubble},
 };
 
@@ -25,7 +25,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, 
         .with(patron)
         .with(sprite_render)
         .with(Feeling {
-            symbol: Emotion::Craving(Dish::Hamburger)
+            symbol: Emotion::Craving(Dish::Hamburger),
         })
         .with(Velocity { x: 15.0, y: 0.0 })
         .with(SimpleAnimation::new(1, 6, 0.1))

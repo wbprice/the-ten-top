@@ -107,7 +107,9 @@ impl<'s> System<'s> for RegisterSystem {
                         //     }
                         // };
 
-                        for (feeling_entity, feeling, parent) in (&entities, &mut feelings, &parents).join() {
+                        for (feeling_entity, feeling, parent) in
+                            (&entities, &mut feelings, &parents).join()
+                        {
                             feeling.symbol = Emotion::Happy;
                         }
                     }
