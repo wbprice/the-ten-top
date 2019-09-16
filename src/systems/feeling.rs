@@ -117,28 +117,29 @@ impl<'s> System<'s> for MoveFeelingSystem {
             }
 
             let patron_feeling = feelings.get(patron_entity).unwrap();
-            let thought_bubble_entity : Option<Entity> = match (&entities, &thought_bubbles, &parents)
+            if let Some(thought_bubble_entity) = match (&entities, &thought_bubbles, &parents)
                 .join()
                 .find(|(_, _, parent)| parent.entity.id() == patron_entity.id()) {
                     Some((thought_bubble_entity, _, _)) => Some(thought_bubble_entity),
                     None => None
-                };
+                } {
 
-            let feeling_entity : Option<Entity> = match (&entities, &feelings, &parents, &sprites)
-                .join()
-                .find(|(feeling_entity, feeling, parent, sprite)| parent.entity.id() == thought_bubble_entity.unwrap().id()) {
-                    Some((feeling_entity, _, _, _)) => Some(feeling_entity),
-                    None => None
-                };
+                    if let Some(feeling_entity) = match (&entities, &feelings, &parents, &sprites)
+                        .join()
+                        .find(|(_, _, parent, _)| parent.entity.id() == thought_bubble_entity.id()) {
+                            Some((feeling_entity, _, _, _)) => Some(feeling_entity),
+                            None => None
+                        } {
 
-            let feeling = feelings.get(feeling_entity.unwrap()).unwrap();
-            dbg!(feeling);
-            dbg!(patron_feeling);
+                            let feeling = feelings.get(feeling_entity).unwrap();
+                            if feeling.symbol != patron_feeling.symbol {
+                                let sprite = sprites.get_mut(feeling_entity).unwrap();
+                                sprite.sprite_number = 11;
+                            }
+                        }
+                    }
 
-            if feeling.symbol != patron_feeling.symbol {
-                let sprite = sprites.get_mut(feeling_entity.unwrap()).unwrap();
-                sprite.sprite_number = 11;
-            }
+
 
             // let (feeling_entity, mut feeling, parent) = (&entities, &feelings, &parents)
             //     .join()
