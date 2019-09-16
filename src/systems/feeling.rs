@@ -117,19 +117,20 @@ impl<'s> System<'s> for MoveFeelingSystem {
             }
 
 
-            let mut feelings_to_update : Vec<(Entity, Emotion)> = vec![];
-
             // Update feeling symbols as needed.
             let patron_feeling = feelings.get(patron_entity).unwrap();
             for (thought_bubble_entity, thought_bubble, parent) in (&entities, &thought_bubbles, &parents).join() {
                 // If the parent component points to the patron entity...
                 if parent.entity.id() == patron_entity.id() {
                     // Get the feeling for this thought bubble
-                    for (feeling_entity, feeling, parent, sprite) in (&entities, &feelings, &parents, &mut sprites).join() {
+                    for (feeling_entity, feeling, parent, sprite) in (&entities, &mut feelings, &parents, &mut sprites).join() {
                         // If the parent component points to the thought bubble entity...
                         if parent.entity.id() == thought_bubble_entity.id() {
                             if feeling.symbol != patron_feeling.symbol {
-                                feelings_to_update.push((feeling_entity, patron_feeling.symbol));
+                                // feelings_to_update.push((feeling_entity, patron_feeling.symbol));
+                                feelings.insert(feeling_entity, Feeling {
+                                    symbol: patron_feeling.symbol
+                                }).unwrap();
 
                                 // match &feeling.symbol {
                                 //     Emotion::Craving(craving) => {
@@ -161,8 +162,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
                 }
             }
 
-            for (entity, feeling) in feelings_to_update {
-                
+            for (feeling_entity, feeling, sprite) in (&entities, &feelings, &sprites).join() {
             }
         }
     }
