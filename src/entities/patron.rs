@@ -8,7 +8,6 @@ use amethyst::{
 
 use crate::{
     components::{Dish, Emotion, Feeling, Patron, SimpleAnimation, Velocity},
-    entities::{init_feeling, init_thought_bubble},
 };
 
 pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, patron: Patron) {
@@ -20,7 +19,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, 
         sprite_number: 0,
     };
 
-    let patron = world
+    world
         .create_entity()
         .with(patron)
         .with(sprite_render)
@@ -31,7 +30,4 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, 
         .with(SimpleAnimation::new(1, 6, 0.1))
         .with(local_transform)
         .build();
-
-    // let thought_bubble = init_thought_bubble(world, sprite_sheet_handle.clone(), patron);
-    // init_feeling(world, sprite_sheet_handle.clone(), thought_bubble);
 }

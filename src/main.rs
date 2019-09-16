@@ -16,7 +16,6 @@ mod state;
 mod systems;
 
 use crate::{
-    components::{Feeling, Patron, Worker},
     systems::{
         DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem,
         MoveThoughtBubbleSystem, RegisterSystem, SimpleAnimationSystem,

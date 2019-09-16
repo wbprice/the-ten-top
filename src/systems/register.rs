@@ -1,7 +1,6 @@
 use amethyst::{
-    core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
 };
 
 use crate::components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity};
@@ -27,7 +26,6 @@ impl<'s> System<'s> for RegisterSystem {
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Velocity>,
         WriteStorage<'s, Feeling>,
-        Read<'s, Time>,
     );
 
     fn run(
@@ -42,19 +40,18 @@ impl<'s> System<'s> for RegisterSystem {
             mut destinations,
             mut velocities,
             mut feelings,
-            time,
         ): Self::SystemData,
     ) {
         let mut food_locals_to_reset: Vec<(Entity, Transform)> = vec![];
 
         // For each register
-        for (register, register_local) in (&registers, &locals).join() {
+        for (_, register_local) in (&registers, &locals).join() {
             // Check to see if a patron is in range by looking at x value of register...
             let register_translation = register_local.translation();
             let register_x = register_translation.x;
             let register_y = register_translation.y;
 
-            for (patron_entity, patron, patron_local) in (&*entities, &mut patrons, &locals).join()
+            for (patron_entity, _, patron_local) in (&*entities, &mut patrons, &locals).join()
             {
                 // and comparing it to the x of each patron
                 let patron_translation = patron_local.translation();
@@ -69,7 +66,7 @@ impl<'s> System<'s> for RegisterSystem {
                     // TODO
 
                     // If so, attach the available food item to the patron and send them off.
-                    for (food_entity, food, food_local) in (&entities, &foods, &locals).join() {
+                    for (food_entity, _, _) in (&entities, &foods, &locals).join() {
                         parents
                             .insert(
                                 food_entity,
@@ -90,7 +87,7 @@ impl<'s> System<'s> for RegisterSystem {
                         food_locals_to_reset.push((food_entity, local));
 
                         // Reset the patron's walking speed
-                        let mut velocity = velocities.get(patron_entity).unwrap();
+                        let velocity = velocities.get(patron_entity).unwrap();
                         velocities
                             .insert(patron_entity, velocity.set_displacement(15.0))
                             .unwrap();
@@ -99,7 +96,6 @@ impl<'s> System<'s> for RegisterSystem {
                         match feelings.get_mut(patron_entity) {
                             Some(feeling) => {
                                 feeling.symbol = Emotion::Happy;
-                                dbg!("should update");
                             },
                             None => {
                                 dbg!("no feelings");
