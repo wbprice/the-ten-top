@@ -111,10 +111,54 @@ impl<'s> System<'s> for MoveFeelingSystem {
                         )
                         .with(feeling_local, &mut locals)
                         .build();
+
+                    break;
                 }
             }
 
             // Update feeling symbols as needed.
+            let patron_feeling = feelings.get(patron_entity).unwrap();
+            for (thought_bubble_entity, thought_bubble, parent) in (&entities, &thought_bubbles, &parents).join() {
+                // If the parent component points to the patron entity...
+                if parent.entity.id() == patron_entity.id() {
+                    // Get the feeling for this thought bubble
+                    for (feeling_entity, feeling, parent, sprite) in (&entities, &mut feelings, &parents, &mut sprites).join() {
+                        // If the parent component points to the thought bubble entity...
+                        if parent.entity.id() == thought_bubble_entity.id() {
+                            
+                            if feeling.symbol != patron_feeling.symbol {
+                                dbg!("should update!");
+                                feeling.symbol = patron_feeling.symbol;
+                                 
+                                match feeling.symbol {
+                                    Emotion::Craving(craving) => {
+                                        match craving {
+                                            Dish::HotDog => {
+                                                sprite.sprite_number = 7;
+                                            }
+                                            Dish::Hamburger => {
+                                                sprite.sprite_number = 8;
+                                            }
+                                            _ => {
+                                                sprite.sprite_number = 13;
+                                            }
+                                        }
+                                    }
+                                    Emotion::Happy => {
+                                        sprite.sprite_number = 11;
+                                    },
+                                    Emotion::Sad => {
+                                        sprite.sprite_number = 12;
+                                    }
+                                    _ => {
+                                        sprite.sprite_number = 13;
+                                    }
+                                }
+                           } 
+                        }
+                    }    
+                }
+            }
         }
     }
 }

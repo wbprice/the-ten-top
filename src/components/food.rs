@@ -1,6 +1,6 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Dish {
     Hamburger,
     HotDog,

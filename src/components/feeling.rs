@@ -2,7 +2,7 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 use crate::components::Dish;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Emotion {
     Happy,
     Sad,
