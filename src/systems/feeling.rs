@@ -1,7 +1,7 @@
 use amethyst::{
     core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Join, Read, ReadExpect, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Component, Read, ReadExpect, ReadStorage, System, WriteStorage},
     renderer::SpriteRender,
 };
 
@@ -116,8 +116,37 @@ impl<'s> System<'s> for MoveFeelingSystem {
                 }
             }
 
+            let patron_feeling = feelings.get(patron_entity).unwrap();
+            let thought_bubble_entity : Option<Entity> = match (&entities, &thought_bubbles, &parents)
+                .join()
+                .find(|(_, _, parent)| parent.entity.id() == patron_entity.id()) {
+                    Some((thought_bubble_entity, _, _)) => Some(thought_bubble_entity),
+                    None => None
+                };
+
+            let feeling_entity : Option<Entity> = match (&entities, &feelings, &parents, &sprites)
+                .join()
+                .find(|(feeling_entity, feeling, parent, sprite)| parent.entity.id() == thought_bubble_entity.unwrap().id()) {
+                    Some((feeling_entity, _, _, _)) => Some(feeling_entity),
+                    None => None
+                };
+
+            let feeling = feelings.get(feeling_entity.unwrap()).unwrap();
+            dbg!(feeling);
+            dbg!(patron_feeling);
+
+            if feeling.symbol != patron_feeling.symbol {
+                let sprite = sprites.get_mut(feeling_entity.unwrap()).unwrap();
+                sprite.sprite_number = 11;
+            }
+
+            // let (feeling_entity, mut feeling, parent) = (&entities, &feelings, &parents)
+            //     .join()
+            //     .find(|(feeling_entity, _, parent)| parent.entity.id() == thought_bubble_entity.id());
+
 
             // Update feeling symbols as needed.
+            /*
             let patron_feeling = feelings.get(patron_entity).unwrap();
             for (thought_bubble_entity, thought_bubble, parent) in (&entities, &thought_bubbles, &parents).join() {
                 // If the parent component points to the patron entity...
@@ -156,14 +185,12 @@ impl<'s> System<'s> for MoveFeelingSystem {
                                 //         sprite.sprite_number = 13;
                                 //     }
                                 // }
-                           } 
+                           }
                         }
-                    }    
+                    }
                 }
             }
-
-            for (feeling_entity, feeling, sprite) in (&entities, &feelings, &sprites).join() {
-            }
+            */
         }
     }
 }
