@@ -10,6 +10,7 @@ use amethyst::{
 use crate::{
     components::{Food, Patron},
     entities::{init_food, init_patron, init_register},
+    resources::SpriteResource,
 };
 
 use log::info;
@@ -32,6 +33,10 @@ impl SimpleState for MyState {
         init_camera(world, &dimensions);
 
         let sprite_sheet_handle = load_sprite_sheet(world);
+        // Register sprite sheet handle with the world
+        world.add_resource(SpriteResource {
+            sprite_sheet: sprite_sheet_handle.clone(),
+        });
 
         // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         // init_patron(world, sprite_sheet_handle.clone(), Patron::generate());

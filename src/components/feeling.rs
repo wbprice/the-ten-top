@@ -2,7 +2,7 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 use crate::components::Dish;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Emotion {
     Happy,
     Sad,
@@ -10,7 +10,7 @@ pub enum Emotion {
     Craving(Dish),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Feeling {
     pub symbol: Emotion,
 }

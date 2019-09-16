@@ -96,20 +96,15 @@ impl<'s> System<'s> for RegisterSystem {
                             .unwrap();
 
                         // Update the patron's thought to happiness
-                        // TODO: This won't work because it's tricky
-                        // to traverse down from a parent to a child entity
-                        // match feelings.get_mut(patron_entity) {
-                        //     Some(feeling) => {
-
-                        //     },
-                        //     None => {
-                        //         dbg!("no feelings");
-                        //     }
-                        // };
-
-                        for (feeling_entity, feeling, parent) in (&entities, &mut feelings, &parents).join() {
-                            feeling.symbol = Emotion::Happy;
-                        }
+                        match feelings.get_mut(patron_entity) {
+                            Some(feeling) => {
+                                feeling.symbol = Emotion::Happy;
+                                dbg!("should update");
+                            },
+                            None => {
+                                dbg!("no feelings");
+                            }
+                        };
                     }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
