@@ -7,7 +7,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Feeling, Emotion, Patron, SimpleAnimation, Velocity},
+    components::{Feeling, Dish, Emotion, Patron, SimpleAnimation, Velocity},
     entities::{init_feeling, init_thought_bubble},
 };
 

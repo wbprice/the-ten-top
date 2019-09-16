@@ -13,6 +13,7 @@ mod components;
 mod entities;
 mod state;
 mod systems;
+mod resources;
 
 use crate::{
     components::{Feeling, Patron, Worker},
