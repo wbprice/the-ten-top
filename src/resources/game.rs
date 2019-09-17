@@ -1,14 +1,16 @@
-use crate::{components::Dish, resources::PatronOrder};
+use crate::{components::Dish, resources::Task};
 use amethyst::ecs::Entity;
 
 #[derive(Debug, Default)]
 pub struct GameState {
-    pub patron_orders: Vec<PatronOrder>,
+    pub tasks: Vec<Task>,
     pub money: i32,
 }
 
 impl GameState {
-    pub fn make_order(&mut self, patron: Entity, dish: Dish) {
-        self.patron_orders.push(PatronOrder { patron, dish });
+    pub fn schedule_take_order(&mut self, patron: Entity) {
+        self.tasks.push(Task::TakeOrder {
+            patron
+        });
     }
 }

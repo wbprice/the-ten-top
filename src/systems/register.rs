@@ -72,6 +72,8 @@ impl<'s> System<'s> for RegisterSystem {
                     dbg!(&game_state.money);
                     dbg!(&game_state.patron_orders);
 
+
+
                     // If so, attach the available food item to the patron and send them off.
                     for (food_entity, _, _) in (&entities, &foods, &locals).join() {
                         parents

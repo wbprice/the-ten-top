@@ -3,7 +3,7 @@
 ## Tasks
 
 Tasks (and completing them) is a big part of The Ten Top. Most tasks have some kind of
-prerequisite tasks that must be completed first.  Completing some tasks leads to the 
+prerequisite tasks that must be completed first.  Completing some tasks leads to the
 creation of other tasks. Scheduling these tasks is the key to victory.
 
 ### Task Scheduling
@@ -63,10 +63,10 @@ FetchIngredient {
 }
 ```
 
-Ingredients shouldn't have to be prepped each time. 
-After being fetched and prepped, some number of prepped ingredients should be 
+Ingredients shouldn't have to be prepped each time.
+After being fetched and prepped, some number of prepped ingredients should be
 available for use by the cook.
-e.g. After scheduling `FetchIngedient` to get a head of lettuce, `PrepIngredient` 
+e.g. After scheduling `FetchIngedient` to get a head of lettuce, `PrepIngredient`
 would slice the lettuce into chunks.
 Completing these tasks leads to entities representing prepped food being available.
 
