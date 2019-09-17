@@ -1,11 +1,11 @@
 use amethyst::{
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, Write, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, Write, WriteStorage},
 };
 
 use crate::{
     components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity},
-    resources::GameState
+    resources::GameState,
 };
 
 pub struct RegisterSystem;
@@ -56,8 +56,7 @@ impl<'s> System<'s> for RegisterSystem {
             let register_x = register_translation.x;
             let register_y = register_translation.y;
 
-            for (patron_entity, _, patron_local) in (&*entities, &mut patrons, &locals).join()
-            {
+            for (patron_entity, _, patron_local) in (&*entities, &mut patrons, &locals).join() {
                 // and comparing it to the x of each patron
                 let patron_translation = patron_local.translation();
                 let patron_x = patron_translation.x;
@@ -104,7 +103,7 @@ impl<'s> System<'s> for RegisterSystem {
                         match feelings.get_mut(patron_entity) {
                             Some(feeling) => {
                                 feeling.symbol = Emotion::Happy;
-                            },
+                            }
                             None => {
                                 dbg!("no feelings");
                             }

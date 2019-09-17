@@ -1,9 +1,5 @@
-mod sprite;
-mod patron_order;
 mod game;
+mod patron_order;
+mod sprite;
 
-pub use self::{
-    sprite::SpriteResource,
-    patron_order::PatronOrder,
-    game::GameState
-};
+pub use self::{game::GameState, patron_order::PatronOrder, sprite::SpriteResource};

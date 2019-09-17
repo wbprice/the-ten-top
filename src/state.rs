@@ -8,12 +8,9 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Patron},
+    components::Patron,
     entities::{init_food, init_patron, init_register},
-    resources::{
-        SpriteResource,
-        GameState
-    }
+    resources::{GameState, SpriteResource},
 };
 
 use log::info;

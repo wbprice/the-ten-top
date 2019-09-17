@@ -45,10 +45,11 @@ impl<'s> System<'s> for MoveFeelingSystem {
             let patron_feeling = feelings.get(patron_entity).unwrap();
             let thought_bubble_entity = match (&entities, &thought_bubbles, &parents)
                 .join()
-                .find(|(_, _, parent)| parent.entity.id() == patron_entity.id()) {
-                    Some((thought_bubble_entity, _, _)) => Some(thought_bubble_entity),
-                    None => None
-                };
+                .find(|(_, _, parent)| parent.entity.id() == patron_entity.id())
+            {
+                Some((thought_bubble_entity, _, _)) => Some(thought_bubble_entity),
+                None => None,
+            };
 
             match thought_bubble_entity {
                 None => {
@@ -74,77 +75,81 @@ impl<'s> System<'s> for MoveFeelingSystem {
                         .with(thought_local, &mut locals)
                         .build();
 
-                        let patron_feeling = feelings.get(patron_entity).unwrap();
-                        let mut feeling_local = Transform::default();
-                        feeling_local.prepend_translation_y(3.0);
-                        feeling_local.prepend_translation_z(0.01);
+                    let patron_feeling = feelings.get(patron_entity).unwrap();
+                    let mut feeling_local = Transform::default();
+                    feeling_local.prepend_translation_y(3.0);
+                    feeling_local.prepend_translation_z(0.01);
 
-                        entities
-                            .build_entity()
-                            .with(
-                                Feeling {
-                                    symbol: patron_feeling.symbol,
-                                },
-                                &mut feelings,
-                            )
-                            .with(
-                                SpriteRender {
-                                    sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                                    sprite_number: 8,
-                                },
-                                &mut sprites,
-                            )
-                            .with(
-                                Parent {
-                                    entity: thought_bubble,
-                                },
-                                &mut parents,
-                            )
-                            .with(feeling_local, &mut locals)
-                            .build();
+                    entities
+                        .build_entity()
+                        .with(
+                            Feeling {
+                                symbol: patron_feeling.symbol,
+                            },
+                            &mut feelings,
+                        )
+                        .with(
+                            SpriteRender {
+                                sprite_sheet: sprite_resource.sprite_sheet.clone(),
+                                sprite_number: 8,
+                            },
+                            &mut sprites,
+                        )
+                        .with(
+                            Parent {
+                                entity: thought_bubble,
+                            },
+                            &mut parents,
+                        )
+                        .with(feeling_local, &mut locals)
+                        .build();
                 }
                 Some(thought_bubble_entity) => {
-
                     if let Some(feeling_entity) = match (&entities, &feelings, &parents, &sprites)
                         .join()
-                        .find(|(_, _, parent, _)| parent.entity.id() == thought_bubble_entity.id()) {
-                            Some((feeling_entity, _, _, _)) => Some(feeling_entity),
-                            None => None
-                        } {
-                            let feeling = feelings.get(feeling_entity).unwrap();
-                            if feeling.symbol != patron_feeling.symbol {
-                                feelings.insert(feeling_entity, Feeling {
-                                    symbol: patron_feeling.symbol
-                                }).unwrap();
+                        .find(|(_, _, parent, _)| parent.entity.id() == thought_bubble_entity.id())
+                    {
+                        Some((feeling_entity, _, _, _)) => Some(feeling_entity),
+                        None => None,
+                    } {
+                        let feeling = feelings.get(feeling_entity).unwrap();
+                        if feeling.symbol != patron_feeling.symbol {
+                            feelings
+                                .insert(
+                                    feeling_entity,
+                                    Feeling {
+                                        symbol: patron_feeling.symbol,
+                                    },
+                                )
+                                .unwrap();
 
-                                for (feeling, sprite, _) in (&feelings, &mut sprites, !&patrons).join() {
-                                    match &feeling.symbol {
-                                        Emotion::Craving(craving) => {
-                                            match craving {
-                                                Dish::HotDog => {
-                                                    sprite.sprite_number = 7;
-                                                }
-                                                Dish::Hamburger => {
-                                                    sprite.sprite_number = 8;
-                                                }
-                                                _ => {
-                                                    sprite.sprite_number = 13;
-                                                }
-                                            }
+                            for (feeling, sprite, _) in (&feelings, &mut sprites, !&patrons).join()
+                            {
+                                match &feeling.symbol {
+                                    Emotion::Craving(craving) => match craving {
+                                        Dish::HotDog => {
+                                            sprite.sprite_number = 7;
                                         }
-                                        Emotion::Happy => {
-                                            sprite.sprite_number = 11;
-                                        },
-                                        Emotion::Sad => {
-                                            sprite.sprite_number = 12;
+                                        Dish::Hamburger => {
+                                            sprite.sprite_number = 8;
                                         }
                                         _ => {
                                             sprite.sprite_number = 13;
                                         }
+                                    },
+                                    Emotion::Happy => {
+                                        sprite.sprite_number = 11;
+                                    }
+                                    Emotion::Sad => {
+                                        sprite.sprite_number = 12;
+                                    }
+                                    _ => {
+                                        sprite.sprite_number = 13;
                                     }
                                 }
                             }
                         }
+                    }
                 }
             }
         }

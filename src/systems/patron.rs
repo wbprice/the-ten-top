@@ -24,9 +24,7 @@ impl<'s> System<'s> for MovePatronSystem {
         &mut self,
         (entities, patrons, velocities, mut locals, mut animations, mut sprites, time): Self::SystemData,
     ) {
-        for (entity, _, velocity, local) in
-            (&entities, &patrons, &velocities, &mut locals).join()
-        {
+        for (entity, _, velocity, local) in (&entities, &patrons, &velocities, &mut locals).join() {
             local.prepend_translation_x(velocity.x * time.delta_seconds());
             local.prepend_translation_y(velocity.y * time.delta_seconds());
 

@@ -15,11 +15,9 @@ mod resources;
 mod state;
 mod systems;
 
-use crate::{
-    systems::{
-        DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem,
-        MoveThoughtBubbleSystem, RegisterSystem, SimpleAnimationSystem,
-    },
+use crate::systems::{
+    DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem, MoveThoughtBubbleSystem,
+    RegisterSystem, SimpleAnimationSystem,
 };
 
 fn main() -> amethyst::Result<()> {
