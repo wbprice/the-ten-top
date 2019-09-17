@@ -35,7 +35,7 @@ impl<'s> System<'s> for RegisterSystem {
     fn run(
         &mut self,
         (
-            game_state,
+            mut game,
             entities,
             mut patrons,
             registers,
@@ -66,51 +66,10 @@ impl<'s> System<'s> for RegisterSystem {
                     get_distance_between_two_points([register_x, register_y], [patron_x, patron_y]);
                 let is_close_enough: bool = dist < 2.0;
                 if is_close_enough {
-                    // Determine if any unattached food entities of the right type exists.
-                    // TODO
+                    // Create a task to take an order.
+                    game.schedule_take_order(patron_entity);
+                    dbg!(&game.tasks);
 
-                    dbg!(&game_state.money);
-                    dbg!(&game_state.patron_orders);
-
-
-
-                    // If so, attach the available food item to the patron and send them off.
-                    for (food_entity, _, _) in (&entities, &foods, &locals).join() {
-                        parents
-                            .insert(
-                                food_entity,
-                                Parent {
-                                    entity: patron_entity,
-                                },
-                            )
-                            .unwrap();
-                        destinations
-                            .insert(patron_entity, Destination { x: 0.0, y: 0.0 })
-                            .unwrap();
-
-                        // Arrange the food item relative to the person
-                        let mut local = Transform::default();
-                        local.prepend_translation_z(0.2);
-                        local.prepend_translation_x(8.0);
-                        local.prepend_translation_y(-8.0);
-                        food_locals_to_reset.push((food_entity, local));
-
-                        // Reset the patron's walking speed
-                        let velocity = velocities.get(patron_entity).unwrap();
-                        velocities
-                            .insert(patron_entity, velocity.set_displacement(15.0))
-                            .unwrap();
-
-                        // Update the patron's thought to happiness
-                        match feelings.get_mut(patron_entity) {
-                            Some(feeling) => {
-                                feeling.symbol = Emotion::Happy;
-                            }
-                            None => {
-                                dbg!("no feelings");
-                            }
-                        };
-                    }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
                     // Updating the Patron's destination will cause it to walk
