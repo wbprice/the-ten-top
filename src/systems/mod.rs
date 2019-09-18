@@ -11,5 +11,5 @@ mod assignment;
 pub use self::{
     destination::DestinationSystem, feeling::MoveFeelingSystem, food::FoodSystem,
     patron::MovePatronSystem, register::RegisterSystem, simple_animation::SimpleAnimationSystem,
-    thought_bubble::MoveThoughtBubbleSystem, worker::WorkerSystem, assignment::AssignmentSystem;
+    thought_bubble::MoveThoughtBubbleSystem, worker::WorkerSystem, assignment::AssignmentSystem
 };

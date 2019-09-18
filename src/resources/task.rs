@@ -7,7 +7,7 @@ use crate::components::{
     Ingredient
 };
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum Task {
     TakeOrder {
         patron: Entity

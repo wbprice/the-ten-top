@@ -61,7 +61,7 @@ fn main() -> amethyst::Result<()> {
             &["register_system"],
         )
         .with(FoodSystem, "food_system", &["destination_system"])
-        .with(WorkerSystem, "worker_system", &["food_system"]);
+        .with(WorkerSystem, "worker_system", &["food_system"])
         .with(AssignmentSystem, "assignment_system", &["worker_system"]);
 
     let mut game = Application::new(resources, state::MyState, game_data)?;
