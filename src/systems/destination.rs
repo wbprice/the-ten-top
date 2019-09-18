@@ -3,7 +3,7 @@ use amethyst::{
     ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Destination, Patron, Worker, Velocity};
+use crate::components::{Destination, Patron, Velocity, Worker};
 
 pub struct DestinationSystem;
 
@@ -22,20 +22,12 @@ impl<'s> System<'s> for DestinationSystem {
         WriteStorage<'s, Destination>,
     );
 
-    fn run(
-        &mut self,
-        (entities, mut velocities, locals, mut destinations): Self::SystemData,
-    ) {
+    fn run(&mut self, (entities, mut velocities, locals, mut destinations): Self::SystemData) {
         let mut velocities_to_insert: Vec<(Entity, Velocity)> = vec![];
         let mut destinations_to_remove: Vec<Entity> = vec![];
 
-        for (entity, velocity, local, dest) in (
-            &entities,
-            &mut velocities,
-            &locals,
-            &mut destinations,
-        )
-            .join()
+        for (entity, velocity, local, dest) in
+            (&entities, &mut velocities, &locals, &mut destinations).join()
         {
             dbg!(entity.clone());
             // Did entity arrive at their destination?

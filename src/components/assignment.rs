@@ -3,7 +3,7 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use crate::resources::Task;
 
 pub struct Assignment {
-    pub task: Task
+    pub task: Task,
 }
 
 impl Component for Assignment {

@@ -20,7 +20,7 @@ pub enum Ingredient {
     Lettuce,
     Tomato,
     HotDogBun,
-    HotDog
+    HotDog,
 }
 
 #[derive(Debug)]

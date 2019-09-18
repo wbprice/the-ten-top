@@ -9,8 +9,6 @@ pub struct GameState {
 
 impl GameState {
     pub fn schedule_take_order(&mut self, patron: Entity) {
-        self.tasks.push(Task::TakeOrder {
-            patron
-        });
+        self.tasks.push(Task::TakeOrder { patron });
     }
 }

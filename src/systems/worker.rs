@@ -1,17 +1,11 @@
 use amethyst::{
     core::timing::Time,
     core::transform::Transform,
-    ecs::prelude::{Entities, Entity, Join, Read, Write, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, Write, WriteStorage},
     renderer::SpriteRender,
 };
 
-use crate::{
-    components::{
-        Worker,
-        Velocity,
-        SimpleAnimation
-    }
-};
+use crate::components::{SimpleAnimation, Velocity, Worker};
 
 pub struct WorkerSystem;
 
@@ -23,10 +17,13 @@ impl<'s> System<'s> for WorkerSystem {
         WriteStorage<'s, Transform>,
         WriteStorage<'s, SimpleAnimation>,
         WriteStorage<'s, SpriteRender>,
-        Read<'s, Time>
+        Read<'s, Time>,
     );
 
-    fn run(&mut self, (entities, workers, velocities, mut locals, mut animations, mut sprites, time): Self::SystemData) {
+    fn run(
+        &mut self,
+        (entities, workers, velocities, mut locals, mut animations, mut sprites, time): Self::SystemData,
+    ) {
         for (entity, _, velocity, local) in (&entities, &workers, &velocities, &mut locals).join() {
             local.prepend_translation_x(velocity.x * time.delta_seconds());
             local.prepend_translation_y(velocity.y * time.delta_seconds());
