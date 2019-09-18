@@ -23,8 +23,8 @@ pub fn init_worker(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
         .with(sprite_render)
         .with(local_transform)
         .with(Velocity {
-            x: 0,
-            y: 0
+            x: 0.0,
+            y: 0.0
         })
         .build();
 }

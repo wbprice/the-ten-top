@@ -10,7 +10,8 @@ use crate::{
         Worker,
         Assignment,
         Patron,
-        Destination
+        Destination,
+        Velocity
     },
     resources::{
         GameState,
@@ -28,10 +29,11 @@ impl<'s> System<'s> for AssignmentSystem {
         ReadStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Assignment>,
+        WriteStorage<'s, Velocity>,
         Write<'s, GameState>
     );
 
-    fn run(&mut self, (entities, workers, patrons, locals, mut destinations, mut assignments, mut game_state): Self::SystemData) {
+    fn run(&mut self, (entities, workers, patrons, locals, mut destinations, mut assignments, mut velocities, mut game_state): Self::SystemData) {
         // If a new task needs to be performed
         if let Some(task) = game_state.tasks.pop() {
             // Find an idle worker and assign them the task.
@@ -54,6 +56,14 @@ impl<'s> System<'s> for AssignmentSystem {
                                 Destination {
                                     x: patron_translation.x,
                                     y: patron_translation.y + 48.0
+                                }
+                            ).unwrap();
+
+                            velocities.insert(
+                                worker_entity,
+                                Velocity {
+                                    x: 15.0,
+                                    y: 0.0
                                 }
                             ).unwrap();
                         },
