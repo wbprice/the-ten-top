@@ -17,8 +17,6 @@ fn get_distance_between_two_points(point_a: [f32; 2], point_b: [f32; 2]) -> f32 
 impl<'s> System<'s> for DestinationSystem {
     type SystemData = (
         Entities<'s>,
-        ReadStorage<'s, Patron>,
-        ReadStorage<'s, Worker>,
         WriteStorage<'s, Velocity>,
         ReadStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
@@ -26,21 +24,21 @@ impl<'s> System<'s> for DestinationSystem {
 
     fn run(
         &mut self,
-        (entities, patrons, workers, mut velocities, locals, mut destinations): Self::SystemData,
+        (entities, mut velocities, locals, mut destinations): Self::SystemData,
     ) {
         let mut velocities_to_insert: Vec<(Entity, Velocity)> = vec![];
         let mut destinations_to_remove: Vec<Entity> = vec![];
 
-        for (entity, _, velocity, local, dest) in (
+        for (entity, velocity, local, dest) in (
             &entities,
-            &patrons,
             &mut velocities,
             &locals,
             &mut destinations,
         )
             .join()
         {
-            // Did person arrive at their destination?
+            dbg!(entity.clone());
+            // Did entity arrive at their destination?
             let pos = local.translation();
             let dist = get_distance_between_two_points([pos.x, pos.y], [dest.x, dest.y]);
             let is_getting_close: bool = dist < 4.0;
@@ -61,7 +59,7 @@ impl<'s> System<'s> for DestinationSystem {
                     *velocity = velocity.set_displacement(displacement);
                 }
 
-                // If not, change velocity so the person is heading the right direction
+                // If not, change velocity so the entity is heading the right direction
                 velocities_to_insert.push((
                     entity,
                     velocity.turn(

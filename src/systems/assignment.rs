@@ -40,8 +40,6 @@ impl<'s> System<'s> for AssignmentSystem {
                     // Note that worker is busy with this task
                     assignments.insert(worker_entity, Assignment { task: task.clone() }).unwrap();
 
-                    dbg!("assigned a task");
-
                     // Perform one-time updates to state to get the workers working.
                     match &task {
                         Task::TakeOrder { patron } => {
@@ -58,8 +56,6 @@ impl<'s> System<'s> for AssignmentSystem {
                                     y: patron_translation.y + 48.0
                                 }
                             ).unwrap();
-
-                            dbg!("new destination!");
                         },
                         _ => {}
                     }
