@@ -8,10 +8,8 @@ use amethyst::{
 use crate::{
     components::{
         Worker,
-        Assignment
-    },
-    resources::{
-        Task
+        Velocity,
+        SimpleAnimation
     }
 };
 
@@ -21,9 +19,17 @@ impl<'s> System<'s> for WorkerSystem {
     type SystemData = (
         Entities<'s>,
         ReadStorage<'s, Worker>,
-        ReadStorage<'s, Assignment>
+        ReadStorage<'s, Velocity>,
+        WriteStorage<'s, Transform>,
+        WriteStorage<'s, SimpleAnimation>,
+        WriteStorage<'s, SpriteRender>,
+        Read<'s, Time>
     );
 
-    fn run(&mut self, (entities, workers, assignments): Self::SystemData) {
+    fn run(&mut self, (entities, workers, velocities, mut locals, mut animations, mut sprites, time): Self::SystemData) {
+        for (entity, _, velocity, local) in (&entities, &workers, &velocities, &mut locals).join() {
+            local.prepend_translation_x(velocity.x * time.delta_seconds());
+            local.prepend_translation_y(velocity.y * time.delta_seconds());
+        }
     }
 }

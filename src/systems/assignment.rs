@@ -50,12 +50,12 @@ impl<'s> System<'s> for AssignmentSystem {
                             let patron_translation = patron_local.translation();
 
                             // Add a destination component to the worker.
-                            // about two cells above the patron.
+                            // about one cell above the patron.
                             destinations.insert(
                                 worker_entity,
                                 Destination {
                                     x: patron_translation.x,
-                                    y: patron_translation.y + 48.0
+                                    y: patron_translation.y + 24.0
                                 }
                             ).unwrap();
 
