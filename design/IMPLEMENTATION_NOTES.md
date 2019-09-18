@@ -99,3 +99,33 @@ PlateOrder {
 
 After a hamburger exists, the `DeliverFood` task can be completed by getting the hamburger entity to the patron entity.
 
+#### Subtasks
+
+Tasks can be further broken down into subtasks. For example:
+
+```
+TakeOrder {
+    patron
+}
+
+// can be broken into
+
+move_to { entity }
+await_order { entity }
+```
+
+```
+DeliverOrder {
+    patron,
+    dish
+}
+
+// can be broken into
+
+move_to { food_entity }
+pick_up { food_entity }
+move_to { person_entity }
+give { thing_entity, person_entity }
+
+Each action should have a way of indicating completion to the task scheduler?
+
