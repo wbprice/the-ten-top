@@ -68,7 +68,6 @@ impl<'s> System<'s> for RegisterSystem {
                 if is_close_enough {
                     // Create a task to take an order.
                     game.schedule_take_order(patron_entity);
-                    dbg!(&game.tasks);
 
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron

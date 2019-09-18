@@ -1,30 +1,42 @@
 use amethyst::{
     core::timing::Time,
     core::transform::Transform,
-    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Read, Write, ReadStorage, System, WriteStorage},
     renderer::SpriteRender,
 };
 
 use crate::{
     components::{
-        Worker
+        Worker,
+        Assignment
     },
     resources::{
-        GameState
+        Task
     }
 };
 
-pub struct MoveWorkerSystem;
+pub struct WorkerSystem;
 
-impl<'s> System<'s> for MoveWorkerSystem {
+impl<'s> System<'s> for WorkerSystem {
     type SystemData = (
+        Entities<'s>,
         ReadStorage<'s, Worker>,
-        Read<'s, GameState>
+        ReadStorage<'s, Assignment>
     );
 
-    fn run(&mut self, (workers, game_state): Self::SystemData) {
-        for (worker) in (&workers).join() {
-            
+    fn run(&mut self, (entities, workers, assignments): Self::SystemData) {
+        // Drive behavior of workers with assignments
+        for (worker_entity, worker, assignment) in (&entities, &workers, &assignments).join() {
+
+            match assignment.task {
+                Task::TakeOrder => {},
+                Task::FetchIngredient => {},
+                Task::PlateOrder => {},
+                Task::PrepIngredient = {},
+                Task::DeliverOrder = {},
+                _ => {}
+            }
+
         }
     }
 }
