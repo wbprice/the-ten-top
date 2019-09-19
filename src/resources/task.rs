@@ -6,7 +6,7 @@ use crate::{
 };
 
 #[derive(Debug, Copy, Clone)]
-pub enum Task {
+pub enum Tasks {
     TakeOrder { patron: Entity },
     DeliverOrder { patron: Entity, dish: Dish },
     FetchIngredient { ingredient: Ingredient },
@@ -17,14 +17,16 @@ pub enum Task {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub enum Subtask {
+pub enum Subtasks {
     MoveToEntity { entity: Entity },
-    MoveTo { point: Point },
+    PickUpEntity { entity: Entity },
+    SetEntityOwner { entity: Entity, owner: Entity }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Status {
     New,
     InProgress,
     Completed,
+    Blocked
 }

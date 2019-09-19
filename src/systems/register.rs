@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity},
+    components::{Destination, Emotion, Feeling, Food, Dish, Patron, Register, Velocity},
     resources::{GameState, Status},
 };
 
@@ -71,13 +71,17 @@ impl<'s> System<'s> for RegisterSystem {
                     match patron.order_status {
                         Status::New => {
                             game.schedule_take_order(patron_entity);
+                            game.schedule_deliver_order(patron_entity, Dish::HotDog);
                             patron.order_status = Status::InProgress;
                         }
                         Status::InProgress => {
-                            // awaiting food
+                            // Wait patiently.
                         }
                         Status::Completed => {
                             // walk away with food
+                        },
+                        Status::Blocked => {
+                            // IDK
                         }
                     }
                 } else if register_x.floor() == patron_x.floor() {

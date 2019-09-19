@@ -1,4 +1,4 @@
-mod assignment;
+mod task;
 mod destination;
 mod feeling;
 mod food;
@@ -10,7 +10,7 @@ mod velocity;
 mod worker;
 
 pub use self::{
-    assignment::Assignment, destination::Destination, feeling::Emotion, feeling::Feeling,
+    task::Task, task::Subtask, destination::Destination, feeling::Emotion, feeling::Feeling,
     food::Dish, food::Food, food::Ingredient, patron::Patron, register::Register,
     simple_animation::SimpleAnimation, thought_bubble::ThoughtBubble, velocity::Direction,
     velocity::Velocity, worker::Worker,

@@ -1,4 +1,4 @@
-mod assignment;
+mod task;
 mod destination;
 mod feeling;
 mod food;
@@ -9,7 +9,7 @@ mod thought_bubble;
 mod worker;
 
 pub use self::{
-    assignment::AssignmentSystem, destination::DestinationSystem, feeling::MoveFeelingSystem,
+    task::TaskSystem, destination::DestinationSystem, feeling::MoveFeelingSystem,
     food::FoodSystem, patron::MovePatronSystem, register::RegisterSystem,
     simple_animation::SimpleAnimationSystem, thought_bubble::MoveThoughtBubbleSystem,
     worker::WorkerSystem,
