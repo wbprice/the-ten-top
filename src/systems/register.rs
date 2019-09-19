@@ -74,10 +74,10 @@ impl<'s> System<'s> for RegisterSystem {
                             patron.order_status = Status::InProgress;
                         }
                         Status::InProgress => {
-                            // noop
+                            // patiently wait for food?
                         }
                         Status::Completed => {
-                            // noop
+                            // walk away with food
                         }
                     }
                 } else if register_x.floor() == patron_x.floor() {
