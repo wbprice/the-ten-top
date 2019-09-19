@@ -5,7 +5,7 @@ use crate::resources::{Status, Subtasks, Tasks};
 #[derive(Debug, Copy, Clone)]
 pub struct Subtask {
     pub activity: Subtasks,
-    pub status: Status
+    pub status: Status,
 }
 
 #[derive(Debug)]

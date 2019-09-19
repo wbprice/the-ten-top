@@ -1,16 +1,15 @@
-mod task;
 mod destination;
 mod feeling;
 mod food;
 mod patron;
 mod register;
 mod simple_animation;
+mod task;
 mod thought_bubble;
 mod worker;
 
 pub use self::{
-    task::TaskSystem, destination::DestinationSystem, feeling::MoveFeelingSystem,
-    food::FoodSystem, patron::MovePatronSystem, register::RegisterSystem,
-    simple_animation::SimpleAnimationSystem, thought_bubble::MoveThoughtBubbleSystem,
-    worker::WorkerSystem,
+    destination::DestinationSystem, feeling::MoveFeelingSystem, food::FoodSystem,
+    patron::MovePatronSystem, register::RegisterSystem, simple_animation::SimpleAnimationSystem,
+    task::TaskSystem, thought_bubble::MoveThoughtBubbleSystem, worker::WorkerSystem,
 };

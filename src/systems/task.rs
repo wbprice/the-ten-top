@@ -1,11 +1,11 @@
 use amethyst::{
-    core::transform::{Transform, Parent},
+    core::transform::{Parent, Transform},
     ecs::prelude::{Entities, Entity, Join, ReadStorage, System, Write, WriteStorage},
 };
 
 use crate::{
-    components::{Task, Subtask, Destination, Food, Worker},
-    resources::{GameState, Status, Tasks, Subtasks},
+    components::{Destination, Food, Subtask, Task, Worker},
+    resources::{GameState, Status, Subtasks, Tasks},
 };
 
 pub struct TaskSystem;
@@ -50,50 +50,58 @@ impl<'s> System<'s> for TaskSystem {
                         Tasks::TakeOrder { patron } => {
                             task.subtasks.push(Subtask {
                                 activity: Subtasks::MoveToEntity { entity: patron },
-                                status: Status::New
+                                status: Status::New,
                             });
-                        },
+                        }
                         Tasks::DeliverOrder { patron, dish } => {
-                            match (&entities, &foods).join().find(|(_, food)| food.dish == dish) {
+                            match (&entities, &foods)
+                                .join()
+                                .find(|(_, food)| food.dish == dish)
+                            {
                                 Some((food_entity, _)) => {
                                     task.subtasks.push(Subtask {
-                                        activity: Subtasks::MoveToEntity { entity: food_entity },
-                                        status: Status::New
+                                        activity: Subtasks::MoveToEntity {
+                                            entity: food_entity,
+                                        },
+                                        status: Status::New,
                                     });
                                     task.subtasks.push(Subtask {
-                                        activity: Subtasks::SetEntityOwner { entity: food_entity, owner: worker_entity},
-                                        status: Status::New
+                                        activity: Subtasks::SetEntityOwner {
+                                            entity: food_entity,
+                                            owner: worker_entity,
+                                        },
+                                        status: Status::New,
                                     });
                                     task.subtasks.push(Subtask {
                                         activity: Subtasks::MoveToEntity { entity: patron },
-                                        status: Status::New
+                                        status: Status::New,
                                     });
                                     task.subtasks.push(Subtask {
-                                        activity: Subtasks::SetEntityOwner { entity: food_entity, owner: patron },
-                                        status: Status::New
+                                        activity: Subtasks::SetEntityOwner {
+                                            entity: food_entity,
+                                            owner: patron,
+                                        },
+                                        status: Status::New,
                                     });
                                     task.subtasks.push(Subtask {
-                                        activity: Subtasks::MoveTo { destination: Destination {
-                                            x: 44.0,
-                                            y: 108.0
-                                        }},
-                                        status: Status::New
+                                        activity: Subtasks::MoveTo {
+                                            destination: Destination { x: 44.0, y: 108.0 },
+                                        },
+                                        status: Status::New,
                                     });
-                                },
+                                }
                                 None => {
                                     unimplemented!("That kind of food hasn't been made yet!");
                                 }
                             }
-                        },
+                        }
                         _ => {
                             unimplemented!("That task hasn't been implemented yet!");
                         }
                     }
 
                     // Add the new task to the tasks storage
-                    tasks
-                        .insert(worker_entity, task)
-                        .unwrap();
+                    tasks.insert(worker_entity, task).unwrap();
                 }
                 None => {
                     // no idle workers!
@@ -108,7 +116,11 @@ impl<'s> System<'s> for TaskSystem {
         // aren't any more subtasks
         for (worker_entity, _, task) in (&entities, &workers, &mut tasks).join() {
             // Find the next uncompleted task
-            match task.subtasks.iter_mut().find(|subtask| subtask.status != Status::Completed) {
+            match task
+                .subtasks
+                .iter_mut()
+                .find(|subtask| subtask.status != Status::Completed)
+            {
                 Some(mut subtask) => {
                     match subtask.activity {
                         Subtasks::MoveToEntity { entity } => {
@@ -140,20 +152,18 @@ impl<'s> System<'s> for TaskSystem {
                                         subtask.status = Status::Completed
                                         // Perform any cleanup
                                     }
-                                },
+                                }
                                 Status::Completed => {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
                                     unimplemented!("Blocked tasks haven't been implemented yet!");
-                                },
+                                }
                             }
                         }
                         Subtasks::SetEntityOwner { entity, owner } => {
                             // Attach the entity to the new owner.
-                            parents.insert(entity, Parent {
-                                entity: owner
-                            }).unwrap();
+                            parents.insert(entity, Parent { entity: owner }).unwrap();
                             // Reset the entity local
                             let mut local = Transform::default();
                             local.prepend_translation_z(0.2);
@@ -162,30 +172,30 @@ impl<'s> System<'s> for TaskSystem {
                             // Insert the local to the locals storage.
                             locals.insert(entity, local).unwrap();
                             subtask.status = Status::Completed;
-                        },
+                        }
                         Subtasks::MoveTo { destination } => {
                             match subtask.status {
                                 Status::New => {
                                     destinations.insert(worker_entity, destination).unwrap();
                                     subtask.status = Status::InProgress;
-                                },
+                                }
                                 Status::InProgress => {
                                     if let None = destinations.get(worker_entity) {
                                         subtask.status = Status::Completed
                                         // Perform any cleanup
                                     }
-                                },
+                                }
                                 Status::Completed => {
                                     unreachable!();
-                                },
+                                }
                                 Status::Blocked => {
                                     unimplemented!();
                                 }
                             }
-                        },
+                        }
                         _ => {}
                     }
-                },
+                }
                 None => {
                     // Perform any cleanup and remove the assignment
                     tasks_to_remove.push(worker_entity);

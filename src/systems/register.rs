@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Emotion, Feeling, Food, Dish, Patron, Register, Velocity},
+    components::{Destination, Dish, Emotion, Feeling, Food, Patron, Register, Velocity},
     resources::{GameState, Status},
 };
 
@@ -79,7 +79,7 @@ impl<'s> System<'s> for RegisterSystem {
                         }
                         Status::Completed => {
                             // walk away with food
-                        },
+                        }
                         Status::Blocked => {
                             // IDK
                         }

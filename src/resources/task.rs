@@ -1,8 +1,6 @@
 use amethyst::ecs::prelude::Entity;
 
-use crate::{
-    components::{Dish, Ingredient, Destination},
-};
+use crate::components::{Destination, Dish, Ingredient};
 
 #[derive(Debug, Copy, Clone)]
 pub enum Tasks {
@@ -17,7 +15,7 @@ pub enum Tasks {
 pub enum Subtasks {
     MoveToEntity { entity: Entity },
     SetEntityOwner { entity: Entity, owner: Entity },
-    MoveTo { destination: Destination }
+    MoveTo { destination: Destination },
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -25,5 +23,5 @@ pub enum Status {
     New,
     InProgress,
     Completed,
-    Blocked
+    Blocked,
 }
