@@ -14,6 +14,7 @@ mod entities;
 mod resources;
 mod state;
 mod systems;
+mod common;
 
 use crate::systems::{
     AssignmentSystem, DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem,
