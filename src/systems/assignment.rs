@@ -7,7 +7,7 @@ use amethyst::{
 
 use crate::{
     components::{Assignment, Destination, Patron, Velocity, Worker},
-    resources::{GameState, Task},
+    resources::{GameState, Task, Status},
 };
 
 pub struct AssignmentSystem;
@@ -16,11 +16,9 @@ impl<'s> System<'s> for AssignmentSystem {
     type SystemData = (
         Entities<'s>,
         ReadStorage<'s, Worker>,
-        ReadStorage<'s, Patron>,
         ReadStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Assignment>,
-        WriteStorage<'s, Velocity>,
         Write<'s, GameState>,
     );
 
@@ -29,11 +27,9 @@ impl<'s> System<'s> for AssignmentSystem {
         (
             entities,
             workers,
-            patrons,
             locals,
             mut destinations,
             mut assignments,
-            mut velocities,
             mut game_state,
         ): Self::SystemData,
     ) {
@@ -44,42 +40,51 @@ impl<'s> System<'s> for AssignmentSystem {
                 Some((worker_entity, _, _)) => {
                     // Note that worker is busy with this task
                     assignments
-                        .insert(worker_entity, Assignment { task: task.clone() })
+                        .insert(worker_entity, Assignment::new(task))
                         .unwrap();
-
-                    // Perform one-time updates to state to get the workers working.
-                    match &task {
-                        Task::TakeOrder { patron } => {
-                            // Where is the patron in question?
-                            let patron_local = locals.get(*patron).unwrap();
-                            let patron_translation = patron_local.translation();
-
-                            // Add a destination component to the worker.
-                            // about one cell above the patron.
-                            destinations
-                                .insert(
-                                    worker_entity,
-                                    Destination {
-                                        x: patron_translation.x,
-                                        y: patron_translation.y + 24.0,
-                                    },
-                                )
-                                .unwrap();
-
-                            velocities
-                                .insert(worker_entity, Velocity { x: 15.0, y: 0.0 })
-                                .unwrap();
-                        }
-                        Task::DeliverOrder { patron, dish } => {
-                            // Where is the patron in question?
-                            let patron_local = locals.get(*patron).unwrap();
-                            let patron_translation = patron_local.translation();
-                        }
-                        _ => {}
-                    }
                 }
                 None => {}
             }
+        }
+
+        for (worker_entity, _, assignment) in (&entities, &workers, &mut assignments).join() {
+            // For workers with assignments, is the work completed?
+            match assignment.task {
+                Task::MoveToEntity { entity } => {
+                    match &assignment.status {
+                        Status::New => {
+                            // Perform one-time setup of task.
+                            let entity_local = locals.get(entity).unwrap();
+                            let entity_transform = entity_local.translation();
+
+                            destinations.insert(worker_entity, Destination {
+                                x: entity_transform.x,
+                                y: entity_transform.y
+                            }).unwrap();
+
+                            assignment.status = Status::InProgress;
+                        },
+                        Status::InProgress => {
+                            // Check to see if task has been completed.
+                            // If so, set the status to completed.
+                            match destinations.get(worker_entity) {
+                                Some(_) => {},
+                                None => {
+                                    assignment.status = Status::Completed
+                                }
+                            }
+                        },
+                        Status::Completed => {
+                            // Perform any cleanup
+                            // Queue up the next task?
+                            dbg!("destination completed");
+                        }
+                    }
+
+                }
+                _ => {}
+            }
+
         }
     }
 }

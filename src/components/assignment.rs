@@ -2,13 +2,23 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 use crate::resources::{
     Task,
-    Subtask
+    Subtask,
+    Status
 };
 
+#[derive(Debug, Copy, Clone)]
 pub struct Assignment {
     pub task: Task,
-    pub subtasks: Vec<Subtask>,
-    pub complete: bool
+    pub status: Status
+}
+
+impl Assignment {
+    pub fn new(task: Task) -> Assignment {
+        Assignment {
+            task,
+            status: Status::New
+        }
+    }
 }
 
 impl Component for Assignment {

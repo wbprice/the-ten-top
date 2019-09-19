@@ -11,6 +11,8 @@ pub enum Task {
     DeliverOrder { patron: Entity, dish: Dish },
     FetchIngredient { ingredient: Ingredient },
     PrepIngredient { ingredient: Ingredient },
+    MoveToEntity { entity: Entity },
+    MoveTo { point: Point },
     PlateOrder { dish: Dish },
 }
 
@@ -18,4 +20,11 @@ pub enum Task {
 pub enum Subtask {
     MoveToEntity { patron: Entity },
     MoveTo { point: Point }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum Status {
+    New,
+    InProgress,
+    Completed
 }
