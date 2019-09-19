@@ -1,8 +1,8 @@
 use amethyst::ecs::prelude::Entity;
 
 use crate::{
-    common::{Point},
-    components::{Dish, Ingredient}
+    common::Point,
+    components::{Dish, Ingredient},
 };
 
 #[derive(Debug, Copy, Clone)]
@@ -19,12 +19,12 @@ pub enum Task {
 #[derive(Debug, Copy, Clone)]
 pub enum Subtask {
     MoveToEntity { patron: Entity },
-    MoveTo { point: Point }
+    MoveTo { point: Point },
 }
 
 #[derive(Debug, Copy, Clone)]
 pub enum Status {
     New,
     InProgress,
-    Completed
+    Completed,
 }

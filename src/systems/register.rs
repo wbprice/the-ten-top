@@ -5,7 +5,7 @@ use amethyst::{
 
 use crate::{
     components::{Destination, Emotion, Feeling, Food, Patron, Register, Velocity},
-    resources::GameState,
+    resources::{GameState, Status},
 };
 
 pub struct RegisterSystem;
@@ -56,7 +56,8 @@ impl<'s> System<'s> for RegisterSystem {
             let register_x = register_translation.x;
             let register_y = register_translation.y;
 
-            for (patron_entity, _, patron_local) in (&*entities, &mut patrons, &locals).join() {
+            for (patron_entity, patron, patron_local) in (&*entities, &mut patrons, &locals).join()
+            {
                 // and comparing it to the x of each patron
                 let patron_translation = patron_local.translation();
                 let patron_x = patron_translation.x;
@@ -67,8 +68,18 @@ impl<'s> System<'s> for RegisterSystem {
                 let is_close_enough: bool = dist < 2.0;
                 if is_close_enough {
                     // Create a task to take an order.
-                    game.schedule_move_to_entity(patron_entity);
-                
+                    match patron.order_status {
+                        Status::New => {
+                            game.schedule_move_to_entity(patron_entity);
+                            patron.order_status = Status::InProgress;
+                        }
+                        Status::InProgress => {
+                            // noop
+                        }
+                        Status::Completed => {
+                            // noop
+                        }
+                    }
                 } else if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
                     // Updating the Patron's destination will cause it to walk

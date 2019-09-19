@@ -1,5 +1,3 @@
 mod point;
 
-pub use self::{
-    point::Point
-};
+pub use self::point::Point;

@@ -9,12 +9,12 @@ use amethyst::{
     utils::application_root_dir,
 };
 
+mod common;
 mod components;
 mod entities;
 mod resources;
 mod state;
 mod systems;
-mod common;
 
 use crate::systems::{
     AssignmentSystem, DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem,

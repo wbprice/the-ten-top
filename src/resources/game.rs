@@ -1,4 +1,4 @@
-use crate::{resources::Task};
+use crate::resources::Task;
 use amethyst::ecs::Entity;
 
 #[derive(Debug, Default)]

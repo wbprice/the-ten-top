@@ -29,7 +29,6 @@ impl<'s> System<'s> for DestinationSystem {
         for (entity, velocity, local, dest) in
             (&entities, &mut velocities, &locals, &mut destinations).join()
         {
-
             // If velocity is zeroed out, bump it to walking speed.
             if velocity.get_displacement() == 0.0 {
                 velocity.x = 15.0;
@@ -40,7 +39,7 @@ impl<'s> System<'s> for DestinationSystem {
             let dist = get_distance_between_two_points([pos.x, pos.y], [dest.x, dest.y]);
             let is_getting_close: bool = dist < 4.0;
             let is_close_enough: bool = dist < 2.0;
-            
+
             if is_close_enough {
                 // If so,
                 // - remove the destination
