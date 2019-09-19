@@ -14,7 +14,7 @@ impl<'s> System<'s> for TaskSystem {
     type SystemData = (
         Entities<'s>,
         ReadStorage<'s, Worker>,
-        ReadStorage<'s, Transform>,
+        WriteStorage<'s, Transform>,
         ReadStorage<'s, Food>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
@@ -27,7 +27,7 @@ impl<'s> System<'s> for TaskSystem {
         (
             entities,
             workers,
-            locals,
+            mut locals,
             foods,
             mut destinations,
             mut tasks,
@@ -150,9 +150,17 @@ impl<'s> System<'s> for TaskSystem {
                             }
                         }
                         Subtasks::SetEntityOwner { entity, owner } => {
+                            // Attach the entity to the new owner.
                             parents.insert(entity, Parent {
                                 entity: owner
                             }).unwrap();
+                            // Reset the entity local
+                            let mut local = Transform::default();
+                            local.prepend_translation_z(0.2);
+                            local.prepend_translation_x(8.0);
+                            local.prepend_translation_y(-8.0);
+                            // Insert the local to the locals storage.
+                            locals.insert(entity, local).unwrap();
                             subtask.status = Status::Completed;
                         },
                         Subtasks::MoveTo { destination } => {
