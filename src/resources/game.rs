@@ -8,6 +8,10 @@ pub struct GameState {
 }
 
 impl GameState {
+    pub fn schedule_take_order(&mut self, entity: Entity) {
+        self.tasks.push(Task::TakeOrder { patron: entity });
+    }
+
     pub fn schedule_move_to_entity(&mut self, entity: Entity) {
         self.tasks.push(Task::MoveToEntity { entity });
     }

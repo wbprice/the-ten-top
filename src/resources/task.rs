@@ -18,7 +18,7 @@ pub enum Task {
 
 #[derive(Debug, Copy, Clone)]
 pub enum Subtask {
-    MoveToEntity { patron: Entity },
+    MoveToEntity { entity: Entity },
     MoveTo { point: Point },
 }
 

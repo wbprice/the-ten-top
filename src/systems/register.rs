@@ -70,11 +70,11 @@ impl<'s> System<'s> for RegisterSystem {
                     // Create a task to take an order.
                     match patron.order_status {
                         Status::New => {
-                            game.schedule_move_to_entity(patron_entity);
+                            game.schedule_take_order(patron_entity);
                             patron.order_status = Status::InProgress;
                         }
                         Status::InProgress => {
-                            // patiently wait for food?
+                            // awaiting food
                         }
                         Status::Completed => {
                             // walk away with food
