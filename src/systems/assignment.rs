@@ -77,6 +77,7 @@ impl<'s> System<'s> for AssignmentSystem {
                         Status::Completed => {
                             // Perform any cleanup
                             // Queue up the next task?
+                            // Remove the assignment?
                             dbg!("destination completed");
                         }
                     }
