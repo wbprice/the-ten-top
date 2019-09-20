@@ -32,7 +32,7 @@ impl<'s> System<'s> for WorkerSystem {
             if velocity.x == 0.0 && velocity.y == 0.0 {
                 animations.remove(entity);
                 let mut sprite = sprites.get_mut(entity).unwrap();
-                sprite.sprite_number = 6;
+                sprite.sprite_number = 0;
             } else {
                 // Fetch the animation so we can decide if we need
                 // to set it or not.
@@ -42,7 +42,7 @@ impl<'s> System<'s> for WorkerSystem {
                             Direction::Left => {
                                 // TODO: Update with walking left sprites
                                 if animation.start_sprite_index != 6 {
-                                    println!("Change to walking left");
+                                    dbg!("change to walking left!");
                                     animations
                                         .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                                         .unwrap();
@@ -50,7 +50,7 @@ impl<'s> System<'s> for WorkerSystem {
                             }
                             _ => {
                                 if animation.start_sprite_index != 0 {
-                                    println!("Change to walking right");
+                                    dbg!("change to walking right!");
                                     animations
                                         .insert(entity, SimpleAnimation::new(0, 6, 0.1))
                                         .unwrap();
