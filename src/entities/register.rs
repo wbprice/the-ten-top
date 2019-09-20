@@ -14,7 +14,7 @@ pub fn init_register(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
-        sprite_number: 9,
+        sprite_number: 15,
     };
 
     world

@@ -14,7 +14,7 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, 
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle.clone(),
-        sprite_number: 0,
+        sprite_number: 6,
     };
 
     world
@@ -22,10 +22,10 @@ pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, 
         .with(patron)
         .with(sprite_render)
         .with(Feeling {
-            symbol: Emotion::Craving(Dish::Hamburger),
+            symbol: Emotion::Craving(Dish::HotDog),
         })
         .with(Velocity { x: 15.0, y: 0.0 })
-        .with(SimpleAnimation::new(1, 6, 0.1))
+        .with(SimpleAnimation::new(6, 6, 0.1))
         .with(local_transform)
         .build();
 }

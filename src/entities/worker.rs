@@ -14,7 +14,7 @@ pub fn init_worker(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle.clone(),
-        sprite_number: 0,
+        sprite_number: 6,
     };
 
     world

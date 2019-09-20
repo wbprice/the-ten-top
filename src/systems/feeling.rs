@@ -62,7 +62,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
                         .with(
                             SpriteRender {
                                 sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                                sprite_number: 6,
+                                sprite_number: 12,
                             },
                             &mut sprites,
                         )
@@ -91,7 +91,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
                         .with(
                             SpriteRender {
                                 sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                                sprite_number: 8,
+                                sprite_number: 14,
                             },
                             &mut sprites,
                         )

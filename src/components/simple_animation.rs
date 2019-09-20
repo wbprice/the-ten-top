@@ -13,7 +13,7 @@ impl SimpleAnimation {
         SimpleAnimation {
             start_sprite_index: start_sprite_index,
             frames: frames,
-            current_frame: 0,
+            current_frame: start_sprite_index,
             time_per_frame: time_per_frame,
             elapsed_time: 0.0,
         }

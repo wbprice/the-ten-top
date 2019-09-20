@@ -10,10 +10,8 @@ pub struct Velocity {
 }
 
 pub enum Direction {
-    Up,
     Right,
-    Down,
-    Left,
+    Left
 }
 
 impl Velocity {
@@ -31,22 +29,10 @@ impl Velocity {
     }
 
     pub fn get_direction(self) -> Direction {
-        let x = self.x;
-        let y = self.y;
-
-        if y > x {
-            // If mostly going up or down...
-            if y > 0.0 {
-                return Direction::Up;
-            }
-            return Direction::Down;
-        } else {
-            // All other cases
-            if x > 0.0 {
-                return Direction::Right;
-            }
-            return Direction::Left;
+        if self.x >= 0.0 {
+            return Direction::Right;
         }
+        return Direction::Left;
     }
 
     pub fn turn(self, point_a: Destination, point_b: Destination) -> Velocity {

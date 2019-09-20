@@ -49,38 +49,20 @@ impl<'s> System<'s> for MovePatronSystem {
                 // to set it or not.
                 let animation = animations.get(entity).unwrap();
                 match velocity.get_direction() {
-                    Direction::Up => {
-                        // TODO: Update with walking up sprites
-                        if animation.start_sprite_index != 1 {
-                            println!("Change to walking up");
-                            animations
-                                .insert(entity, SimpleAnimation::new(1, 6, 0.1))
-                                .unwrap();
-                        }
-                    }
-                    Direction::Down => {
-                        // TODO: Update with walking down sprites
-                        if animation.start_sprite_index != 1 {
-                            println!("Change to walking down");
-                            animations
-                                .insert(entity, SimpleAnimation::new(1, 6, 0.1))
-                                .unwrap();
-                        }
-                    }
                     Direction::Left => {
                         // TODO: Update with walking left sprites
-                        if animation.start_sprite_index != 1 {
-                            println!("Change to walking left");
+                        if animation.start_sprite_index != 6 {
+                            dbg!("change to walking left!");
                             animations
-                                .insert(entity, SimpleAnimation::new(1, 6, 0.1))
+                                .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                                 .unwrap();
                         }
                     }
                     _ => {
-                        if animation.start_sprite_index != 1 {
-                            println!("Change to walking right");
+                        if animation.start_sprite_index != 0 {
+                            dbg!("change to walking right!");
                             animations
-                                .insert(entity, SimpleAnimation::new(1, 6, 0.1))
+                                .insert(entity, SimpleAnimation::new(0, 6, 0.1))
                                 .unwrap();
                         }
                     }
