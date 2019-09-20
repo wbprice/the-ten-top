@@ -29,7 +29,7 @@ impl Subtask {
     pub fn new(activity: Subtasks) -> Subtask {
         Subtask {
             activity,
-            status: Status::New
+            status: Status::New,
         }
     }
 }

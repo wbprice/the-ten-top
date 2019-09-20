@@ -11,7 +11,7 @@ pub struct Velocity {
 
 pub enum Direction {
     Right,
-    Left
+    Left,
 }
 
 impl Velocity {

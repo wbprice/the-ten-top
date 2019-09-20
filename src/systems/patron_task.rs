@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Subtask, Task, Worker},
+    components::{Destination, Food, Patron, Subtask, Task},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -31,38 +31,28 @@ impl<'s> System<'s> for PatronTaskSystem {
             mut destinations,
             mut tasks,
             mut parents
-        )
+        ): Self::SystemData,
     ) {
-        let mut tasks_to_remove : Vec<Entity> = vec![];
+        let mut tasks_to_remove: Vec<Entity> = vec![];
 
         // Perform first time setup when the patron is handed a task.
         for (patron_entity, patron, task) in (&entities, &patrons, &tasks)
             .join()
-            .filter(|(_, _, task)| task.status == Status::New) {
-            
+            .filter(|(_, _, task)| task.status == Status::New)
+        {
             // Populate task subactivities based on type of activity.
             match task.activity {
                 Tasks::MakeOrder { register, dish } => {
-                    task.subtasks.push(Subtask::new(
-                        Subtasks::MoveToEntity {
-                            entity: register
-                        }
-                    });
-                    task.subtasks.push(Subtask::new(
-                        Subtasks::WaitForWorker
-                    ));
-                    task.subtasks.push(SubTask::new(
-                        Subtasks::SubmitOrder { dish }
-                    ));
-                    task.subtasks.push(SubTask::new(
-                        Subtasks::WaitForOrder { dish }
-                    ));
-                    task.subtasks.push(SubTask::new(
-                        Subtasks::MoveTo { destination: Destination {
-                            x: 144.0,
-                            y: 30.0
-                        }}
-                    ));
+                    task.subtasks
+                        .push(Subtask::new(Subtasks::MoveToEntity { entity: register }));
+                    task.subtasks.push(Subtask::new(Subtasks::WaitForWorker));
+                    task.subtasks
+                        .push(SubTask::new(Subtasks::SubmitOrder { dish }));
+                    task.subtasks
+                        .push(SubTask::new(Subtasks::WaitForOrder { dish }));
+                    task.subtasks.push(SubTask::new(Subtasks::MoveTo {
+                        destination: Destination { x: 144.0, y: 30.0 },
+                    }));
                 }
             }
         }

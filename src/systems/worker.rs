@@ -42,7 +42,6 @@ impl<'s> System<'s> for WorkerSystem {
                             Direction::Left => {
                                 // TODO: Update with walking left sprites
                                 if animation.start_sprite_index != 6 {
-                                    dbg!("change to walking left!");
                                     animations
                                         .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                                         .unwrap();
@@ -50,7 +49,6 @@ impl<'s> System<'s> for WorkerSystem {
                             }
                             _ => {
                                 if animation.start_sprite_index != 0 {
-                                    dbg!("change to walking right!");
                                     animations
                                         .insert(entity, SimpleAnimation::new(0, 6, 0.1))
                                         .unwrap();
