@@ -41,18 +41,18 @@ impl<'s> System<'s> for WorkerSystem {
                         match velocity.get_direction() {
                             Direction::Left => {
                                 // TODO: Update with walking left sprites
-                                if animation.start_sprite_index != 0 {
+                                if animation.start_sprite_index != 6 {
                                     println!("Change to walking left");
                                     animations
-                                        .insert(entity, SimpleAnimation::new(0, 6, 0.1))
+                                        .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                                         .unwrap();
                                 }
                             }
                             _ => {
-                                if animation.start_sprite_index != 6 {
+                                if animation.start_sprite_index != 0 {
                                     println!("Change to walking right");
                                     animations
-                                        .insert(entity, SimpleAnimation::new(6, 6, 0.1))
+                                        .insert(entity, SimpleAnimation::new(0, 6, 0.1))
                                         .unwrap();
                                 }
                             }
@@ -60,7 +60,7 @@ impl<'s> System<'s> for WorkerSystem {
                     }
                     None => {
                         animations
-                            .insert(entity, SimpleAnimation::new(6, 6, 0.1))
+                            .insert(entity, SimpleAnimation::new(0, 6, 0.1))
                             .unwrap();
                     }
                 }
