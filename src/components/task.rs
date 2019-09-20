@@ -25,6 +25,15 @@ impl Task {
     }
 }
 
+impl Subtask {
+    pub fn new(activity: Subtasks) -> Subtask {
+        Subtask {
+            activity,
+            status: Status::New
+        }
+    }
+}
+
 impl Component for Task {
     type Storage = DenseVecStorage<Self>;
 }

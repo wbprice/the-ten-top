@@ -8,9 +8,9 @@ use crate::{
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
-pub struct TaskSystem;
+pub struct WorkerTaskSystem;
 
-impl<'s> System<'s> for TaskSystem {
+impl<'s> System<'s> for WorkerTaskSystem {
     type SystemData = (
         Entities<'s>,
         ReadStorage<'s, Worker>,
@@ -45,7 +45,7 @@ impl<'s> System<'s> for TaskSystem {
                     // Note that worker is busy with this task
                     let mut task = Task::new(task);
 
-                    // populate subtasks based on task?
+                    // populate subtasks based on task
                     match task.activity {
                         Tasks::TakeOrder { patron } => {
                             task.subtasks.push(Subtask {

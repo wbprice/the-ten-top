@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Dish, Emotion, Feeling, Food, Patron, Register, Velocity},
+    components::{Destination, Dish, Feeling, Food, Patron, Register, Velocity},
     resources::{GameState, Status},
 };
 

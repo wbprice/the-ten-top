@@ -9,6 +9,7 @@ pub enum Tasks {
     FetchIngredient { ingredient: Ingredient },
     PrepIngredient { ingredient: Ingredient },
     PlateOrder { dish: Dish },
+    MakeOrder { register: Entity, dish: Dish }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -16,6 +17,9 @@ pub enum Subtasks {
     MoveToEntity { entity: Entity },
     SetEntityOwner { entity: Entity, owner: Entity },
     MoveTo { destination: Destination },
+    WaitForWorker,
+    SubmitOrder { dish: Dish },
+    WaitForOrder { dish: Dish }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
