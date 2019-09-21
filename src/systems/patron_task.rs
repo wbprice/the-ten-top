@@ -83,7 +83,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                         Subtasks::MoveToEntity { entity } => {
                             match subtask.status {
                                 Status::New => {
-                                    dbg!("Starting the MoveToEntity task for a patron");
+                                    dbg!("[MoveToEntity] starting the MoveToEntity task");
                                     // Where is the entity to walk to?
                                     let entity_local = locals.get(entity).unwrap();
                                     let entity_transform = entity_local.translation();
@@ -102,13 +102,13 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
-                                    dbg!("Patron is en route");
+                                    dbg!("[MoveToEntity] patron is en route");
                                     // Destination storage will remove the destination
                                     // once the entity has reached it's destination.
                                     // So the destination no longer exists, we can call
                                     // the task done.
                                     if let None = destinations.get(patron_entity) {
-                                        dbg!("Patron is has arrived at their destination");
+                                        dbg!("[MoveToEntity] patron is has arrived at their destination");
                                         subtask.status = Status::Completed
                                         // Perform any cleanup
                                     }
@@ -117,19 +117,19 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
-                                    unimplemented!("Blocked tasks haven't been implemented yet!");
+                                    unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
                                 }
                             }
                         }
                         Subtasks::WaitForWorker => {
                             match subtask.status {
                                 Status::New => {
-                                    dbg!("Starting the WaitForWorker task for a patron");
+                                    dbg!("[WaitForWorker] starting the WaitForWorker task for a patron");
                                     game_state.schedule_take_order(patron_entity);
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
-                                    dbg!("Worker summoned, waiting for them to arrive");
+                                    dbg!("[WaitForWorker] worker summoned, waiting for them to arrive");
                                     // Check to see if a worker has approached the register.
                                     // If so, mark the subtask completed.
                                     let patron_local = locals.get(patron_entity).unwrap();
@@ -145,7 +145,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                             [patron_x, patron_y],
                                         );
                                         if dist < 8.0 {
-                                            dbg!("Worker has arrived");
+                                            dbg!("[WaitForWorker] worker has arrived");
                                             subtask.status = Status::Completed;
                                         }
                                     }
@@ -154,46 +154,47 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
-                                    unimplemented!("Blocked tasks haven't been implemented yet!");
+                                    unimplemented!("[WaitForWorker] blocked tasks haven't been implemented yet!");
                                 }
                             }
                         }
                         Subtasks::SubmitOrder { dish } => {
                             match subtask.status {
                                 Status::New => {
-                                    dbg!("SubmitOrder: ordering dish");
+                                    dbg!("[SubmitOrder] starting task");
                                     // Display speech bubble component for 3 seconds.
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
                                     // Hide the speech bubble.
-                                    dbg!("SubmitOrder: ordering dish");
+                                    dbg!("[SubmitOrder] ordering dish");
                                     game_state.schedule_deliver_order(patron_entity, dish);
                                     subtask.status = Status::Completed;
+                                    dbg!("[SubmitOrder] dish ordered");
                                 }
                                 Status::Completed => {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
-                                    unimplemented!("Blocked is unimplemented");
+                                    unimplemented!("[SubmitOrder] blocked is unimplemented");
                                 }
                             }
                         }
                         Subtasks::WaitForOrder { dish } => {
                             match subtask.status {
                                 Status::New => {
-                                    dbg!("WaitForOrder: task started");
+                                    dbg!("[WaitForOrder] task started");
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
-                                    dbg!("WaitForOrder: waiting for food to be delivered");
+                                    dbg!("[WaitForOrder] waiting for food to be delivered");
                                     // Wait until the patron entity has a
                                 }
                                 Status::Completed => {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
-                                    unimplemented!("Blocked tasks haven't been implemented yet");
+                                    unimplemented!("[WaitForOrder] blocked tasks haven't been implemented yet");
                                 }
                             }
                         }
