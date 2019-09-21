@@ -73,11 +73,13 @@ impl<'s> System<'s> for PatronTaskSystem {
 
         // Start handling task behaviors.
         for (patron_entity, _, task) in (&entities, &patrons, &mut tasks).join() {
+
+            task.status = Status::InProgress;
+
             match task
                 .subtasks
                 .iter_mut()
-                .find(|subtask| subtask.status != Status::Completed)
-            {
+                .find(|subtask| subtask.status != Status::Completed) {
                 Some(mut subtask) => {
                     match subtask.activity {
                         Subtasks::MoveToEntity { entity } => {
@@ -108,7 +110,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     // So the destination no longer exists, we can call
                                     // the task done.
                                     if let None = destinations.get(patron_entity) {
-                                        dbg!("[MoveToEntity] patron is has arrived at their destination");
+                                        dbg!("[MoveToEntity] patron has arrived at their destination");
                                         subtask.status = Status::Completed
                                         // Perform any cleanup
                                     }
@@ -210,7 +212,6 @@ impl<'s> System<'s> for PatronTaskSystem {
                             match subtask.status {
                                 Status::New => {
                                     dbg!("[MoveTo] starting the MoveTo task");
-                                    dbg!(&destination);
 
                                     // Direct the patron to walk to the entity
                                     destinations.insert(patron_entity, destination).unwrap();
@@ -224,7 +225,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     // So the destination no longer exists, we can call
                                     // the task done.
                                     if let None = destinations.get(patron_entity) {
-                                        dbg!("[MoveTo] patron is has arrived at their destination");
+                                        dbg!("[MoveTo] patron has arrived at their destination");
                                         subtask.status = Status::Completed
                                         // Perform any cleanup
                                     }
