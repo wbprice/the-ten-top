@@ -39,11 +39,14 @@ impl<'s> System<'s> for WorkerTaskSystem {
 
         // If a new task needs to be performed
         // Find an idle worker and assign them the task.
-        if let Some(task) = game_state.tasks.pop() {
+        if let Some(task) = game_state.tasks.first() {
             match (&entities, &workers, !&tasks).join().next() {
                 Some((worker_entity, _, _)) => {
                     // Note that worker is busy with this task
-                    let mut task = Task::new(task);
+                    let mut task = Task::new(*task);
+
+                    dbg!("New task to assign!");
+                    dbg!(&task);
 
                     // populate subtasks based on task
                     match task.activity {
@@ -100,11 +103,14 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         }
                     }
 
+                    // Remove the task from the queue.
+                    game_state.tasks.pop().unwrap();
                     // Add the new task to the tasks storage
                     tasks.insert(worker_entity, task).unwrap();
                 }
                 None => {
                     // no idle workers!
+                    dbg!("No idle workers available to take on this task");
                 }
             }
         }

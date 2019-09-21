@@ -188,7 +188,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::InProgress => {
                                     dbg!("[WaitForOrder] waiting for food to be delivered");
-                                    // Wait until the patron entity has a
+                                    // Wait until the patron entity has a dish of that type
                                 }
                                 Status::Completed => {
                                     unreachable!();
