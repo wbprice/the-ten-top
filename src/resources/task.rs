@@ -2,7 +2,7 @@ use amethyst::ecs::prelude::Entity;
 
 use crate::components::{Destination, Dish, Ingredient};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Tasks {
     TakeOrder { patron: Entity },
     DeliverOrder { patron: Entity, dish: Dish },

@@ -4,8 +4,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Dish, Feeling, Food, Patron, Register, Velocity},
-    resources::{GameState, Status},
+    components::{Destination, Dish, Feeling, Food, Patron, Register, Task, Velocity},
+    resources::{GameState, Status, Tasks},
 };
 
 pub struct RegisterSystem;
@@ -30,6 +30,7 @@ impl<'s> System<'s> for RegisterSystem {
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Velocity>,
         WriteStorage<'s, Feeling>,
+        WriteStorage<'s, Task>,
     );
 
     fn run(
@@ -45,12 +46,11 @@ impl<'s> System<'s> for RegisterSystem {
             mut destinations,
             mut velocities,
             mut feelings,
+            mut tasks,
         ): Self::SystemData,
     ) {
-        let mut food_locals_to_reset: Vec<(Entity, Transform)> = vec![];
-
         // For each register
-        for (_, register_local) in (&registers, &locals).join() {
+        for (register_entity, register, register_local) in (&entities, &registers, &locals).join() {
             // Check to see if a patron is in range by looking at x value of register...
             let register_translation = register_local.translation();
             let register_x = register_translation.x;
@@ -59,50 +59,24 @@ impl<'s> System<'s> for RegisterSystem {
             for (patron_entity, patron, patron_local) in (&*entities, &mut patrons, &locals).join()
             {
                 // and comparing it to the x of each patron
-                let patron_translation = patron_local.translation();
-                let patron_x = patron_translation.x;
-                let patron_y = patron_translation.y;
+                let patron_x = patron_local.translation().x;
 
-                let dist =
-                    get_distance_between_two_points([register_x, register_y], [patron_x, patron_y]);
-                let is_close_enough: bool = dist < 2.0;
-                if is_close_enough {
-                    // Create a task to take an order.
-                    match patron.order_status {
-                        Status::New => {
-                            game.schedule_take_order(patron_entity);
-                            game.schedule_deliver_order(patron_entity, Dish::HotDog);
-                            patron.order_status = Status::InProgress;
-                        }
-                        Status::InProgress => {
-                            // Wait patiently.
-                        }
-                        Status::Completed => {
-                            // walk away with food
-                        }
-                        Status::Blocked => {
-                            // IDK
-                        }
-                    }
-                } else if register_x.floor() == patron_x.floor() {
+                if register_x.floor() == patron_x.floor() {
                     // If there's a match, attract the patron
-                    // Updating the Patron's destination will cause it to walk
-                    // towards the register
-                    destinations
-                        .insert(
-                            patron_entity,
-                            Destination {
-                                x: register_x,
-                                y: register_y,
-                            },
-                        )
-                        .unwrap();
+                    // Assign the patron a task (if they don't already have one);
+                    if let None = tasks.get(patron_entity) {
+                        tasks
+                            .insert(
+                                patron_entity,
+                                Task::new(Tasks::MakeOrder {
+                                    register: register_entity,
+                                    dish: Dish::HotDog,
+                                }),
+                            )
+                            .unwrap();
+                    }
                 }
             }
-        }
-
-        for (entity, local) in food_locals_to_reset {
-            locals.insert(entity, local).unwrap();
         }
     }
 }
