@@ -191,8 +191,8 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 Status::InProgress => {
                                     dbg!("[WaitForOrder] waiting for food to be delivered");
                                     // Wait until the patron entity has a dish of that type
-                                    for (_, parent) in (&foods, &parents).join() {
-                                        if parent.entity == patron_entity {
+                                    for (food, parent) in (&foods, &parents).join() {
+                                        if parent.entity == patron_entity && food.dish == dish {
                                             dbg!("[WaitForOrder] food recieved");
                                             subtask.status = Status::Completed;
                                         }
