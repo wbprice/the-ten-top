@@ -200,7 +200,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
-                                    unimplemented!("[WaitForOrder] blocked tasks haven't been implemented yet");
+                                    unimplemented!(
+                                        "[WaitForOrder] blocked tasks haven't been implemented yet"
+                                    );
                                 }
                             }
                         }
@@ -211,14 +213,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     dbg!(&destination);
 
                                     // Direct the patron to walk to the entity
-                                    destinations
-                                        .insert(
-                                            patron_entity,
-                                            Destination {
-                                                x: 0.0,
-                                                y: 0.0
-                                            }
-                                        ).unwrap();
+                                    destinations.insert(patron_entity, destination).unwrap();
 
                                     subtask.status = Status::InProgress;
                                 }

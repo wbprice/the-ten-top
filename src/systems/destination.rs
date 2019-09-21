@@ -29,7 +29,6 @@ impl<'s> System<'s> for DestinationSystem {
         for (entity, velocity, local, dest) in
             (&entities, &mut velocities, &locals, &mut destinations).join()
         {
-            dbg!("starting destination");
             // If velocity is zeroed out, bump it to walking speed.
             if velocity.get_displacement() == 0.0 {
                 velocity.x = 15.0;
