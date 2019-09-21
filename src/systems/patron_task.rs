@@ -207,9 +207,14 @@ impl<'s> System<'s> for PatronTaskSystem {
                     }
                 }
                 None => {
-                    // Perform any cleanup.
                 }
             }
+        }
+
+        // Perform any cleanup.
+        for entity in tasks_to_remove {
+            tasks.remove(entity).unwrap();
+            dbg!("Patron tasks removed, free for reassignment");
         }
     }
 }

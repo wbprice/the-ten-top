@@ -126,6 +126,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         Subtasks::MoveToEntity { entity } => {
                             match subtask.status {
                                 Status::New => {
+                                    dbg!("[MoveToEntity] worker task started");
                                     // Where is the entity to walk to?
                                     let entity_local = locals.get(entity).unwrap();
                                     let entity_transform = entity_local.translation();
@@ -144,6 +145,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
+                                    dbg!("[MoveToEntity] worker walking to destination");
                                     // Destination storage will remove the destination
                                     // once the entity has reached it's destination.
                                     // So the destination no longer exists, we can call
@@ -157,11 +159,12 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                     unreachable!();
                                 }
                                 Status::Blocked => {
-                                    unimplemented!("Blocked tasks haven't been implemented yet!");
+                                    unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
                                 }
                             }
                         }
                         Subtasks::SetEntityOwner { entity, owner } => {
+                            dbg!("[SetEntityOwner] start set entity owner task");
                             // Attach the entity to the new owner.
                             parents.insert(entity, Parent { entity: owner }).unwrap();
                             // Reset the entity local
@@ -172,6 +175,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // Insert the local to the locals storage.
                             locals.insert(entity, local).unwrap();
                             subtask.status = Status::Completed;
+                            dbg!("[SetEntityOwner] start set entity owner completed");
                         }
                         Subtasks::MoveTo { destination } => {
                             match subtask.status {
