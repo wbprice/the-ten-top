@@ -189,6 +189,12 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 Status::InProgress => {
                                     dbg!("[WaitForOrder] waiting for food to be delivered");
                                     // Wait until the patron entity has a dish of that type
+                                    for (_, parent) in (&foods, &parents).join() {
+                                        if parent.entity == patron_entity {
+                                            dbg!("[WaitForOrder] food recieved");
+                                            subtask.status = Status::Completed;
+                                        }
+                                    }
                                 }
                                 Status::Completed => {
                                     unreachable!();
@@ -199,7 +205,42 @@ impl<'s> System<'s> for PatronTaskSystem {
                             }
                         }
                         Subtasks::MoveTo { destination } => {
-                            unimplemented!();
+                            match subtask.status {
+                                Status::New => {
+                                    dbg!("[MoveTo] starting the MoveTo task");
+                                    dbg!(&destination);
+
+                                    // Direct the patron to walk to the entity
+                                    destinations
+                                        .insert(
+                                            patron_entity,
+                                            Destination {
+                                                x: 0.0,
+                                                y: 0.0
+                                            }
+                                        ).unwrap();
+
+                                    subtask.status = Status::InProgress;
+                                }
+                                Status::InProgress => {
+                                    dbg!("[MoveTo] patron is en route");
+                                    // Destination storage will remove the destination
+                                    // once the entity has reached it's destination.
+                                    // So the destination no longer exists, we can call
+                                    // the task done.
+                                    if let None = destinations.get(patron_entity) {
+                                        dbg!("[MoveTo] patron is has arrived at their destination");
+                                        subtask.status = Status::Completed
+                                        // Perform any cleanup
+                                    }
+                                }
+                                Status::Completed => {
+                                    unreachable!();
+                                }
+                                Status::Blocked => {
+                                    unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
+                                }
+                            }
                         }
                         _ => {
                             unimplemented!();
@@ -207,6 +248,8 @@ impl<'s> System<'s> for PatronTaskSystem {
                     }
                 }
                 None => {
+                    dbg!("No subtasks remaining");
+                    tasks_to_remove.push(patron_entity);
                 }
             }
         }

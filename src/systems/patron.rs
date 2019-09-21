@@ -47,21 +47,29 @@ impl<'s> System<'s> for MovePatronSystem {
             } else {
                 // Fetch the animation so we can decide if we need
                 // to set it or not.
-                let animation = animations.get(entity).unwrap();
-                match velocity.get_direction() {
-                    Direction::Left => {
-                        if animation.start_sprite_index != 6 {
-                            animations
-                                .insert(entity, SimpleAnimation::new(6, 6, 0.1))
-                                .unwrap();
+                match animations.get(entity) {
+                    Some(animation) => {
+                        match velocity.get_direction() {
+                            Direction::Left => {
+                                if animation.start_sprite_index != 6 {
+                                    animations
+                                        .insert(entity, SimpleAnimation::new(6, 6, 0.1))
+                                        .unwrap();
+                                }
+                            }
+                            _ => {
+                                if animation.start_sprite_index != 0 {
+                                    animations
+                                        .insert(entity, SimpleAnimation::new(0, 6, 0.1))
+                                        .unwrap();
+                                }
+                            }
                         }
-                    }
-                    _ => {
-                        if animation.start_sprite_index != 0 {
-                            animations
-                                .insert(entity, SimpleAnimation::new(0, 6, 0.1))
-                                .unwrap();
-                        }
+                    },
+                    None => {
+                        animations
+                            .insert(entity, SimpleAnimation::new(0, 6, 0.1))
+                            .unwrap();
                     }
                 }
             }
