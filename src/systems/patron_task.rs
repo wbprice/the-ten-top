@@ -83,6 +83,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                         Subtasks::MoveToEntity { entity } => {
                             match subtask.status {
                                 Status::New => {
+                                    dbg!("Starting the MoveToEntity task for a patron");
                                     // Where is the entity to walk to?
                                     let entity_local = locals.get(entity).unwrap();
                                     let entity_transform = entity_local.translation();
@@ -101,11 +102,13 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
+                                    dbg!("Patron is en route");
                                     // Destination storage will remove the destination
                                     // once the entity has reached it's destination.
                                     // So the destination no longer exists, we can call
                                     // the task done.
                                     if let None = destinations.get(patron_entity) {
+                                        dbg!("Patron is has arrived at their destination");
                                         subtask.status = Status::Completed
                                         // Perform any cleanup
                                     }
@@ -121,10 +124,12 @@ impl<'s> System<'s> for PatronTaskSystem {
                         Subtasks::WaitForWorker => {
                             match subtask.status {
                                 Status::New => {
-                                    // Emit a "TakeOrder" task event.
+                                    dbg!("Starting the WaitForWorker task for a patron");
+                                    game_state.schedule_take_order(patron_entity);
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
+                                    dbg!("Worker summoned, waiting for them to arrive");
                                     // Check to see if a worker has approached the register.
                                     // If so, mark the subtask completed.
                                     let patron_local = locals.get(patron_entity).unwrap();
@@ -140,6 +145,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                             [patron_x, patron_y],
                                         );
                                         if dist < 8.0 {
+                                            dbg!("Worker has arrived");
                                             subtask.status = Status::Completed;
                                         }
                                     }
@@ -155,11 +161,13 @@ impl<'s> System<'s> for PatronTaskSystem {
                         Subtasks::SubmitOrder { dish } => {
                             match subtask.status {
                                 Status::New => {
+                                    dbg!("SubmitOrder: ordering dish");
                                     // Display speech bubble component for 3 seconds.
                                     subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
                                     // Hide the speech bubble.
+                                    dbg!("SubmitOrder: ordering dish");
                                     game_state.schedule_deliver_order(patron_entity, dish);
                                     subtask.status = Status::Completed;
                                 }
@@ -174,9 +182,11 @@ impl<'s> System<'s> for PatronTaskSystem {
                         Subtasks::WaitForOrder { dish } => {
                             match subtask.status {
                                 Status::New => {
-                                    subtask.status = Status::Completed;
+                                    dbg!("WaitForOrder: task started");
+                                    subtask.status = Status::InProgress;
                                 }
                                 Status::InProgress => {
+                                    dbg!("WaitForOrder: waiting for food to be delivered");
                                     // Wait until the patron entity has a
                                 }
                                 Status::Completed => {

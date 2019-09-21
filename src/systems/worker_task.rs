@@ -206,6 +206,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         // Cleanup any completed assignments, marking the worker available for the next task.
         for worker_entity in tasks_to_remove {
             tasks.remove(worker_entity).unwrap();
+            dbg!("Worker free for reassignment");
         }
     }
 }
