@@ -110,7 +110,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                 }
                 None => {
                     // no idle workers!
-                    dbg!("No idle workers available to take on this task");
+                    dbg!("No idle workers are available to take on this task yet");
                 }
             }
         }
