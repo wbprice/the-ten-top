@@ -1,3 +1,7 @@
+mod game;
 mod sprite;
+mod task;
 
-pub use self::sprite::SpriteResource;
+pub use self::{
+    game::GameState, sprite::SpriteResource, task::Status, task::Subtasks, task::Tasks,
+};

@@ -3,7 +3,7 @@ use amethyst::{
     ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Destination, Patron, Velocity};
+use crate::components::{Destination, Patron, Velocity, Worker};
 
 pub struct DestinationSystem;
 
@@ -17,33 +17,29 @@ fn get_distance_between_two_points(point_a: [f32; 2], point_b: [f32; 2]) -> f32 
 impl<'s> System<'s> for DestinationSystem {
     type SystemData = (
         Entities<'s>,
-        ReadStorage<'s, Patron>,
         WriteStorage<'s, Velocity>,
         ReadStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
     );
 
-    fn run(
-        &mut self,
-        (entities, patrons, mut velocities, locals, mut destinations): Self::SystemData,
-    ) {
+    fn run(&mut self, (entities, mut velocities, locals, mut destinations): Self::SystemData) {
         let mut velocities_to_insert: Vec<(Entity, Velocity)> = vec![];
         let mut destinations_to_remove: Vec<Entity> = vec![];
 
-        for (entity, _, velocity, patron_local, dest) in (
-            &entities,
-            &patrons,
-            &mut velocities,
-            &locals,
-            &mut destinations,
-        )
-            .join()
+        for (entity, velocity, local, dest) in
+            (&entities, &mut velocities, &locals, &mut destinations).join()
         {
-            // Did patron arrive at their destination?
-            let pos = patron_local.translation();
+            // If velocity is zeroed out, bump it to walking speed.
+            if velocity.get_displacement() == 0.0 {
+                velocity.x = 15.0;
+            }
+
+            // Did entity arrive at their destination?
+            let pos = local.translation();
             let dist = get_distance_between_two_points([pos.x, pos.y], [dest.x, dest.y]);
             let is_getting_close: bool = dist < 4.0;
             let is_close_enough: bool = dist < 2.0;
+
             if is_close_enough {
                 // If so,
                 // - remove the destination
@@ -60,7 +56,7 @@ impl<'s> System<'s> for DestinationSystem {
                     *velocity = velocity.set_displacement(displacement);
                 }
 
-                // If not, change velocity so the patron is heading the right direction
+                // If not, change velocity so the entity is heading the right direction
                 velocities_to_insert.push((
                     entity,
                     velocity.turn(

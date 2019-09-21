@@ -39,6 +39,48 @@
             height: 24,
         ),
         (
+            x: 0,
+            y: 24,
+            width: 24,
+            height: 24,
+            flip_horizontal: true
+        ),
+        (
+            x: 24,
+            y: 24,
+            width: 24,
+            height: 24,
+            flip_horizontal: true
+        ),
+        (
+            x: 48,
+            y: 24,
+            width: 24,
+            height: 24,
+            flip_horizontal: true
+        ),
+        (
+            x: 72,
+            y: 24,
+            width: 24,
+            height: 24,
+            flip_horizontal: true
+        ),
+        (
+            x: 96,
+            y: 24,
+            width: 24,
+            height: 24,
+            flip_horizontal: true
+        ),
+        (
+            x: 120,
+            y: 24,
+            width: 24,
+            height: 24,
+            flip_horizontal: true
+        ),
+        (
             x: 144,
             y: 24,
             width: 24,

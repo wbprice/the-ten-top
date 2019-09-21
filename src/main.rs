@@ -9,17 +9,16 @@ use amethyst::{
     utils::application_root_dir,
 };
 
+mod common;
 mod components;
 mod entities;
 mod resources;
 mod state;
 mod systems;
 
-use crate::{
-    systems::{
-        DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem,
-        MoveThoughtBubbleSystem, RegisterSystem, SimpleAnimationSystem,
-    },
+use crate::systems::{
+    DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem, MoveThoughtBubbleSystem,
+    PatronTaskSystem, RegisterSystem, SimpleAnimationSystem, WorkerSystem, WorkerTaskSystem,
 };
 
 fn main() -> amethyst::Result<()> {
@@ -41,6 +40,7 @@ fn main() -> amethyst::Result<()> {
                 .with_plugin(RenderFlat2D::default()),
         )?
         .with(MovePatronSystem, "move_patron_system", &[])
+        .with(PatronTaskSystem, "patron_task_system", &[])
         .with(
             SimpleAnimationSystem,
             "simple_animation_system",
@@ -62,7 +62,9 @@ fn main() -> amethyst::Result<()> {
             "destination_system",
             &["register_system"],
         )
-        .with(FoodSystem, "food_system", &["destination_system"]);
+        .with(FoodSystem, "food_system", &["destination_system"])
+        .with(WorkerSystem, "worker_system", &["food_system"])
+        .with(WorkerTaskSystem, "task_system", &["worker_system"]);
 
     let mut game = Application::new(resources, state::MyState, game_data)?;
     game.run();
