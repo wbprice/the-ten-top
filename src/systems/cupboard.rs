@@ -1,15 +1,14 @@
 use amethyst::{
     core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadExpect, Read, ReadStorage, System, Write, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, ReadExpect, Read, System, WriteStorage},
     renderer::SpriteRender
 };
 
 use crate::{
     components::{
         Cupboard,
-        Ingredient,
-        Ingredients
+        Ingredient
     },
     resources::{
         SpriteResource
@@ -32,6 +31,12 @@ impl<'s> System<'s> for CupboardSystem {
 
     fn run(&mut self, (entities, sprite_resource, mut sprites, mut cupboards, mut ingredients, mut parents, mut locals, time): Self::SystemData) {
 
+        // Find which cupboards are empty (and should spawn ingredients)
+        // buy comparing the list of cupboard entities against a
+        // list of ingredient parents.
+        // If the cupboard entity is not a parent to an ingredient, it should
+        // respawn an ingredient after 10 seconds.
+
         let cupboard_entities : Vec<Entity> = (&entities, &cupboards)
             .join()
             .map(|(entity, _)| entity)
@@ -46,8 +51,7 @@ impl<'s> System<'s> for CupboardSystem {
             .iter()
             .filter(|cupboard_entity| !ingredient_parents.contains(cupboard_entity));
 
-        // Cupboards that don't have
-
+        // Cupboards that are empty should regenerate their ingredient after 10 seconds.
         for entity in empty_cupboards {
             let cupboard = cupboards.get_mut(*entity).unwrap();
 
@@ -74,11 +78,9 @@ impl<'s> System<'s> for CupboardSystem {
                     .build();
 
                 cupboard.cooldown = 10.0;
-                dbg!("An ingredient was spawned");
             } else {
                 // tick down cooldown
                 cupboard.cooldown = cupboard.cooldown - time.delta_seconds();
-                dbg!("Decrement cooldown");
             }
         }
     }
