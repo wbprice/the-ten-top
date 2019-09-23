@@ -3,7 +3,7 @@ use amethyst::{
     renderer::SpriteRender,
 };
 
-use crate::components::{Dish, Food};
+use crate::components::{Food};
 
 pub struct FoodSystem;
 

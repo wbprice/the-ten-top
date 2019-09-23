@@ -10,7 +10,7 @@ pub enum Ingredients {
     HotDog,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Ingredient {
     pub ingredient: Ingredients,
 }

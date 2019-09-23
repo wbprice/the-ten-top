@@ -13,7 +13,7 @@ pub enum Foods {
     Dumplings,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Food {
     pub food: Foods,
 }

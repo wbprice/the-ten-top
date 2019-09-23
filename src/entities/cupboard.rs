@@ -6,7 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Dish, Emotion, Cupboard, Patron, SimpleAnimation, Velocity};
+use crate::components::{Cupboard};
 
 pub fn init_cupboard(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, cupboard: Cupboard) {
     let mut local_transform = Transform::default();
