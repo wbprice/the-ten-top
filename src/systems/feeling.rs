@@ -138,13 +138,13 @@ impl<'s> System<'s> for MoveFeelingSystem {
                                         }
                                     },
                                     Emotion::Happy => {
-                                        sprite.sprite_number = 11;
+                                        sprite.sprite_number = 17;
                                     }
                                     Emotion::Sad => {
-                                        sprite.sprite_number = 12;
+                                        sprite.sprite_number = 18;
                                     }
                                     _ => {
-                                        sprite.sprite_number = 13;
+                                        sprite.sprite_number = 19;
                                     }
                                 }
                             }

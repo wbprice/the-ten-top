@@ -1,6 +1,6 @@
 use amethyst::ecs::prelude::Entity;
 
-use crate::components::{Destination, Dish, Ingredient};
+use crate::components::{Destination, Dish, Emotion, Ingredient};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Tasks {
@@ -20,6 +20,7 @@ pub enum Subtasks {
     WaitForWorker,
     SubmitOrder { dish: Dish },
     WaitForOrder { dish: Dish },
+    UpdateFeeling { symbol: Emotion },
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]

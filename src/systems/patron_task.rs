@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Patron, Subtask, Task, Worker},
+    components::{Destination, Emotion, Feeling, Food, Patron, Subtask, Task, Worker},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -27,6 +27,7 @@ impl<'s> System<'s> for PatronTaskSystem {
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
         WriteStorage<'s, Parent>,
+        WriteStorage<'s, Feeling>,
         Write<'s, GameState>,
     );
 
@@ -41,6 +42,7 @@ impl<'s> System<'s> for PatronTaskSystem {
             mut destinations,
             mut tasks,
             mut parents,
+            mut feelings,
             mut game_state,
         ): Self::SystemData,
     ) {
@@ -61,6 +63,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                         .push(Subtask::new(Subtasks::SubmitOrder { dish }));
                     task.subtasks
                         .push(Subtask::new(Subtasks::WaitForOrder { dish }));
+                    task.subtasks.push(Subtask::new(Subtasks::UpdateFeeling {
+                        symbol: Emotion::Happy,
+                    }));
                     task.subtasks.push(Subtask::new(Subtasks::MoveTo {
                         destination: Destination { x: 144.0, y: 30.0 },
                     }));
@@ -73,13 +78,13 @@ impl<'s> System<'s> for PatronTaskSystem {
 
         // Start handling task behaviors.
         for (patron_entity, _, task) in (&entities, &patrons, &mut tasks).join() {
-
             task.status = Status::InProgress;
 
             match task
                 .subtasks
                 .iter_mut()
-                .find(|subtask| subtask.status != Status::Completed) {
+                .find(|subtask| subtask.status != Status::Completed)
+            {
                 Some(mut subtask) => {
                     match subtask.activity {
                         Subtasks::MoveToEntity { entity } => {
@@ -237,6 +242,10 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
                                 }
                             }
+                        }
+                        Subtasks::UpdateFeeling { symbol } => {
+                            feelings.insert(patron_entity, Feeling { symbol }).unwrap();
+                            subtask.status = Status::Completed;
                         }
                         _ => {
                             unimplemented!();
