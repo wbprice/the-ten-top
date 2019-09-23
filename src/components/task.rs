@@ -2,12 +2,6 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 use crate::resources::{Status, Subtasks, Tasks};
 
-#[derive(Debug, Copy, Clone)]
-pub struct Subtask {
-    pub activity: Subtasks,
-    pub status: Status,
-}
-
 #[derive(Debug)]
 pub struct Task {
     pub activity: Tasks,
@@ -23,6 +17,12 @@ impl Task {
             status: Status::New,
         }
     }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub struct Subtask {
+    pub activity: Subtasks,
+    pub status: Status,
 }
 
 impl Subtask {
