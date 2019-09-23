@@ -13,7 +13,7 @@ impl<'s> System<'s> for FoodSystem {
     fn run(&mut self, (foods, mut sprites): Self::SystemData) {
         for (food, sprite) in (&foods, &mut sprites).join() {
             // What kind of food is this?
-            match food.dish {
+            match food.food {
                 Dish::HotDog => {
                     sprite.sprite_number = 14;
                 }
