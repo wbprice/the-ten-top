@@ -32,38 +32,54 @@ impl<'s> System<'s> for CupboardSystem {
 
     fn run(&mut self, (entities, sprite_resource, mut sprites, mut cupboards, mut ingredients, mut parents, mut locals, time): Self::SystemData) {
 
-        let mut cupboards_to_spawn_ingredients : Vec<(Entity, Ingredients)> = vec![];
+        let cupboard_entities : Vec<Entity> = (&entities, &cupboards)
+            .join()
+            .map(|(entity, _)| entity)
+            .collect();
 
-        for (entity, cupboard, _) in (&entities, &mut cupboards, !&parents).join() {
+        let ingredient_parents : Vec<Entity> = (&entities, &mut ingredients, &mut parents)
+            .join()
+            .map(|(_, _, parent)| parent.entity)
+            .collect();
+
+        let empty_cupboards = cupboard_entities
+            .iter()
+            .filter(|cupboard_entity| !ingredient_parents.contains(cupboard_entity));
+
+        // Cupboards that don't have
+
+        for entity in empty_cupboards {
+            let cupboard = cupboards.get_mut(*entity).unwrap();
+
             if cupboard.cooldown <= 0.0 {
                 // spawn ingredient of type cupboard.ingredient
                 // reset the cooldown to 10.0 seconds
-                cupboards_to_spawn_ingredients.push((entity, cupboard.ingredient));
+                let mut ingredient_local = Transform::default();
+                ingredient_local.prepend_translation_y(12.0);
+                ingredient_local.prepend_translation_z(0.1);
+
+                entities
+                    .build_entity()
+                    .with(Ingredient {
+                        ingredient: cupboard.ingredient
+                    }, &mut ingredients)
+                    .with(SpriteRender {
+                        sprite_sheet: sprite_resource.sprite_sheet.clone(),
+                        sprite_number: 12
+                    }, &mut sprites)
+                    .with(Parent {
+                        entity: *entity
+                    }, &mut parents)
+                    .with(ingredient_local, &mut locals)
+                    .build();
+
                 cupboard.cooldown = 10.0;
+                dbg!("An ingredient was spawned");
             } else {
                 // tick down cooldown
                 cupboard.cooldown = cupboard.cooldown - time.delta_seconds();
+                dbg!("Decrement cooldown");
             }
-        }
-
-        for (entity, ingredient) in cupboards_to_spawn_ingredients {
-            let mut ingredient_local = Transform::default();
-            ingredient_local.prepend_translation_y(24.0);
-
-            entities
-                .build_entity()
-                .with(Ingredient {
-                    ingredient
-                }, &mut ingredients)
-                .with(SpriteRender {
-                    sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                    sprite_number: 12
-                }, &mut sprites)
-                .with(Parent {
-                    entity
-                }, &mut parents)
-                .with(ingredient_local, &mut locals)
-                .build();
         }
     }
 }
