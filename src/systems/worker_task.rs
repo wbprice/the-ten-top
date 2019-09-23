@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Subtask, Task, Worker},
+    components::{Destination, Food, Foods, Subtask, Task, Worker},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -56,10 +56,10 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 status: Status::New,
                             });
                         }
-                        Tasks::DeliverOrder { patron, dish } => {
+                        Tasks::DeliverOrder { patron, food } => {
                             match (&entities, &foods)
                                 .join()
-                                .find(|(_, food)| food.dish == dish)
+                                .find(|(_, f)| f.food == food)
                             {
                                 Some((food_entity, _)) => {
                                     task.subtasks.push(Subtask {

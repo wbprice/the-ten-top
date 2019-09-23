@@ -55,14 +55,14 @@ impl<'s> System<'s> for PatronTaskSystem {
         {
             // Populate task subactivities based on type of activity.
             match task.activity {
-                Tasks::MakeOrder { register, dish } => {
+                Tasks::MakeOrder { register, food } => {
                     task.subtasks
                         .push(Subtask::new(Subtasks::MoveToEntity { entity: register }));
                     task.subtasks.push(Subtask::new(Subtasks::WaitForWorker));
                     task.subtasks
-                        .push(Subtask::new(Subtasks::SubmitOrder { dish }));
+                        .push(Subtask::new(Subtasks::SubmitOrder { food }));
                     task.subtasks
-                        .push(Subtask::new(Subtasks::WaitForOrder { dish }));
+                        .push(Subtask::new(Subtasks::WaitForOrder { food }));
                     task.subtasks.push(Subtask::new(Subtasks::UpdateFeeling {
                         symbol: Emotion::Happy,
                     }));
@@ -165,7 +165,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                             }
                         }
-                        Subtasks::SubmitOrder { dish } => {
+                        Subtasks::SubmitOrder { food } => {
                             match subtask.status {
                                 Status::New => {
                                     dbg!("[SubmitOrder] starting task");
@@ -175,7 +175,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 Status::InProgress => {
                                     // Hide the speech bubble.
                                     dbg!("[SubmitOrder] ordering dish");
-                                    game_state.schedule_deliver_order(patron_entity, dish);
+                                    game_state.schedule_deliver_order(patron_entity, food);
                                     subtask.status = Status::Completed;
                                     dbg!("[SubmitOrder] dish ordered");
                                 }
@@ -187,7 +187,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                             }
                         }
-                        Subtasks::WaitForOrder { dish } => {
+                        Subtasks::WaitForOrder { food } => {
                             match subtask.status {
                                 Status::New => {
                                     dbg!("[WaitForOrder] task started");
@@ -197,7 +197,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     dbg!("[WaitForOrder] waiting for food to be delivered");
                                     // Wait until the patron entity has a dish of that type
                                     for (food, parent) in (&foods, &parents).join() {
-                                        if parent.entity == patron_entity && food.dish == dish {
+                                        if parent.entity == patron_entity {
                                             dbg!("[WaitForOrder] food recieved");
                                             subtask.status = Status::Completed;
                                         }

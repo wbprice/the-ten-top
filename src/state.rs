@@ -8,9 +8,10 @@ use amethyst::{
 };
 
 use crate::{
-    components::Patron,
-    entities::{init_food, init_patron, init_register, init_worker},
+    components::{Patron, Cupboard, Ingredients},
+    entities::{init_food, init_patron, init_register, init_worker, init_cupboard},
     resources::{GameState, SpriteResource},
+    common::{Point}
 };
 
 use log::info;
@@ -43,6 +44,14 @@ impl SimpleState for MyState {
         init_register(world, sprite_sheet_handle.clone());
         init_food(world, sprite_sheet_handle.clone());
         init_worker(world, sprite_sheet_handle.clone());
+        init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogBun), Point {
+            x: 12.0,
+            y: 76.0
+        });
+        init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogWeiner), Point {
+            x: 30.0,
+            y: 76.0
+        });
     }
 
     fn handle_event(
