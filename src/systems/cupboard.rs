@@ -14,6 +14,10 @@ pub struct CupboardSystem;
 
 impl<'s> System<'s> for CupboardSystem {
     type SystemData = (
-        WriteStorage<'s, CupboardSystem>,
-    )
+        WriteStorage<'s, Cupboard>,
+    );
+
+    fn run(&mut self, (mut cupboards): Self::SystemData) {
+
+    }
 }
