@@ -10,11 +10,11 @@ use crate::components::{Cupboard};
 
 pub fn init_cupboard(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, cupboard: Cupboard) {
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(12.0, 24.0, 0.2);
+    local_transform.set_translation_xyz(12.0, 84.0, 0.2);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle.clone(),
-        sprite_number: 6,
+        sprite_number: 19,
     };
 
     world
