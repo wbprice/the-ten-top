@@ -44,7 +44,7 @@ impl SimpleState for MyState {
         init_food(world, sprite_sheet_handle.clone());
         init_worker(world, sprite_sheet_handle.clone());
         init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogBun));
-        init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDog));
+        init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogWeiner));
     }
 
     fn handle_event(

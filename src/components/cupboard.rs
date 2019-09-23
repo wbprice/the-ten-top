@@ -6,14 +6,14 @@ use crate::{
 #[derive(Debug)]
 pub struct Cupboard {
     pub ingredient: Ingredients,
-    pub cooldown: u8
+    pub cooldown: f32
 }
 
 impl Cupboard {
     pub fn new(ingredient: Ingredients) -> Cupboard {
         Cupboard {
             ingredient,
-            cooldown: 0
+            cooldown: 0.0
         }
     }
 }
