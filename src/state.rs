@@ -9,7 +9,7 @@ use amethyst::{
 
 use crate::{
     components::{Patron, Cupboard, Ingredients},
-    entities::{init_food, init_patron, init_register, init_worker, init_cupboard},
+    entities::{init_food, init_patron, init_register, init_worker, init_cupboard, init_stove},
     resources::{GameState, SpriteResource},
     common::{Point}
 };
@@ -50,6 +50,10 @@ impl SimpleState for MyState {
         });
         init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogWeiner), Point {
             x: 30.0,
+            y: 76.0
+        });
+        init_stove(world, sprite_sheet_handle.clone(), Point {
+            x: 52.0,
             y: 76.0
         });
     }

@@ -10,10 +10,11 @@ mod worker;
 mod worker_task;
 mod ingredient;
 mod cupboard;
+mod stove;
 
 pub use self::{
     destination::DestinationSystem, feeling::MoveFeelingSystem, food::FoodSystem,
     patron::MovePatronSystem, patron_task::PatronTaskSystem, register::RegisterSystem,
     simple_animation::SimpleAnimationSystem, thought_bubble::MoveThoughtBubbleSystem,
-    worker::WorkerSystem, worker_task::WorkerTaskSystem, ingredient::IngredientSystem, cupboard::CupboardSystem
+    worker::WorkerSystem, worker_task::WorkerTaskSystem, ingredient::IngredientSystem, cupboard::CupboardSystem, stove::StoveSystem
 };

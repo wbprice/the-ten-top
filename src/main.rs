@@ -18,7 +18,7 @@ mod systems;
 
 use crate::systems::{
     DestinationSystem, FoodSystem, MoveFeelingSystem, MovePatronSystem, MoveThoughtBubbleSystem,
-    PatronTaskSystem, RegisterSystem, SimpleAnimationSystem, WorkerSystem, WorkerTaskSystem, IngredientSystem, CupboardSystem
+    PatronTaskSystem, RegisterSystem, SimpleAnimationSystem, WorkerSystem, WorkerTaskSystem, IngredientSystem, CupboardSystem, StoveSystem
 };
 
 fn main() -> amethyst::Result<()> {
@@ -66,7 +66,8 @@ fn main() -> amethyst::Result<()> {
         .with(WorkerSystem, "worker_system", &["food_system"])
         .with(WorkerTaskSystem, "task_system", &["worker_system"])
         .with(CupboardSystem, "cupboard_system", &["worker_system"])
-        .with(IngredientSystem, "ingredient_system", &["worker_system"]);
+        .with(IngredientSystem, "ingredient_system", &["worker_system"])
+        .with(StoveSystem, "stove_system", &["worker_system"]);
 
     let mut game = Application::new(resources, state::MyState, game_data)?;
     game.run();
