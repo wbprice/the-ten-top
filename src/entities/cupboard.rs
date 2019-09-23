@@ -6,11 +6,14 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Cupboard};
+use crate::{
+    components::{Cupboard},
+    common::{Point}
+};
 
-pub fn init_cupboard(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, cupboard: Cupboard) {
+pub fn init_cupboard(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, cupboard: Cupboard, point: Point) {
     let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(12.0, 84.0, 0.2);
+    local_transform.set_translation_xyz(point.x, point.y, 0.2);
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle.clone(),
