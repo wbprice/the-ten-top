@@ -1,16 +1,16 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use crate::{
-    components::{Ingredient}
+    components::{Ingredients}
 };
 
 #[derive(Debug)]
 pub struct Cupboard {
-    pub ingredient: Ingredient,
+    pub ingredient: Ingredients,
     pub cooldown: u8
 }
 
 impl Cupboard {
-    pub fn new(ingredient: Ingredient) -> Cupboard {
+    pub fn new(ingredient: Ingredients) -> Cupboard {
         Cupboard {
             ingredient,
             cooldown: 0

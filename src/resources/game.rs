@@ -1,4 +1,4 @@
-use crate::{components::Food, resources::Tasks};
+use crate::{components::Foods, resources::Tasks};
 use amethyst::ecs::Entity;
 
 #[derive(Debug, Default)]
@@ -12,7 +12,7 @@ impl GameState {
         self.tasks.push(Tasks::TakeOrder { patron: entity });
     }
 
-    pub fn schedule_deliver_order(&mut self, entity: Entity, food: Food) {
+    pub fn schedule_deliver_order(&mut self, entity: Entity, food: Foods) {
         self.tasks.push(Tasks::DeliverOrder {
             patron: entity,
             food

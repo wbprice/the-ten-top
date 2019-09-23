@@ -3,7 +3,7 @@ use amethyst::{
     renderer::SpriteRender,
 };
 
-use crate::components::{Food};
+use crate::components::{Foods, Food};
 
 pub struct FoodSystem;
 
@@ -14,7 +14,7 @@ impl<'s> System<'s> for FoodSystem {
         for (food, sprite) in (&foods, &mut sprites).join() {
             // What kind of food is this?
             match food.food {
-                Dish::HotDog => {
+                Foods::HotDog => {
                     sprite.sprite_number = 14;
                 }
                 _ => {
