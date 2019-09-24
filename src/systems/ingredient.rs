@@ -14,11 +14,14 @@ impl<'s> System<'s> for IngredientSystem {
         for (ingredient, sprite) in (&ingredients, &mut sprites).join() {
             // What kind of food is this?
             match ingredient.ingredient {
+                Ingredients::HotDogWeiner => {
+                    sprite.sprite_number = 18;
+                },
                 Ingredients::HotDogBun => {
-                    sprite.sprite_number = 14;
-                }
+                    sprite.sprite_number = 19;
+                },
                 _ => {
-                    sprite.sprite_number = 13;
+                    sprite.sprite_number = 2;
                 }
             }
         }

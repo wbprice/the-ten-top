@@ -15,10 +15,10 @@ impl<'s> System<'s> for FoodSystem {
             // What kind of food is this?
             match food.food {
                 Foods::HotDog => {
-                    sprite.sprite_number = 14;
+                    sprite.sprite_number = 20;
                 }
                 _ => {
-                    sprite.sprite_number = 13;
+                    sprite.sprite_number = 17;
                 }
             }
         }

@@ -17,7 +17,7 @@ pub fn init_cupboard(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
 
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle.clone(),
-        sprite_number: 19,
+        sprite_number: 3,
     };
 
     world

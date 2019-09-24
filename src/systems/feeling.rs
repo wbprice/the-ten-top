@@ -91,7 +91,7 @@ impl<'s> System<'s> for MoveFeelingSystem {
                         .with(
                             SpriteRender {
                                 sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                                sprite_number: 14,
+                                sprite_number: 0,
                             },
                             &mut sprites,
                         )
@@ -128,23 +128,23 @@ impl<'s> System<'s> for MoveFeelingSystem {
                                 match &feeling.symbol {
                                     Emotion::Craving(craving) => match craving {
                                         Foods::HotDog => {
-                                            sprite.sprite_number = 7;
+                                            sprite.sprite_number = 20;
                                         }
                                         Foods::Hamburger => {
-                                            sprite.sprite_number = 8;
+                                            sprite.sprite_number = 17;
                                         }
                                         _ => {
-                                            sprite.sprite_number = 13;
+                                            sprite.sprite_number = 2;
                                         }
                                     },
                                     Emotion::Happy => {
-                                        sprite.sprite_number = 17;
+                                        sprite.sprite_number = 0;
                                     }
                                     Emotion::Sad => {
-                                        sprite.sprite_number = 18;
+                                        sprite.sprite_number = 1;
                                     }
                                     _ => {
-                                        sprite.sprite_number = 19;
+                                        sprite.sprite_number = 2;
                                     }
                                 }
                             }
