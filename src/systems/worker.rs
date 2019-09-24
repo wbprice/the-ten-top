@@ -39,7 +39,7 @@ impl<'s> System<'s> for WorkerSystem {
                 match animations.get(entity) {
                     Some(animation) => {
                         match velocity.get_direction() {
-                            Direction::Left => {
+                            _ => {
                                 // TODO: Update with walking left sprites
                                 if animation.start_sprite_index != 6 {
                                     animations
@@ -47,18 +47,11 @@ impl<'s> System<'s> for WorkerSystem {
                                         .unwrap();
                                 }
                             }
-                            _ => {
-                                if animation.start_sprite_index != 0 {
-                                    animations
-                                        .insert(entity, SimpleAnimation::new(0, 6, 0.1))
-                                        .unwrap();
-                                }
-                            }
                         }
                     }
                     None => {
                         animations
-                            .insert(entity, SimpleAnimation::new(0, 6, 0.1))
+                            .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                             .unwrap();
                     }
                 }

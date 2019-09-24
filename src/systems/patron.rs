@@ -43,30 +43,23 @@ impl<'s> System<'s> for MovePatronSystem {
             if velocity.x == 0.0 && velocity.y == 0.0 {
                 animations.remove(entity);
                 let mut sprite = sprites.get_mut(entity).unwrap();
-                sprite.sprite_number = 0;
+                sprite.sprite_number = 6;
             } else {
                 // Fetch the animation so we can decide if we need
                 // to set it or not.
                 match animations.get(entity) {
                     Some(animation) => match velocity.get_direction() {
-                        Direction::Left => {
+                        _ => {
                             if animation.start_sprite_index != 6 {
                                 animations
                                     .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                                     .unwrap();
                             }
                         }
-                        _ => {
-                            if animation.start_sprite_index != 0 {
-                                animations
-                                    .insert(entity, SimpleAnimation::new(0, 6, 0.1))
-                                    .unwrap();
-                            }
-                        }
                     },
                     None => {
                         animations
-                            .insert(entity, SimpleAnimation::new(0, 6, 0.1))
+                            .insert(entity, SimpleAnimation::new(6, 6, 0.1))
                             .unwrap();
                     }
                 }
