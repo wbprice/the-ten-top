@@ -1,27 +1,55 @@
 use amethyst::{
-    ecs::prelude::{Join, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Join, ReadStorage, Entity, ReadExpect, Entities, System, WriteStorage},
     renderer::SpriteRender,
 };
 
-use crate::components::{Ingredients, Ingredient};
+use crate::{
+    components::{Ingredients, Ingredient},
+    resources::{SpriteResource}
+};
 
 pub struct IngredientSystem;
 
 impl<'s> System<'s> for IngredientSystem {
-    type SystemData = (ReadStorage<'s, Ingredient>, WriteStorage<'s, SpriteRender>);
+    type SystemData = (
+        Entities<'s>,
+        ReadExpect<'s, SpriteResource>,
+        ReadStorage<'s, Ingredient>,
+        WriteStorage<'s, SpriteRender>
+    );
 
-    fn run(&mut self, (ingredients, mut sprites): Self::SystemData) {
-        for (ingredient, sprite) in (&ingredients, &mut sprites).join() {
-            // What kind of food is this?
-            match ingredient.ingredient {
+    fn run(&mut self, (entities, sprite_resource, ingredients, mut sprites): Self::SystemData) {
+
+        // One time ingredient sprite setup
+        // Identify new sprites
+        let new_ingredients = (&entities, &ingredients, !&sprites)
+            .join()
+            .map(|(entity, ingredient, _)| (entity, ingredient))
+            .collect();
+
+        // Iterate over new ingredients, adding new sprites
+        for (entity, ingredient) in new_ingredients {
+            let sprite_sheet = sprite_resource.sprite_sheet.clone();
+
+            // What kind of ingredient is this?
+            match ingredient {
                 Ingredients::HotDogWeiner => {
-                    sprite.sprite_number = 18;
+                    sprites.insert(entity, SpriteRender {
+                        sprite_sheet,
+                        sprite_number: 18
+                    }).unwrap();
                 },
                 Ingredients::HotDogBun => {
-                    sprite.sprite_number = 19;
+                    sprites.insert(entity, SpriteRender {
+                        sprite_sheet,
+                        sprite_number: 19
+                    }).unwrap();
                 },
                 _ => {
-                    sprite.sprite_number = 2;
+                    sprites.insert(entity, SpriteRender {
+                        sprite_sheet,
+                        sprite_number: 19
+                    }).unwrap();
                 }
             }
         }
