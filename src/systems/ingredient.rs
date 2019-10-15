@@ -36,13 +36,13 @@ impl<'s> System<'s> for IngredientSystem {
                 Ingredients::HotDogWeiner => {
                     sprites.insert(entity, SpriteRender {
                         sprite_sheet,
-                        sprite_number: 19
+                        sprite_number: 18
                     }).unwrap();
                 },
                 Ingredients::HotDogBun => {
                     sprites.insert(entity, SpriteRender {
                         sprite_sheet,
-                        sprite_number: 20
+                        sprite_number: 19
                     }).unwrap();
                 },
                 _ => {
