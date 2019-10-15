@@ -12,10 +12,11 @@ mod worker;
 mod cupboard;
 mod stove;
 mod cooked;
+mod plate;
 
 pub use self::{
     destination::Destination, feeling::Emotion, feeling::Feeling, food::Foods, food::Food,
     ingredient::Ingredient, ingredient::Ingredients, patron::Patron, register::Register, simple_animation::SimpleAnimation,
     task::Subtask, task::Task, thought_bubble::ThoughtBubble, velocity::Direction,
-    velocity::Velocity, worker::Worker, cupboard::Cupboard, stove::Stove, cooked::Cooked
+    velocity::Velocity, worker::Worker, cupboard::Cupboard, stove::Stove, cooked::Cooked, plate::Plate
 };
