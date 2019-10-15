@@ -21,10 +21,10 @@ impl<'s> System<'s> for IngredientSystem {
     fn run(&mut self, (entities, sprite_resource, ingredients, mut sprites): Self::SystemData) {
 
         // One time ingredient sprite setup
-        // Identify new sprites
-        let new_ingredients = (&entities, &ingredients, !&sprites)
+        // Identify new ingredients that need sprites
+        let new_ingredients : Vec<(Entity, Ingredients)> = (&entities, &ingredients, !&sprites)
             .join()
-            .map(|(entity, ingredient, _)| (entity, ingredient))
+            .map(|(entity, ingredient, _)| (entity, ingredient.ingredient))
             .collect();
 
         // Iterate over new ingredients, adding new sprites
@@ -36,19 +36,19 @@ impl<'s> System<'s> for IngredientSystem {
                 Ingredients::HotDogWeiner => {
                     sprites.insert(entity, SpriteRender {
                         sprite_sheet,
-                        sprite_number: 18
+                        sprite_number: 19
                     }).unwrap();
                 },
                 Ingredients::HotDogBun => {
                     sprites.insert(entity, SpriteRender {
                         sprite_sheet,
-                        sprite_number: 19
+                        sprite_number: 20
                     }).unwrap();
                 },
                 _ => {
                     sprites.insert(entity, SpriteRender {
                         sprite_sheet,
-                        sprite_number: 19
+                        sprite_number: 3
                     }).unwrap();
                 }
             }
