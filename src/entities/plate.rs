@@ -18,7 +18,7 @@ pub fn init_plate(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, p
     local_transform.set_translation_xyz(point.x, point.y, 0.2);
 
     world.create_entity()
-        .with(Plate {})
+        .with(Plate::new())
         .with(SpriteRender {
             sprite_sheet: sprite_sheet_handle.clone(),
             sprite_number: 2
