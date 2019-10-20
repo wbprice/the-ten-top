@@ -1,5 +1,4 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
-
 use crate::resources::{Status, Subtasks, Tasks};
 
 #[derive(Debug)]

@@ -4,9 +4,14 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Foods, Subtask, Task, Worker},
+    components::{Destination, Food, Foods, Subtask, Task, Worker, Ingredient, Ingredients},
     resources::{GameState, Status, Subtasks, Tasks},
 };
+
+const hot_dog_ingredients : Vec<Ingredients> = vec![
+    Ingredients::HotDogBun,
+    Ingredients::HotDogWeiner
+];
 
 pub struct WorkerTaskSystem;
 
@@ -16,6 +21,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         ReadStorage<'s, Worker>,
         WriteStorage<'s, Transform>,
         ReadStorage<'s, Food>,
+        ReadStorage<'s, Ingredient>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
         WriteStorage<'s, Parent>,
@@ -29,6 +35,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             workers,
             mut locals,
             foods,
+            ingredients,
             mut destinations,
             mut tasks,
             mut parents,
@@ -36,6 +43,96 @@ impl<'s> System<'s> for WorkerTaskSystem {
         ): Self::SystemData,
     ) {
         let mut tasks_to_remove: Vec<Entity> = vec![];
+        let mut tasks_to_add: Vec<Task> = vec![];
+
+        // If a new task was added to the stack
+        // Figure out if it is actionable.
+        // If so, assign it to a worker.
+        // If not, mark it "blocked" and find out why it's not actionable yet.
+        // Find out what actions need to occur next and put those in the queue.amethyst
+
+        for task in &mut tasks.join() {
+            match task.activity {
+                // Taking an order consists of walking to the patron and asking what they
+                // want to order.
+                Tasks::TakeOrder { patron } => {
+                    match task.status {
+                        Status::New => {
+                            // This task doesn't have any prerequisites,
+                            // So status can be set to "InProgress" immediately.
+                            task.status = Status::InProgress;
+                        },
+                        Status::InProgress => {
+                            task.subtasks.push(
+                                Subtask::new(Subtasks::MoveToEntity {
+                                    entity: patron
+                                })
+                            )
+                        },
+                        Status::Blocked => {
+                            // This doesn't have any prerequisites, so it can't be blocked
+                            unreachable!();
+                        },
+                        Status::Completed => {
+                            // What should happen here?
+                            unreachable!();
+                        }
+                    }
+                },
+                Tasks::DeliverOrder { patron, food } => {
+                    match task.status {
+                        Status::New => {
+                            // In order to complete this task, the food needs to exist
+                            // For example, if the client ordered a hot dog, a hot dog needs to exist
+
+                            // If the task is blocked, find out what actions need to be taken to unblock it
+                            // and queue those up.
+                            match &foods.join().find(|f| f.food == food) {
+                                Some(_) => {
+                                    task.status = Status::InProgress;
+                                },
+                                None => {
+                                    task.status = Status::Blocked;
+
+                                    // Depending on the ingredient, add tasks for fetching ingredients.
+                                    match food {
+                                        Foods::HotDog => {
+                                            for ingredient in hot_dog_ingredients {
+                                                tasks_to_add.push(Task::new(Tasks::PrepIngredient {
+                                                    ingredient
+                                                }));
+                                            }
+                                        }
+                                        _ => {
+                                            unimplemented!();
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        Status::InProgress => {
+
+                        },
+                        Status::Blocked => {
+                            // If the dish task is blocked, it can become unblocked if certain criteria are met.
+                            // In the case of delivering a hot dog, a hot dog needs to exist
+                            if let Some(_) = &foods.join().find(|f| f.food == food) {
+                                task.status == Status::InProgress;
+                            }
+                        }
+                        _ => {
+                            unimplemented!();
+                        }
+                    }
+                },
+                _ => {
+                    unimplemented!("That task hasn't been implemented yet")
+                }
+            }
+        }
+
+
+        /*
 
         // If a new task needs to be performed
         // Find an idle worker and assign them the task.
@@ -44,9 +141,6 @@ impl<'s> System<'s> for WorkerTaskSystem {
                 Some((worker_entity, _, _)) => {
                     // Note that worker is busy with this task
                     let mut task = Task::new(*task);
-
-                    dbg!("New task to assign!");
-                    dbg!(&task);
 
                     // populate subtasks based on task
                     match task.activity {
@@ -95,6 +189,9 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 }
                                 None => {
                                     unimplemented!("That kind of food hasn't been made yet!");
+
+
+
                                 }
                             }
                         }
@@ -218,5 +315,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             tasks.remove(worker_entity).unwrap();
             dbg!("Worker free for reassignment");
         }
+
+        */
     }
 }
