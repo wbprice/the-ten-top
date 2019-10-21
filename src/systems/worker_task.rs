@@ -44,6 +44,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         // Find out what actions need to occur next and put those in the backlog
 
         let mut tasks_to_add_to_backlog : Vec<Task> = vec![];
+        let mut tasks_to_assign : Vec<(Entity, Task)> = vec![];
 
         for task in game_state.tasks.iter_mut() {
             match task.activity {
@@ -114,7 +115,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                                 task.status = Status::Actionable;
                                             },
                                             false => {
-                                                task.status = Status::Actionable;
+                                                task.status = Status::Blocked;
                                             }
                                         }
                                 }
@@ -127,10 +128,82 @@ impl<'s> System<'s> for WorkerTaskSystem {
                     }
                 },
                 _ => {
-                    dbg!("task not implemented yet! Mark it done!");
-                    task.status = Status::Completed;
+                    unimplemented!();
                 }
             }
+        }
+
+        // Put any new tasks into the backlog to be addressed on the next tick.
+        for task in tasks_to_add_to_backlog {
+            game_state.tasks.push(task);
+        }
+
+        // If there are any actionable tasks, find an available worker to take it on.
+        // Depending on the task, a number of subtasks can be scheduled.
+        // These are usually specific to the worker.
+        if let Some(task) = game_state.tasks.iter_mut().find(|t| t.status == Status::Actionable) {
+            // Find an available worker to take on the task.
+            dbg!("A new task is ready!");
+            if let Some((worker_entity, _, _)) = (&entities, &workers, !&tasks).join().next() {
+                dbg!("A new worker is ready to take it on!");
+                match task.activity {
+                    Tasks::TakeOrder { patron } => {
+                        task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
+                        task.status = Status::InProgress;
+                    },
+                    Tasks::DeliverOrder { patron, food } => {
+                        match (&entities, &foods).join().find(|(_, f)| f.food == food) {
+                            Some((food_entity, _)) => {
+                                task.subtasks.push(Subtask {
+                                    activity: Subtasks::MoveToEntity {
+                                        entity: food_entity,
+                                    },
+                                    status: Status::New,
+                                });
+                                task.subtasks.push(Subtask {
+                                    activity: Subtasks::SetEntityOwner {
+                                        entity: food_entity,
+                                        owner: worker_entity,
+                                    },
+                                    status: Status::New,
+                                });
+                                task.subtasks.push(Subtask {
+                                    activity: Subtasks::MoveToEntity { entity: patron },
+                                    status: Status::New,
+                                });
+                                task.subtasks.push(Subtask {
+                                    activity: Subtasks::SetEntityOwner {
+                                        entity: food_entity,
+                                        owner: patron,
+                                    },
+                                    status: Status::New,
+                                });
+                                task.subtasks.push(Subtask {
+                                    activity: Subtasks::MoveTo {
+                                        destination: Destination { x: 44.0, y: 108.0 },
+                                    },
+                                    status: Status::New,
+                                });
+                            }
+                            None => {
+                                unimplemented!("That kind of food hasn't been made yet!");
+                            }
+                        }
+                    },
+                    _ => {
+                        unimplemented!("That task hasn't been implemented yet!");
+                    }
+                }
+
+                // Mark the task "InProgress"
+                // Assign it to the worker.
+                task.status = Status::InProgress;
+                tasks_to_assign.push((worker_entity, task));
+            }
+        }
+
+        for (worker_entity, task) in tasks_to_assign {
+
         }
     }
 }
