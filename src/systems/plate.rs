@@ -8,7 +8,8 @@ use amethyst::{
 use crate::{
     components::{
         Plate,
-        Ingredient
+        Ingredient,
+        Ingredients
     }
 };
 
@@ -26,14 +27,25 @@ impl<'s> System<'s> for PlateSystem {
         for (plate_entity, plate) in (&entities, &plates).join() {
             // Iterate through the plates.
             // What ingredients have this plate as a parent?
-            let ingredients : Vec<(Entity, Parent, Ingredient)> = (&entities, &parents, &ingredients)
+            let ingredients_and_entity : Vec<(Entity, &Parent, &Ingredient)> = (&entities, &parents, &ingredients)
                 .join()
                 .filter(|(_, parent, _)| parent.entity == plate_entity)
                 .collect();
 
-            dbg!("ingredients on the plate");
-            dbg!(&ingredients);
+            let ingredient_types : Vec<Ingredient> = ingredients_and_entity
+                .iter()
+                .map(|(_, _, ingredient)| ingredient.ingredient)
+                .collect();
 
+            // Do they make a hot dog?
+            let hot_dog_ingredients: Vec<Ingredients> = vec![
+                Ingredients::HotDogWeiner,
+                Ingredients::HotDogBun,
+            ];
+
+            if hot_dog_ingredients.into_iter().all(|ingred| ingredient_types.contains(ingred.ingredient)) {
+                dbg!("Make a food component here!");
+            }
         }
     }
 }
