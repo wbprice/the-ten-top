@@ -16,6 +16,10 @@ impl Task {
             status: Status::New,
         }
     }
+
+    pub fn set_status(mut self, status: Status) {
+        self.status = status;
+    }
 }
 
 #[derive(Debug, Copy, Clone)]

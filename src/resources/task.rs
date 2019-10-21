@@ -8,8 +8,8 @@ pub enum Tasks {
     DeliverOrder { patron: Entity, food: Foods },
     FetchIngredient { ingredient: Ingredients },
     PrepIngredient { ingredient: Ingredients },
-    PlateOrder { food: Foods },
-    MakeOrder { register: Entity, food: Foods },
+    PrepOrder { food: Foods },
+    GiveOrder { register: Entity, food: Foods },
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -26,6 +26,7 @@ pub enum Subtasks {
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Status {
     New,
+    Actionable,
     InProgress,
     Completed,
     Blocked,
