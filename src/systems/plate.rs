@@ -32,7 +32,7 @@ impl<'s> System<'s> for PlateSystem {
                 .filter(|(_, parent, _)| parent.entity == plate_entity)
                 .collect();
 
-            let ingredient_types : Vec<Ingredient> = ingredients_and_entity
+            let ingredient_types : Vec<Ingredients> = ingredients_and_entity
                 .iter()
                 .map(|(_, _, ingredient)| ingredient.ingredient)
                 .collect();
@@ -43,7 +43,7 @@ impl<'s> System<'s> for PlateSystem {
                 Ingredients::HotDogBun,
             ];
 
-            if hot_dog_ingredients.into_iter().all(|ingred| ingredient_types.contains(ingred.ingredient)) {
+            if hot_dog_ingredients.into_iter().all(|ingred| ingredient_types.contains(&ingred)) {
                 dbg!("Make a food component here!");
             }
         }
