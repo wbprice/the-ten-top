@@ -44,7 +44,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         // Find out what actions need to occur next and put those in the backlog
 
         let mut tasks_to_add_to_backlog : Vec<Task> = vec![];
-        let mut tasks_to_assign : Vec<(Entity, Task)> = vec![];
+        let mut tasks_to_assign : Vec<(Entity, usize)> = vec![];
 
         for task in game_state.tasks.iter_mut() {
             match task.activity {
@@ -141,8 +141,9 @@ impl<'s> System<'s> for WorkerTaskSystem {
         // If there are any actionable tasks, find an available worker to take it on.
         // Depending on the task, a number of subtasks can be scheduled.
         // These are usually specific to the worker.
-        if let Some(task) = game_state.tasks.iter_mut().find(|t| t.status == Status::Actionable) {
+        if let Some((index, task)) = game_state.tasks.iter_mut().enumerate().find(|(_, t)| t.status == Status::Actionable) {
             // Find an available worker to take on the task.
+
             dbg!("A new task is ready!");
             if let Some((worker_entity, _, _)) = (&entities, &workers, !&tasks).join().next() {
                 dbg!("A new worker is ready to take it on!");
@@ -198,12 +199,13 @@ impl<'s> System<'s> for WorkerTaskSystem {
                 // Mark the task "InProgress"
                 // Assign it to the worker.
                 task.status = Status::InProgress;
-                tasks_to_assign.push((worker_entity, task));
+                tasks_to_assign.push((worker_entity, index));
             }
         }
 
-        for (worker_entity, task) in tasks_to_assign {
-
+        for (worker_entity, index) in tasks_to_assign {
+            let task_to_assign = &game_state.tasks[index];
+            tasks.insert(worker_entity, *task_to_assign).unwrap();
         }
     }
 }
