@@ -146,6 +146,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                                     },
                                                 ));
                                             }
+                                            task.status = Status::Blocked;
                                         }
                                         _ => {
                                             unimplemented!();
@@ -182,6 +183,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         {
             // If all the the subtasks are completed, the task should be marked completed.
             dbg!("A new task is ready!");
+            dbg!(&task);
 
             if let Some((worker_entity, _, _)) = (&entities, &workers, !&tasks).join().next() {
                 dbg!("A new worker is ready to take it on!");
