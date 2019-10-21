@@ -125,6 +125,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::Blocked => {
                                     unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
+                                },
+                                Status::Actionable => {
+                                    unreachable!();
                                 }
                             }
                         }
@@ -162,6 +165,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::Blocked => {
                                     unimplemented!("[WaitForWorker] blocked tasks haven't been implemented yet!");
+                                },
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }
@@ -184,6 +190,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::Blocked => {
                                     unimplemented!("[SubmitOrder] blocked is unimplemented");
+                                },
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }
@@ -210,6 +219,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     unimplemented!(
                                         "[WaitForOrder] blocked tasks haven't been implemented yet"
                                     );
+                                },
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }
@@ -240,6 +252,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::Blocked => {
                                     unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
+                                },
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }

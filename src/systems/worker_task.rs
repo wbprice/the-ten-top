@@ -63,7 +63,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         _ => {}
                     }
                 },
-                Tasks::DeliverOrder { patron, food } => {
+                Tasks::DeliverOrder { patron: _, food } => {
                     match task.status {
                         Status::New => {
                             // In order for food to be deliverable, it has to exist.
@@ -71,12 +71,12 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // If the food doesn't exist, mark this task blocked
                             // Put a task "PrepOrder" into the backlog for creating the food
                             match (&entities, &foods).join().find(|(_, f)| f.food == food) {
-                                Some(food_entity) => {
+                                Some(_) => {
                                     task.status = Status::Actionable;
                                 },
                                 None => { 
                                     task.status = Status::Blocked;
-                                    game_state.tasks.push(Task::new(Tasks::PrepOrder { food }));
+                                    tasks_to_add_to_backlog.push(Task::new(Tasks::PrepOrder { food }));
                                 }
                             }
                         },
@@ -118,10 +118,14 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                             }
                                         }
                                 }
+                                _ => {
+                                    unimplemented!();
+                                }
                             }
-                        }
+                        },
+                        _ => {}
                     }
-                }
+                },
                 _ => {
                     dbg!("task not implemented yet! Mark it done!");
                     task.status = Status::Completed;
