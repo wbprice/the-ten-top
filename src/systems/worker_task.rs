@@ -180,84 +180,91 @@ impl<'s> System<'s> for WorkerTaskSystem {
             .iter_mut()
             .find(|t| t.status == Status::Actionable)
         {
-            // Find an available worker to take on the task.
-            dbg!("A new task is ready!");
-            if let Some((worker_entity, _, _)) = (&entities, &workers, !&tasks).join().next() {
-                dbg!("A new worker is ready to take it on!");
-                match task.activity {
-                    Tasks::TakeOrder { patron } => {
-                        task.subtasks
-                            .push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
-                        task.status = Status::InProgress;
-                    }
-                    Tasks::PlateIngredient { ingredient, plate } => {
-                        if let Some((ingredient_entity, ingredient)) = (&entities, &ingredients)
-                            .join()
-                            .find(|(e, i)| i.ingredient == ingredient)
-                        {
-                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity {
-                                entity: ingredient_entity,
-                            }));
-                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
-                                entity: ingredient_entity,
-                                owner: worker_entity,
-                            }));
-                            task.subtasks
-                                .push(Subtask::new(Subtasks::MoveToEntity { entity: plate }));
-                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
-                                entity: ingredient_entity,
-                                owner: plate,
-                            }));
-                        }
-                    }
-                    Tasks::DeliverOrder { patron, food } => {
-                        match (&entities, &foods).join().find(|(_, f)| f.food == food) {
-                            Some((food_entity, _)) => {
-                                task.subtasks.push(Subtask {
-                                    activity: Subtasks::MoveToEntity {
-                                        entity: food_entity,
-                                    },
-                                    status: Status::New,
-                                });
-                                task.subtasks.push(Subtask {
-                                    activity: Subtasks::SetEntityOwner {
-                                        entity: food_entity,
-                                        owner: worker_entity,
-                                    },
-                                    status: Status::New,
-                                });
-                                task.subtasks.push(Subtask {
-                                    activity: Subtasks::MoveToEntity { entity: patron },
-                                    status: Status::New,
-                                });
-                                task.subtasks.push(Subtask {
-                                    activity: Subtasks::SetEntityOwner {
-                                        entity: food_entity,
-                                        owner: patron,
-                                    },
-                                    status: Status::New,
-                                });
-                                task.subtasks.push(Subtask {
-                                    activity: Subtasks::MoveTo {
-                                        destination: Destination { x: 44.0, y: 108.0 },
-                                    },
-                                    status: Status::New,
-                                });
-                            }
-                            None => {
-                                unimplemented!("That kind of food hasn't been made yet!");
-                            }
-                        }
-                    }
-                    _ => {
-                        unimplemented!("That task hasn't been implemented yet!");
-                    }
-                }
 
-                // Mark the task "InProgress"
-                // Assign it to the worker.
-                task.status = Status::InProgress;
-                tasks.insert(worker_entity, task.clone()).unwrap();
+            // If all the the subtasks are completed, the task should be marked completed.
+            if task.subtasks.iter().all(|subtask| subtask.status == Status::Completed) {
+                task.status = Status::Completed;
+            } else {
+                // Otherwise, find an available worker to take on the task.
+                dbg!("A new task is ready!");
+
+                if let Some((worker_entity, _, _)) = (&entities, &workers, !&tasks).join().next() {
+                    dbg!("A new worker is ready to take it on!");
+                    match task.activity {
+                        Tasks::TakeOrder { patron } => {
+                            task.subtasks
+                                .push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
+                            task.status = Status::InProgress;
+                        }
+                        Tasks::PlateIngredient { ingredient, plate } => {
+                            if let Some((ingredient_entity, ingredient)) = (&entities, &ingredients)
+                                .join()
+                                .find(|(e, i)| i.ingredient == ingredient)
+                            {
+                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity {
+                                    entity: ingredient_entity,
+                                }));
+                                task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                    entity: ingredient_entity,
+                                    owner: worker_entity,
+                                }));
+                                task.subtasks
+                                    .push(Subtask::new(Subtasks::MoveToEntity { entity: plate }));
+                                task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                    entity: ingredient_entity,
+                                    owner: plate,
+                                }));
+                            }
+                        }
+                        Tasks::DeliverOrder { patron, food } => {
+                            match (&entities, &foods).join().find(|(_, f)| f.food == food) {
+                                Some((food_entity, _)) => {
+                                    task.subtasks.push(Subtask {
+                                        activity: Subtasks::MoveToEntity {
+                                            entity: food_entity,
+                                        },
+                                        status: Status::New,
+                                    });
+                                    task.subtasks.push(Subtask {
+                                        activity: Subtasks::SetEntityOwner {
+                                            entity: food_entity,
+                                            owner: worker_entity,
+                                        },
+                                        status: Status::New,
+                                    });
+                                    task.subtasks.push(Subtask {
+                                        activity: Subtasks::MoveToEntity { entity: patron },
+                                        status: Status::New,
+                                    });
+                                    task.subtasks.push(Subtask {
+                                        activity: Subtasks::SetEntityOwner {
+                                            entity: food_entity,
+                                            owner: patron,
+                                        },
+                                        status: Status::New,
+                                    });
+                                    task.subtasks.push(Subtask {
+                                        activity: Subtasks::MoveTo {
+                                            destination: Destination { x: 44.0, y: 108.0 },
+                                        },
+                                        status: Status::New,
+                                    });
+                                }
+                                None => {
+                                    unimplemented!("That kind of food hasn't been made yet!");
+                                }
+                            }
+                        }
+                        _ => {
+                            unimplemented!("That task hasn't been implemented yet!");
+                        }
+                    }
+
+                    // Mark the task "InProgress"
+                    // Assign it to the worker.
+                    task.status = Status::InProgress;
+                    tasks.insert(worker_entity, task.clone()).unwrap();
+                }
             }
         }
 
