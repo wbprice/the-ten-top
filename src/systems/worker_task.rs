@@ -117,6 +117,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 task.status = Status::Actionable;
                             }
                         }
+                        _ => {}
                     }
                 }
                 Tasks::PrepOrder { food } => {
@@ -138,20 +139,12 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                             ];
 
                                             for ingredient in hot_dog_ingredients {
-                                                if let Some((ingredient_entity, _)) =
-                                                    (&entities, &ingredients).join().find(
-                                                        |(_, ingred)| {
-                                                            ingred.ingredient == ingredient
-                                                        },
-                                                    )
-                                                {
-                                                    tasks_to_add_to_backlog.push(Task::new(
-                                                        Tasks::PlateIngredient {
-                                                            ingredient: ingredient_entity,
-                                                            plate: plate_entity,
-                                                        },
-                                                    ));
-                                                }
+                                                tasks_to_add_to_backlog.push(Task::new(
+                                                    Tasks::PlateIngredient {
+                                                        ingredient,
+                                                        plate: plate_entity,
+                                                    },
+                                                ));
                                             }
                                         }
                                         _ => {
@@ -198,18 +191,24 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         task.status = Status::InProgress;
                     }
                     Tasks::PlateIngredient { ingredient, plate } => {
-                        task.subtasks
-                            .push(Subtask::new(Subtasks::MoveToEntity { entity: ingredient }));
-                        task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
-                            entity: ingredient,
-                            owner: worker_entity,
-                        }));
-                        task.subtasks
-                            .push(Subtask::new(Subtasks::MoveToEntity { entity: plate }));
-                        task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
-                            entity: ingredient,
-                            owner: plate,
-                        }));
+                        if let Some((ingredient_entity, ingredient)) = (&entities, &ingredients)
+                            .join()
+                            .find(|(e, i)| i.ingredient == ingredient)
+                        {
+                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity {
+                                entity: ingredient_entity,
+                            }));
+                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                entity: ingredient_entity,
+                                owner: worker_entity,
+                            }));
+                            task.subtasks
+                                .push(Subtask::new(Subtasks::MoveToEntity { entity: plate }));
+                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                entity: ingredient_entity,
+                                owner: plate,
+                            }));
+                        }
                     }
                     Tasks::DeliverOrder { patron, food } => {
                         match (&entities, &foods).join().find(|(_, f)| f.food == food) {
