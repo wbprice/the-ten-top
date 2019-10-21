@@ -91,37 +91,58 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         _ => {}
                     }
                 },
+                Tasks::PlateIngredient { plate, ingredient } => {
+                    match task.status {
+                        Status::New => {
+                            // If the ingredient exists, it can be plated.
+                            // If it doesn't exist, mark the task blocked.
+                            match (&ingredients).join().find(|ingred| ingred.ingredient == ingredient) {
+                                Some(_) => task.status = Status::Actionable;
+                                None => task.status = Status::Blocked;
+                            }
+                        },
+                        Status::Blocked => {
+                            // If the ingredient exists, it can be plated.
+                            // Mark the task actionable
+                            if let Some(_) = (&ingredients).join().find(|ingred| ingred.ingredient == ingredient) {
+                                task.status = Status::Actionable;
+                            }
+                        }
+                    }
+                },
                 Tasks::PrepOrder { food } => {
                     match task.status {
                         Status::New => {
                             // In order to prep an order, all the ingredients need to exist.
                             // If the ingredients exist, tell a worker to pick them up and put them on a plate.
                             // If the ingredients don't exist, well, that's a problem :)
-                            match food {
-                                Foods::HotDog => {
-                                    let hot_dog_ingredients : Vec<Ingredients> = vec![
-                                        Ingredients::HotDogWeiner,
-                                        Ingredients::HotDogBun
-                                    ];
 
-                                    match hot_dog_ingredients
-                                        .iter()
-                                        .all(|target| {
-                                            if let Some(_) = (&ingredients).join().find(|ingred| ingred.ingredient == *target) {
-                                                return true
-                                            }
-                                            return false
-                                        }) {
-                                            true => {
-                                                task.status = Status::Actionable;
-                                            },
-                                            false => {
-                                                task.status = Status::Blocked;
+                            // Find an empty plate
+                            match (&entities, &plates).join().next() {
+                                Some(plate_entity, plate) => {
+
+                                    match food {
+                                        Foods::HotDog => {
+                                            // TODO, maybe this lives on a map somewhere?
+                                            let hot_dog_ingredients : Vec<Ingredients> = vec![
+                                                Ingredients::HotDogWeiner,
+                                                Ingredients::HotDogBun
+                                            ];
+
+                                            for ingredient in hot_dog_ingredients {
+                                                if let Some((ingredient_entity, _)) = (&entities, &ingredient).join().find(|ingred| ingred.ingredient = ingredient) {
+                                                    tasks_to_add_to_backlog.push(Task::new(Tasks::PlateIngredient {ingredient: ingredient_entity, plate: plate_entity}));
+                                                }
                                             }
                                         }
-                                }
-                                _ => {
-                                    unimplemented!();
+                                        _ => {
+                                            unimplemented!();
+                                        }
+                                    }
+                                },
+                                None => {
+                                    // If no empty plates, that's a blocker
+                                    task.status = Status::Blocked;
                                 }
                             }
                         },
@@ -151,6 +172,12 @@ impl<'s> System<'s> for WorkerTaskSystem {
                     Tasks::TakeOrder { patron } => {
                         task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
                         task.status = Status::InProgress;
+                    },
+                    Tasks::PlateIngredient { ingredient, plate } => {
+                        task.subtasks.push(Subtask::new(Subtask::MoveToEntity { entity: ingredient}));
+                        task.subtasks.push(Subtask::new(Subtask::SetEntityOwner { entity: ingredient, owner: worker}));
+                        task.subtasks.push(Subtask::new(Subtask::MoveToEntity { entity: plate }));
+                        task.subtasks.push(Subtask::new(Subtask::SetEntityOwner { entity: ingredient, owner: plate }));
                     },
                     Tasks::DeliverOrder { patron, food } => {
                         match (&entities, &foods).join().find(|(_, f)| f.food == food) {
