@@ -8,7 +8,7 @@ pub enum Tasks {
     DeliverOrder { patron: Entity, food: Foods },
     FetchIngredient { ingredient: Ingredients },
     PrepIngredient { ingredient: Ingredients },
-    PlateIngredient { ingredient, Ingredients, plate: Entity},
+    PlateIngredient { ingredient: Ingredients, plate: Entity},
     PrepOrder { food: Foods },
     GiveOrder { register: Entity, food: Foods },
 }

@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Foods, Ingredient, Ingredients, Subtask, Task, Worker},
+    components::{Destination, Food, Foods, Ingredient, Ingredients, Subtask, Task, Worker, Plate},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -19,6 +19,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         ReadStorage<'s, Ingredient>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
+        ReadStorage<'s, Plate>,
         WriteStorage<'s, Parent>,
         Write<'s, GameState>,
     );
@@ -33,6 +34,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             ingredients,
             mut destinations,
             mut tasks,
+            plates,
             mut parents,
             mut game_state,
         ): Self::SystemData,
@@ -97,8 +99,8 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // If the ingredient exists, it can be plated.
                             // If it doesn't exist, mark the task blocked.
                             match (&ingredients).join().find(|ingred| ingred.ingredient == ingredient) {
-                                Some(_) => task.status = Status::Actionable;
-                                None => task.status = Status::Blocked;
+                                Some(_) => task.status = Status::Actionable,
+                                None => task.status = Status::Blocked
                             }
                         },
                         Status::Blocked => {
@@ -119,7 +121,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
 
                             // Find an empty plate
                             match (&entities, &plates).join().next() {
-                                Some(plate_entity, plate) => {
+                                Some((plate_entity, plate)) => {
 
                                     match food {
                                         Foods::HotDog => {
@@ -130,7 +132,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                             ];
 
                                             for ingredient in hot_dog_ingredients {
-                                                if let Some((ingredient_entity, _)) = (&entities, &ingredient).join().find(|ingred| ingred.ingredient = ingredient) {
+                                                if let Some((ingredient_entity, _)) = (&entities, &ingredients).join().find(|(_, ingred)| ingred.ingredient == ingredient) {
                                                     tasks_to_add_to_backlog.push(Task::new(Tasks::PlateIngredient {ingredient: ingredient_entity, plate: plate_entity}));
                                                 }
                                             }
@@ -174,10 +176,10 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         task.status = Status::InProgress;
                     },
                     Tasks::PlateIngredient { ingredient, plate } => {
-                        task.subtasks.push(Subtask::new(Subtask::MoveToEntity { entity: ingredient}));
-                        task.subtasks.push(Subtask::new(Subtask::SetEntityOwner { entity: ingredient, owner: worker}));
-                        task.subtasks.push(Subtask::new(Subtask::MoveToEntity { entity: plate }));
-                        task.subtasks.push(Subtask::new(Subtask::SetEntityOwner { entity: ingredient, owner: plate }));
+                        task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: ingredient}));
+                        task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner { entity: ingredient, owner: worker_entity}));
+                        task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: plate }));
+                        task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner { entity: ingredient, owner: plate }));
                     },
                     Tasks::DeliverOrder { patron, food } => {
                         match (&entities, &foods).join().find(|(_, f)| f.food == food) {
