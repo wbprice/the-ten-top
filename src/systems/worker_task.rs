@@ -247,7 +247,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                     unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
                                 },
                                 Status::Actionable => {
-                                    unimplemented!();
+                                    unreachable!();
                                 }
                             }
                         }
@@ -284,7 +284,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                     unimplemented!();
                                 },
                                 Status::Actionable => {
-                                    unimplemented!();
+                                    unreachable!();
                                 }
                             }
                         }
