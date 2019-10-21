@@ -55,7 +55,7 @@ impl<'s> System<'s> for PatronTaskSystem {
         {
             // Populate task subactivities based on type of activity.
             match task.activity {
-                Tasks::MakeOrder { register, food } => {
+                Tasks::GiveOrder { register, food } => {
                     task.subtasks
                         .push(Subtask::new(Subtasks::MoveToEntity { entity: register }));
                     task.subtasks.push(Subtask::new(Subtasks::WaitForWorker));

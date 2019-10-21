@@ -68,7 +68,7 @@ impl<'s> System<'s> for RegisterSystem {
                         tasks
                             .insert(
                                 patron_entity,
-                                Task::new(Tasks::MakeOrder {
+                                Task::new(Tasks::GiveOrder {
                                     register: register_entity,
                                     food: Foods::HotDog,
                                 }),

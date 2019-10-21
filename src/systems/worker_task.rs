@@ -55,7 +55,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // This task doesn't have any prerequisites,
                             // So status can be set to "Actionable" immediately.
                             task.status = Status::Actionable;
-                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: patron })),
+                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
                         },
                         Status::Blocked => {
                             unreachable!("Take order can't be blocked");
