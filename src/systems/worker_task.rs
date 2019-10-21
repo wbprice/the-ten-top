@@ -37,7 +37,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             mut game_state,
         ): Self::SystemData,
     ) {
-        
+
         // If a new task was added to the backlog, figure out if it is actionable.
         // If so, assign it to a worker.
         // If not, mark it "blocked" and find out why it's not actionable yet.
@@ -45,6 +45,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
 
         let mut tasks_to_add_to_backlog : Vec<Task> = vec![];
         let mut tasks_to_assign : Vec<(Entity, Task)> = vec![];
+        let mut tasks_to_unassign : Vec<Entity> = vec![];
 
         for task in game_state.tasks.iter_mut() {
             match task.activity {
@@ -75,7 +76,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 Some(_) => {
                                     task.status = Status::Actionable;
                                 },
-                                None => { 
+                                None => {
                                     task.status = Status::Blocked;
                                     tasks_to_add_to_backlog.push(Task::new(Tasks::PrepOrder { food }));
                                 }
@@ -106,9 +107,9 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                     match hot_dog_ingredients
                                         .iter()
                                         .all(|target| {
-                                            if let Some(_) = (&ingredients).join().find(|ingred| ingred.ingredient == *target) { 
+                                            if let Some(_) = (&ingredients).join().find(|ingred| ingred.ingredient == *target) {
                                                 return true
-                                            } 
+                                            }
                                             return false
                                         }) {
                                             true => {
@@ -198,12 +199,107 @@ impl<'s> System<'s> for WorkerTaskSystem {
                 // Mark the task "InProgress"
                 // Assign it to the worker.
                 task.status = Status::InProgress;
-                tasks_to_assign.push((worker_entity, task));
+                tasks.insert(worker_entity, task.clone()).unwrap();
             }
         }
 
-        for (worker_entity, task) in tasks_to_assign {
+        // For each worker that has a task to complete
+        for (worker_entity, _, task) in (&entities, &workers, &mut tasks).join() {
+            match task.subtasks.iter_mut().find(|t| t.status != Status::Completed) {
+                Some(mut subtask) => {
+                    match subtask.activity {
+                        Subtasks::MoveToEntity { entity } => {
+                            match subtask.status {
+                                Status::New => {
+                                    dbg!("[MoveToEntity] worker task started");
+                                    // Where is the entity to walk to?
+                                    let entity_local = locals.get(entity).unwrap();
+                                    let entity_transform = entity_local.translation();
 
+                                    // Direct the worker to walk to the entity
+                                    destinations
+                                        .insert(
+                                            worker_entity,
+                                            Destination {
+                                                x: entity_transform.x,
+                                                y: entity_transform.y,
+                                            },
+                                        )
+                                        .unwrap();
+
+                                    subtask.status = Status::InProgress;
+                                }
+                                Status::InProgress => {
+                                    dbg!("[MoveToEntity] worker walking to destination");
+                                    // Destination storage will remove the destination
+                                    // once the entity has reached it's destination.
+                                    // So the destination no longer exists, we can call
+                                    // the task done.
+                                    if let None = destinations.get(worker_entity) {
+                                        subtask.status = Status::Completed
+                                        // Perform any cleanup
+                                    }
+                                }
+                                Status::Completed => {
+                                    unreachable!();
+                                }
+                                Status::Blocked => {
+                                    unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
+                                },
+                                Status::Actionable => {
+                                    unimplemented!();
+                                }
+                            }
+                        }
+                        Subtasks::SetEntityOwner { entity, owner } => {
+                            dbg!("[SetEntityOwner] start set entity owner task");
+                            // Attach the entity to the new owner.
+                            parents.insert(entity, Parent { entity: owner }).unwrap();
+                            // Reset the entity local
+                            let mut local = Transform::default();
+                            local.prepend_translation_z(0.2);
+                            local.prepend_translation_x(8.0);
+                            local.prepend_translation_y(-8.0);
+                            // Insert the local to the locals storage.
+                            locals.insert(entity, local).unwrap();
+                            subtask.status = Status::Completed;
+                            dbg!("[SetEntityOwner] start set entity owner completed");
+                        }
+                        Subtasks::MoveTo { destination } => {
+                            match subtask.status {
+                                Status::New => {
+                                    destinations.insert(worker_entity, destination).unwrap();
+                                    subtask.status = Status::InProgress;
+                                }
+                                Status::InProgress => {
+                                    if let None = destinations.get(worker_entity) {
+                                        subtask.status = Status::Completed
+                                        // Perform any cleanup
+                                    }
+                                }
+                                Status::Completed => {
+                                    unreachable!();
+                                }
+                                Status::Blocked => {
+                                    unimplemented!();
+                                },
+                                Status::Actionable => {
+                                    unimplemented!();
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                },
+                None => {
+                    dbg!("Nothing left to do, all the subtasks are completed");
+                    tasks_to_unassign.push(worker_entity);
+                }
+            }
+        }
+
+        for entity in tasks_to_unassign {
+            tasks.remove(entity).unwrap();
         }
     }
 }
