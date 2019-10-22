@@ -76,13 +76,6 @@ impl<'s> System<'s> for CupboardSystem {
                         },
                         &mut ingredients,
                     )
-                    .with(
-                        SpriteRender {
-                            sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                            sprite_number: 12,
-                        },
-                        &mut sprites,
-                    )
                     .with(Parent { entity: *entity }, &mut parents)
                     .with(ingredient_local, &mut locals)
                     .build();
