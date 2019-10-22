@@ -8,10 +8,13 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Patron, Cupboard, Ingredients},
-    entities::{init_food, init_patron, init_register, init_worker, init_cupboard},
+    common::Point,
+    components::{Cupboard, Ingredients, Patron},
+    entities::{
+        init_cupboard, init_food, init_ingredient, init_patron, init_plate, init_register,
+        init_stove, init_worker,
+    },
     resources::{GameState, SpriteResource},
-    common::{Point}
 };
 
 use log::info;
@@ -42,16 +45,24 @@ impl SimpleState for MyState {
 
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_register(world, sprite_sheet_handle.clone());
-        init_food(world, sprite_sheet_handle.clone());
         init_worker(world, sprite_sheet_handle.clone());
-        init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogBun), Point {
-            x: 12.0,
-            y: 76.0
-        });
-        init_cupboard(world, sprite_sheet_handle.clone(), Cupboard::new(Ingredients::HotDogWeiner), Point {
-            x: 30.0,
-            y: 76.0
-        });
+        init_ingredient(
+            world,
+            sprite_sheet_handle.clone(),
+            Point { x: 24.0, y: 120.0 },
+            Ingredients::HotDogBun,
+        );
+        init_ingredient(
+            world,
+            sprite_sheet_handle.clone(),
+            Point { x: 48.0, y: 120.0 },
+            Ingredients::HotDogWeiner,
+        );
+        init_plate(
+            world,
+            sprite_sheet_handle.clone(),
+            Point { x: 72.0, y: 120.0 },
+        );
     }
 
     fn handle_event(

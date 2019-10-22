@@ -1,21 +1,25 @@
-use crate::{components::Foods, resources::Tasks};
+use crate::{
+    components::{Foods, Task},
+    resources::Tasks,
+};
 use amethyst::ecs::Entity;
 
 #[derive(Debug, Default)]
 pub struct GameState {
-    pub tasks: Vec<Tasks>,
+    pub tasks: Vec<Task>,
     pub money: i32,
 }
 
 impl GameState {
     pub fn schedule_take_order(&mut self, entity: Entity) {
-        self.tasks.push(Tasks::TakeOrder { patron: entity });
+        self.tasks
+            .push(Task::new(Tasks::TakeOrder { patron: entity }));
     }
 
     pub fn schedule_deliver_order(&mut self, entity: Entity, food: Foods) {
-        self.tasks.push(Tasks::DeliverOrder {
+        self.tasks.push(Task::new(Tasks::DeliverOrder {
             patron: entity,
-            food
-        });
+            food,
+        }));
     }
 }

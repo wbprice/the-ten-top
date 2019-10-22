@@ -1,15 +1,33 @@
 use amethyst::ecs::prelude::Entity;
 
-use crate::components::{Destination, Foods, Emotion, Ingredients};
+use crate::components::{Destination, Emotion, Foods, Ingredients};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Tasks {
-    TakeOrder { patron: Entity },
-    DeliverOrder { patron: Entity, food: Foods },
-    FetchIngredient { ingredient: Ingredients },
-    PrepIngredient { ingredient: Ingredients },
-    PlateOrder { food: Foods },
-    MakeOrder { register: Entity, food: Foods },
+    TakeOrder {
+        patron: Entity,
+    },
+    DeliverOrder {
+        patron: Entity,
+        food: Foods,
+    },
+    FetchIngredient {
+        ingredient: Ingredients,
+    },
+    PrepIngredient {
+        ingredient: Ingredients,
+    },
+    PlateIngredient {
+        ingredient: Ingredients,
+        plate: Entity,
+    },
+    PrepOrder {
+        food: Foods,
+    },
+    GiveOrder {
+        register: Entity,
+        food: Foods,
+    },
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -26,6 +44,7 @@ pub enum Subtasks {
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Status {
     New,
+    Actionable,
     InProgress,
     Completed,
     Blocked,

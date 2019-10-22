@@ -55,7 +55,7 @@ impl<'s> System<'s> for PatronTaskSystem {
         {
             // Populate task subactivities based on type of activity.
             match task.activity {
-                Tasks::MakeOrder { register, food } => {
+                Tasks::GiveOrder { register, food } => {
                     task.subtasks
                         .push(Subtask::new(Subtasks::MoveToEntity { entity: register }));
                     task.subtasks.push(Subtask::new(Subtasks::WaitForWorker));
@@ -126,6 +126,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 Status::Blocked => {
                                     unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
                                 }
+                                Status::Actionable => {
+                                    unreachable!();
+                                }
                             }
                         }
                         Subtasks::WaitForWorker => {
@@ -163,6 +166,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 Status::Blocked => {
                                     unimplemented!("[WaitForWorker] blocked tasks haven't been implemented yet!");
                                 }
+                                Status::Actionable => {
+                                    unimplemented!();
+                                }
                             }
                         }
                         Subtasks::SubmitOrder { food } => {
@@ -184,6 +190,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::Blocked => {
                                     unimplemented!("[SubmitOrder] blocked is unimplemented");
+                                }
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }
@@ -210,6 +219,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                     unimplemented!(
                                         "[WaitForOrder] blocked tasks haven't been implemented yet"
                                     );
+                                }
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }
@@ -240,6 +252,9 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                                 Status::Blocked => {
                                     unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
+                                }
+                                Status::Actionable => {
+                                    unimplemented!();
                                 }
                             }
                         }
