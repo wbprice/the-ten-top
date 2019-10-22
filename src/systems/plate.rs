@@ -1,8 +1,6 @@
 use amethyst::{
-    core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
-    renderer::SpriteRender,
+    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
 };
 
 use crate::components::{Food, Foods, Ingredient, Ingredients, Plate};
@@ -14,25 +12,25 @@ impl<'s> System<'s> for PlateSystem {
         Entities<'s>,
         WriteStorage<'s, Parent>,
         ReadStorage<'s, Plate>,
-        WriteStorage<'s, Ingredient>,
+        ReadStorage<'s, Ingredient>,
         WriteStorage<'s, Food>,
         WriteStorage<'s, Transform>,
     );
 
     fn run(
         &mut self,
-        (entities, mut parents, plates, mut ingredients, mut foods, mut locals): Self::SystemData,
+        (entities, mut parents, plates, ingredients, mut foods, mut locals): Self::SystemData,
     ) {
-        let mut ingredients_to_remove: Vec<Entity> = vec![];
-        let mut foods_to_create: Vec<(Entity, Foods)> = vec![];
+        let mut entities_to_remove: Vec<Entity> = vec![];
+        let mut entities_to_create: Vec<(Entity, Foods)> = vec![];
 
         for (plate_entity, plate) in (&entities, &plates).join() {
             // Iterate through the plates.
             // What ingredients have this plate as a parent?
-            let ingredients_and_entity: Vec<(Entity, &Parent, &Ingredient)> =
-                (&entities, &parents, &ingredients)
+            let ingredients_and_entity: Vec<(Entity, &mut Parent, &Ingredient)> =
+                (&entities, &mut parents, &ingredients)
                     .join()
-                    .filter(|(_, parent, _)| parent.entity == plate_entity)
+                    .filter(|(_, parent, _)| &parent.entity == &plate_entity)
                     .collect();
 
             let ingredient_types: Vec<Ingredients> = ingredients_and_entity
@@ -48,25 +46,34 @@ impl<'s> System<'s> for PlateSystem {
                 .into_iter()
                 .all(|ingred| ingredient_types.contains(&ingred))
             {
-                dbg!("Remove the ingredients");
-                dbg!("Make a food component here!");
-                for (entity, _, _) in ingredients_and_entity {
-                    ingredients_to_remove.push(entity);
+                for (entity, parent, _) in ingredients_and_entity {
+                    entities_to_remove.push(entity);
+                    entities_to_create.push((plate_entity, Foods::HotDog));
                 }
-                foods_to_create.push((plate_entity, Foods::HotDog));
             }
-        }
 
-        for entity in ingredients_to_remove {
-            ingredients.remove(entity).unwrap();
-        }
-        for (parent, food) in foods_to_create {
-            entities
-                .build_entity()
-                .with(Transform::default(), &mut locals)
-                .with(Parent { entity: parent }, &mut parents)
-                .with(Food { food: food }, &mut foods)
-                .build();
+            for entity in &entities_to_remove {
+                entities.delete(*entity).unwrap();
+            }
+
+            for entity in &entities_to_create {
+                entities
+                    .build_entity()
+                    .with(Transform::default(), &mut locals)
+                    .with(
+                        Parent {
+                            entity: plate_entity,
+                        },
+                        &mut parents,
+                    )
+                    .with(
+                        Food {
+                            food: Foods::HotDog,
+                        },
+                        &mut foods,
+                    )
+                    .build();
+            }
         }
     }
 }

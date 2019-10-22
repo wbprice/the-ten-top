@@ -1,19 +1,13 @@
 use amethyst::{
     core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadExpect, Read, System, WriteStorage},
-    renderer::SpriteRender
+    ecs::prelude::{Entities, Entity, Join, Read, ReadExpect, System, WriteStorage},
+    renderer::SpriteRender,
 };
 
 use crate::{
-    components::{
-        Stove,
-        Ingredient,
-        Cooked
-    },
-    resources::{
-        SpriteResource
-    }
+    components::{Cooked, Ingredient, Stove},
+    resources::SpriteResource,
 };
 
 pub struct StoveSystem;
@@ -28,20 +22,32 @@ impl<'s> System<'s> for StoveSystem {
         WriteStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
         WriteStorage<'s, Cooked>,
-        Read<'s, Time>
+        Read<'s, Time>,
     );
 
-    fn run(&mut self, (entities, sprite_resource, mut sprites, mut stoves, mut ingredients, mut parents, mut locals, mut cooked, time): Self::SystemData) {
-
+    fn run(
+        &mut self,
+        (
+            entities,
+            sprite_resource,
+            mut sprites,
+            mut stoves,
+            mut ingredients,
+            mut parents,
+            mut locals,
+            mut cooked,
+            time,
+        ): Self::SystemData,
+    ) {
         // Find out which stove entities have food in them.
         // If a stove has food on it, it should cook it
 
-        let stove_entities : Vec<Entity> = (&entities, &stoves)
+        let stove_entities: Vec<Entity> = (&entities, &stoves)
             .join()
             .map(|(entity, _)| entity)
             .collect();
 
-        let ingredient_parents : Vec<Entity> = (&entities, &mut ingredients, &mut parents)
+        let ingredient_parents: Vec<Entity> = (&entities, &mut ingredients, &mut parents)
             .join()
             .map(|(_, _, parent)| parent.entity)
             .collect();
@@ -59,13 +65,13 @@ impl<'s> System<'s> for StoveSystem {
                 // reset the cooldown to 10.0 seconds
 
                 // Find the ingredient entity of the food on the stove.
-                let ingredient_entities : Vec<Entity> = (&entities, &mut ingredients, &mut parents)
+                let ingredient_entities: Vec<Entity> = (&entities, &mut ingredients, &mut parents)
                     .join()
                     .filter(|(_, _, parent)| parent.entity == *stove_entity)
                     .map(|(ingredient_entity, _, _)| ingredient_entity)
                     .collect();
 
-                let ingredient_entity : Entity = ingredient_entities[0];
+                let ingredient_entity: Entity = ingredient_entities[0];
 
                 // Add the cooked component to that entity to indicate that the ingredient has
                 // been cooked.

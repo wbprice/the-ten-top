@@ -1,5 +1,5 @@
-use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use crate::resources::{Status, Subtasks, Tasks};
+use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 #[derive(Debug, Clone)]
 pub struct Task {

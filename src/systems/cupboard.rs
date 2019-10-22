@@ -1,18 +1,13 @@
 use amethyst::{
     core::timing::Time,
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadExpect, Read, System, WriteStorage},
-    renderer::SpriteRender
+    ecs::prelude::{Entities, Entity, Join, Read, ReadExpect, System, WriteStorage},
+    renderer::SpriteRender,
 };
 
 use crate::{
-    components::{
-        Cupboard,
-        Ingredient
-    },
-    resources::{
-        SpriteResource
-    }
+    components::{Cupboard, Ingredient},
+    resources::SpriteResource,
 };
 
 pub struct CupboardSystem;
@@ -26,23 +21,34 @@ impl<'s> System<'s> for CupboardSystem {
         WriteStorage<'s, Ingredient>,
         WriteStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
-        Read<'s, Time>
+        Read<'s, Time>,
     );
 
-    fn run(&mut self, (entities, sprite_resource, mut sprites, mut cupboards, mut ingredients, mut parents, mut locals, time): Self::SystemData) {
-
+    fn run(
+        &mut self,
+        (
+            entities,
+            sprite_resource,
+            mut sprites,
+            mut cupboards,
+            mut ingredients,
+            mut parents,
+            mut locals,
+            time,
+        ): Self::SystemData,
+    ) {
         // Find which cupboards are empty (and should spawn ingredients)
         // buy comparing the list of cupboard entities against a
         // list of ingredient parents.
         // If the cupboard entity is not a parent to an ingredient, it should
         // respawn an ingredient after 10 seconds.
 
-        let cupboard_entities : Vec<Entity> = (&entities, &cupboards)
+        let cupboard_entities: Vec<Entity> = (&entities, &cupboards)
             .join()
             .map(|(entity, _)| entity)
             .collect();
 
-        let ingredient_parents : Vec<Entity> = (&entities, &mut ingredients, &mut parents)
+        let ingredient_parents: Vec<Entity> = (&entities, &mut ingredients, &mut parents)
             .join()
             .map(|(_, _, parent)| parent.entity)
             .collect();
@@ -64,16 +70,20 @@ impl<'s> System<'s> for CupboardSystem {
 
                 entities
                     .build_entity()
-                    .with(Ingredient {
-                        ingredient: cupboard.ingredient
-                    }, &mut ingredients)
-                    .with(SpriteRender {
-                        sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                        sprite_number: 12
-                    }, &mut sprites)
-                    .with(Parent {
-                        entity: *entity
-                    }, &mut parents)
+                    .with(
+                        Ingredient {
+                            ingredient: cupboard.ingredient,
+                        },
+                        &mut ingredients,
+                    )
+                    .with(
+                        SpriteRender {
+                            sprite_sheet: sprite_resource.sprite_sheet.clone(),
+                            sprite_number: 12,
+                        },
+                        &mut sprites,
+                    )
+                    .with(Parent { entity: *entity }, &mut parents)
                     .with(ingredient_local, &mut locals)
                     .build();
 

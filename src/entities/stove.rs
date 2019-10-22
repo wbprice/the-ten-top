@@ -6,10 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::{
-    common::{Point},
-    components::{Stove}
-};
+use crate::{common::Point, components::Stove};
 
 pub fn init_stove(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, location: Point) {
     let mut local_transform = Transform::default();

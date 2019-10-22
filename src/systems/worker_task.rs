@@ -148,7 +148,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                             }
 
                                             task.status = Status::Blocked;
-                                        },
+                                        }
                                         _ => {
                                             unimplemented!();
                                         }

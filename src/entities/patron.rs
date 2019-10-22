@@ -6,7 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Foods, Emotion, Feeling, Patron, SimpleAnimation, Velocity};
+use crate::components::{Emotion, Feeling, Foods, Patron, SimpleAnimation, Velocity};
 
 pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, patron: Patron) {
     let mut local_transform = Transform::default();

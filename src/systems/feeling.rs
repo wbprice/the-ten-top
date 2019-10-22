@@ -5,7 +5,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Foods, Emotion, Feeling, Patron, ThoughtBubble},
+    components::{Emotion, Feeling, Foods, Patron, ThoughtBubble},
     resources::SpriteResource,
 };
 
