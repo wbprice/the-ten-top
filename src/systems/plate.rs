@@ -59,19 +59,19 @@ impl<'s> System<'s> for PlateSystem {
             for entity in &entities_to_create {
                 entities
                     .build_entity()
-                    .with(Transform::default(), &mut locals)
-                    .with(
-                        Parent {
-                            entity: plate_entity,
-                        },
-                        &mut parents,
-                    )
                     .with(
                         Food {
                             food: Foods::HotDog,
                         },
                         &mut foods,
                     )
+                    .with(
+                        Parent {
+                            entity: plate_entity,
+                        },
+                        &mut parents,
+                    )
+                    .with(Transform::default(), &mut locals)
                     .build();
             }
         }
