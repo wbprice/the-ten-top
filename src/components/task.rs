@@ -1,10 +1,10 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use crate::resources::{Status, Subtasks, Tasks};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Task {
     pub activity: Tasks,
-    pub subtasks: Vec<Subtask>,
+    pub subtasks: Box<Vec<Subtask>>,
     pub status: Status,
 }
 
@@ -12,7 +12,7 @@ impl Task {
     pub fn new(activity: Tasks) -> Task {
         Task {
             activity,
-            subtasks: vec![],
+            subtasks: Box::new(vec![]),
             status: Status::New,
         }
     }

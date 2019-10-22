@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Foods, Ingredient, Ingredients, Subtask, Task, Worker},
+    components::{Destination, Food, Foods, Ingredient, Ingredients, Plate, Subtask, Task, Worker},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -19,6 +19,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         ReadStorage<'s, Ingredient>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
+        ReadStorage<'s, Plate>,
         WriteStorage<'s, Parent>,
         Write<'s, GameState>,
     );
@@ -33,18 +34,19 @@ impl<'s> System<'s> for WorkerTaskSystem {
             ingredients,
             mut destinations,
             mut tasks,
+            plates,
             mut parents,
             mut game_state,
         ): Self::SystemData,
     ) {
-        
         // If a new task was added to the backlog, figure out if it is actionable.
         // If so, assign it to a worker.
         // If not, mark it "blocked" and find out why it's not actionable yet.
         // Find out what actions need to occur next and put those in the backlog
 
-        let mut tasks_to_add_to_backlog : Vec<Task> = vec![];
-        let mut tasks_to_assign : Vec<(Entity, usize)> = vec![];
+        let mut tasks_to_add_to_backlog: Vec<Task> = vec![];
+        let mut tasks_to_assign: Vec<(Entity, Task)> = vec![];
+        let mut tasks_to_unassign: Vec<Entity> = vec![];
 
         for task in game_state.tasks.iter_mut() {
             match task.activity {
@@ -56,14 +58,15 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // This task doesn't have any prerequisites,
                             // So status can be set to "Actionable" immediately.
                             task.status = Status::Actionable;
-                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
-                        },
+                            task.subtasks
+                                .push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
+                        }
                         Status::Blocked => {
                             unreachable!("Take order can't be blocked");
-                        },
+                        }
                         _ => {}
                     }
-                },
+                }
                 Tasks::DeliverOrder { patron: _, food } => {
                     match task.status {
                         Status::New => {
@@ -74,13 +77,14 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             match (&entities, &foods).join().find(|(_, f)| f.food == food) {
                                 Some(_) => {
                                     task.status = Status::Actionable;
-                                },
-                                None => { 
+                                }
+                                None => {
                                     task.status = Status::Blocked;
-                                    tasks_to_add_to_backlog.push(Task::new(Tasks::PrepOrder { food }));
+                                    tasks_to_add_to_backlog
+                                        .push(Task::new(Tasks::PrepOrder { food }));
                                 }
                             }
-                        },
+                        }
                         Status::Blocked => {
                             // This task can set to actionable if a food of the given type is found.
                             if let Some(_) = (&foods).join().find(|f| f.food == food) {
@@ -89,44 +93,76 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         }
                         _ => {}
                     }
-                },
+                }
+                Tasks::PlateIngredient { plate, ingredient } => {
+                    match task.status {
+                        Status::New => {
+                            // If the ingredient exists, it can be plated.
+                            // If it doesn't exist, mark the task blocked.
+                            match (&ingredients)
+                                .join()
+                                .find(|ingred| ingred.ingredient == ingredient)
+                            {
+                                Some(_) => task.status = Status::Actionable,
+                                None => task.status = Status::Blocked,
+                            }
+                        }
+                        Status::Blocked => {
+                            // If the ingredient exists, it can be plated.
+                            // Mark the task actionable
+                            if let Some(_) = (&ingredients)
+                                .join()
+                                .find(|ingred| ingred.ingredient == ingredient)
+                            {
+                                task.status = Status::Actionable;
+                            }
+                        }
+                        _ => {}
+                    }
+                }
                 Tasks::PrepOrder { food } => {
                     match task.status {
                         Status::New => {
                             // In order to prep an order, all the ingredients need to exist.
                             // If the ingredients exist, tell a worker to pick them up and put them on a plate.
                             // If the ingredients don't exist, well, that's a problem :)
-                            match food {
-                                Foods::HotDog => {
-                                    let hot_dog_ingredients : Vec<Ingredients> = vec![
-                                        Ingredients::HotDogWeiner,
-                                        Ingredients::HotDogBun
-                                    ];
 
-                                    match hot_dog_ingredients
-                                        .iter()
-                                        .all(|target| {
-                                            if let Some(_) = (&ingredients).join().find(|ingred| ingred.ingredient == *target) { 
-                                                return true
-                                            } 
-                                            return false
-                                        }) {
-                                            true => {
-                                                task.status = Status::Actionable;
-                                            },
-                                            false => {
-                                                task.status = Status::Blocked;
+                            // Find an empty plate
+                            match (&entities, &plates).join().next() {
+                                Some((plate_entity, plate)) => {
+                                    match food {
+                                        Foods::HotDog => {
+                                            // TODO, maybe this lives on a map somewhere?
+                                            let hot_dog_ingredients: Vec<Ingredients> = vec![
+                                                Ingredients::HotDogWeiner,
+                                                Ingredients::HotDogBun,
+                                            ];
+
+                                            for ingredient in hot_dog_ingredients {
+                                                tasks_to_add_to_backlog.push(Task::new(
+                                                    Tasks::PlateIngredient {
+                                                        ingredient,
+                                                        plate: plate_entity,
+                                                    },
+                                                ));
                                             }
+
+                                            task.status = Status::Blocked;
+                                        },
+                                        _ => {
+                                            unimplemented!();
                                         }
+                                    }
                                 }
-                                _ => {
-                                    unimplemented!();
+                                None => {
+                                    // If no empty plates, that's a blocker
+                                    task.status = Status::Blocked;
                                 }
                             }
-                        },
+                        }
                         _ => {}
                     }
-                },
+                }
                 _ => {
                     unimplemented!();
                 }
@@ -141,17 +177,43 @@ impl<'s> System<'s> for WorkerTaskSystem {
         // If there are any actionable tasks, find an available worker to take it on.
         // Depending on the task, a number of subtasks can be scheduled.
         // These are usually specific to the worker.
-        if let Some((index, task)) = game_state.tasks.iter_mut().enumerate().find(|(_, t)| t.status == Status::Actionable) {
-            // Find an available worker to take on the task.
-
+        if let Some(task) = game_state
+            .tasks
+            .iter_mut()
+            .find(|t| t.status == Status::Actionable)
+        {
+            // If all the the subtasks are completed, the task should be marked completed.
             dbg!("A new task is ready!");
+            dbg!(&task);
+
             if let Some((worker_entity, _, _)) = (&entities, &workers, !&tasks).join().next() {
                 dbg!("A new worker is ready to take it on!");
                 match task.activity {
                     Tasks::TakeOrder { patron } => {
-                        task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
+                        task.subtasks
+                            .push(Subtask::new(Subtasks::MoveToEntity { entity: patron }));
                         task.status = Status::InProgress;
-                    },
+                    }
+                    Tasks::PlateIngredient { ingredient, plate } => {
+                        if let Some((ingredient_entity, ingredient)) = (&entities, &ingredients)
+                            .join()
+                            .find(|(e, i)| i.ingredient == ingredient)
+                        {
+                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity {
+                                entity: ingredient_entity,
+                            }));
+                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                entity: ingredient_entity,
+                                owner: worker_entity,
+                            }));
+                            task.subtasks
+                                .push(Subtask::new(Subtasks::MoveToEntity { entity: plate }));
+                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                entity: ingredient_entity,
+                                owner: plate,
+                            }));
+                        }
+                    }
                     Tasks::DeliverOrder { patron, food } => {
                         match (&entities, &foods).join().find(|(_, f)| f.food == food) {
                             Some((food_entity, _)) => {
@@ -190,7 +252,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 unimplemented!("That kind of food hasn't been made yet!");
                             }
                         }
-                    },
+                    }
                     _ => {
                         unimplemented!("That task hasn't been implemented yet!");
                     }
@@ -199,13 +261,111 @@ impl<'s> System<'s> for WorkerTaskSystem {
                 // Mark the task "InProgress"
                 // Assign it to the worker.
                 task.status = Status::InProgress;
-                tasks_to_assign.push((worker_entity, index));
+                tasks.insert(worker_entity, task.clone()).unwrap();
             }
         }
 
-        for (worker_entity, index) in tasks_to_assign {
-            let task_to_assign = &game_state.tasks[index];
-            tasks.insert(worker_entity, *task_to_assign).unwrap();
+        // For each worker that has a task to complete
+        for (worker_entity, _, task) in (&entities, &workers, &mut tasks).join() {
+            match task
+                .subtasks
+                .iter_mut()
+                .find(|subtask| subtask.status != Status::Completed)
+            {
+                Some(mut subtask) => {
+                    match subtask.activity {
+                        Subtasks::MoveToEntity { entity } => {
+                            match subtask.status {
+                                Status::New => {
+                                    dbg!("[MoveToEntity] worker task started");
+                                    // Where is the entity to walk to?
+                                    let entity_local = locals.get(entity).unwrap();
+                                    let entity_transform = entity_local.translation();
+
+                                    // Direct the worker to walk to the entity
+                                    destinations
+                                        .insert(
+                                            worker_entity,
+                                            Destination {
+                                                x: entity_transform.x,
+                                                y: entity_transform.y,
+                                            },
+                                        )
+                                        .unwrap();
+
+                                    subtask.status = Status::InProgress;
+                                }
+                                Status::InProgress => {
+                                    dbg!("[MoveToEntity] worker walking to destination");
+                                    // Destination storage will remove the destination
+                                    // once the entity has reached it's destination.
+                                    // So the destination no longer exists, we can call
+                                    // the task done.
+                                    if let None = destinations.get(worker_entity) {
+                                        subtask.status = Status::Completed
+                                        // Perform any cleanup
+                                    }
+                                }
+                                Status::Completed => {
+                                    unreachable!();
+                                }
+                                Status::Blocked => {
+                                    unimplemented!("[MoveToEntity] blocked tasks haven't been implemented yet!");
+                                }
+                                Status::Actionable => {
+                                    unreachable!();
+                                }
+                            }
+                        }
+                        Subtasks::SetEntityOwner { entity, owner } => {
+                            dbg!("[SetEntityOwner] start set entity owner task");
+                            // Attach the entity to the new owner.
+                            parents.insert(entity, Parent { entity: owner }).unwrap();
+                            // Reset the entity local
+                            let mut local = Transform::default();
+                            local.prepend_translation_z(0.2);
+                            local.prepend_translation_x(8.0);
+                            local.prepend_translation_y(-8.0);
+                            // Insert the local to the locals storage.
+                            locals.insert(entity, local).unwrap();
+                            subtask.status = Status::Completed;
+                            dbg!("[SetEntityOwner] start set entity owner completed");
+                        }
+                        Subtasks::MoveTo { destination } => {
+                            match subtask.status {
+                                Status::New => {
+                                    destinations.insert(worker_entity, destination).unwrap();
+                                    subtask.status = Status::InProgress;
+                                }
+                                Status::InProgress => {
+                                    if let None = destinations.get(worker_entity) {
+                                        subtask.status = Status::Completed
+                                        // Perform any cleanup
+                                    }
+                                }
+                                Status::Completed => {
+                                    unreachable!();
+                                }
+                                Status::Blocked => {
+                                    unimplemented!();
+                                }
+                                Status::Actionable => {
+                                    unreachable!();
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+                None => {
+                    dbg!("Nothing left to do, all the subtasks are completed");
+                    tasks_to_unassign.push(worker_entity);
+                }
+            }
+        }
+
+        for entity in tasks_to_unassign {
+            tasks.remove(entity).unwrap();
         }
     }
 }
