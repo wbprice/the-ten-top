@@ -282,12 +282,8 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                     // If the entity has a parent, the destination should be the parent,
                                     // not the entity itself.
                                     let entity_local = match parents.get(entity) {
-                                        Some(parent) => {
-                                            locals.get(parent.entity).unwrap()
-                                        },
-                                        None => {
-                                            locals.get(entity).unwrap()
-                                        }
+                                        Some(parent) => locals.get(parent.entity).unwrap(),
+                                        None => locals.get(entity).unwrap(),
                                     };
                                     let entity_transform = entity_local.translation();
 
