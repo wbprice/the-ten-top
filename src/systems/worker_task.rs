@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Food, Foods, Ingredient, Ingredients, Plate, Subtask, Task, Worker},
+    components::{Destination, Food, Foods, Ingredient, Ingredients, Plate, Subtask, Task, Worker, Stove},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -20,6 +20,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
         ReadStorage<'s, Plate>,
+        ReadStorage<'s, Stove>,
         WriteStorage<'s, Parent>,
         Write<'s, GameState>,
     );
@@ -36,6 +37,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             mut tasks,
             plates,
             mut parents,
+            stoves,
             mut game_state,
         ): Self::SystemData,
     ) {
@@ -94,6 +96,32 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         _ => {}
                     }
                 }
+                Tasks::PrepIngredient { ingredient } => {
+                    match task.status {
+                        Status::New => {
+                            // Some ingredients need to be cooked or prepped.
+                            // The action required is dependent on the ingredient.
+                            // If the appropriate appliance isn't available, the task is blocked.
+                            match ingredient {
+                                Ingredients::HotDogWeiner => {
+                                    // A hot dog weiner needs to be cooked on a stove.
+                                    // See if a stove is available.
+                                    (&entities, &stoves)
+                                        .join()
+                                        .filter(|(entity, stove)| {
+                                            (&ingredients, &parents)
+                                                .join()
+                                                .filter(|(ingredient, parent|) {
+
+                                                })
+                                        })
+                                }
+                            }
+                        }
+                        Status::Blocked => {}
+                        _ => {}
+                    }
+                }
                 Tasks::PlateIngredient { plate, ingredient } => {
                     match task.status {
                         Status::New => {
@@ -134,7 +162,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                         Foods::HotDog => {
                                             // TODO, maybe this lives on a map somewhere?
                                             let hot_dog_ingredients: Vec<Ingredients> = vec![
-                                                Ingredients::HotDogWeiner,
+                                                Ingredients::HotDogWeinerCooked,
                                                 Ingredients::HotDogBun,
                                             ];
 

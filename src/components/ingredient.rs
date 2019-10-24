@@ -4,10 +4,12 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 pub enum Ingredients {
     HamburgerBun,
     HamburgerPatty,
+    HamburgerPattyCooked,
     Lettuce,
     Tomato,
     HotDogBun,
     HotDogWeiner,
+    HotDogWeinerCooked,
 }
 
 #[derive(Debug, Copy, Clone)]
