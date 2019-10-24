@@ -278,8 +278,17 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             match subtask.status {
                                 Status::New => {
                                     dbg!("[MoveToEntity] worker task started");
-                                    // Where is the entity to walk to?
-                                    let entity_local = locals.get(entity).unwrap();
+                                    // Where should the worker walk?
+                                    // If the entity has a parent, the destination should be the parent,
+                                    // not the entity itself.
+                                    let entity_local = match parents.get(entity) {
+                                        Some(parent) => {
+                                            locals.get(parent.entity).unwrap()
+                                        },
+                                        None => {
+                                            locals.get(entity).unwrap()
+                                        }
+                                    };
                                     let entity_transform = entity_local.translation();
 
                                     // Direct the worker to walk to the entity
