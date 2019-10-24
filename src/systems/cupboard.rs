@@ -65,7 +65,7 @@ impl<'s> System<'s> for CupboardSystem {
                 // spawn ingredient of type cupboard.ingredient
                 // reset the cooldown to 10.0 seconds
                 let mut ingredient_local = Transform::default();
-                ingredient_local.prepend_translation_y(12.0);
+                ingredient_local.prepend_translation_y(6.0);
                 ingredient_local.prepend_translation_z(0.1);
 
                 entities
@@ -75,13 +75,6 @@ impl<'s> System<'s> for CupboardSystem {
                             ingredient: cupboard.ingredient,
                         },
                         &mut ingredients,
-                    )
-                    .with(
-                        SpriteRender {
-                            sprite_sheet: sprite_resource.sprite_sheet.clone(),
-                            sprite_number: 12,
-                        },
-                        &mut sprites,
                     )
                     .with(Parent { entity: *entity }, &mut parents)
                     .with(ingredient_local, &mut locals)

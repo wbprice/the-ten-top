@@ -46,17 +46,17 @@ impl SimpleState for MyState {
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_register(world, sprite_sheet_handle.clone());
         init_worker(world, sprite_sheet_handle.clone());
-        init_ingredient(
+        init_cupboard(
             world,
             sprite_sheet_handle.clone(),
-            Point { x: 24.0, y: 120.0 },
             Ingredients::HotDogBun,
+            Point { x: 24.0, y: 120.0 },
         );
-        init_ingredient(
+        init_cupboard(
             world,
             sprite_sheet_handle.clone(),
-            Point { x: 48.0, y: 120.0 },
             Ingredients::HotDogWeiner,
+            Point { x: 48.0, y: 120.0 },
         );
         init_plate(
             world,
