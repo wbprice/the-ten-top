@@ -103,7 +103,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // The action required is dependent on the ingredient.
                             // If the appropriate appliance isn't available, the task is blocked.
                             match ingredient {
-                                Ingredients::HotDogWeiner => {
+                                Ingredients::HotDogWeinerCooked => {
                                     // A hot dog weiner needs to be cooked on a stove.
                                     // See if a stove is available.
                                     let stove_entities: Vec<Entity> = (&entities, &stoves)
