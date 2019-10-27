@@ -274,12 +274,35 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             .join()
                             .find(|(e, i)| i.ingredient == uncooked_ingredient) 
                         {
-                            task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: ingredient_entity }));
-                            task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
-                                entity: ingredient_entity,
-                                owner: worker_entity
-                            }));
-                            task.subtasks.push(Subtask::new(Subtasks::))
+
+                            // A hot dog weiner needs to be cooked on a stove.
+                            // See if a stove is available.
+                            let stove_entities: Vec<Entity> = (&entities, &stoves)
+                                .join()
+                                .map(|(entity, _)| entity)
+                                .collect();
+
+                            let ingredient_parents: Vec<Entity> = (&entities, &ingredients, &parents)
+                                .join()
+                                .map(|(_, _, parent)| parent.entity)
+                                .collect();
+
+                            if let Some(stove_entity) = stove_entities
+                                .into_iter()
+                                .filter(|stove_entity| !ingredient_parents.contains(stove_entity))
+                                .next()
+                            {
+                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: ingredient_entity }));
+                                task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                    entity: ingredient_entity,
+                                    owner: worker_entity
+                                }));
+                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: stove_entity }));
+                                task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                    entity: ingredient_entity,
+                                    owner: stove_entity
+                                }));
+                            }
                         }
                     },
                     Tasks::DeliverOrder { patron, food } => {

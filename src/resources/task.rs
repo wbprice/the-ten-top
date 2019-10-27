@@ -15,7 +15,7 @@ pub enum Tasks {
         ingredient: Ingredients,
     },
     PrepIngredient {
-        ingredient: Ingredients,
+        ingredient: Ingredients
     },
     PlateIngredient {
         ingredient: Ingredients,
