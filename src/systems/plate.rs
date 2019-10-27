@@ -40,7 +40,7 @@ impl<'s> System<'s> for PlateSystem {
 
             // Do they make a hot dog?
             let hot_dog_ingredients: Vec<Ingredients> =
-                vec![Ingredients::HotDogWeiner, Ingredients::HotDogBun];
+                vec![Ingredients::HotDogWeinerCooked, Ingredients::HotDogBun];
 
             if hot_dog_ingredients
                 .into_iter()
