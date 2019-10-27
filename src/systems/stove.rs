@@ -78,7 +78,7 @@ impl<'s> System<'s> for StoveSystem {
                     ingredient: Ingredients::HotDogWeinerCooked
                 }).unwrap();
 
-                stove.cook_time = 10.0;
+                stove.cook_time = 6.0;
             } else {
                 // tick down cooldown
                 stove.cook_time = stove.cook_time - time.delta_seconds();
