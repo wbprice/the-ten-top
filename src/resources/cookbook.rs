@@ -37,6 +37,7 @@ pub enum Ingredients {
     HotDogWeinerCooked,
 }
 
+#[derive(Debug, Default)]
 pub struct Cookbook {
     graph: GraphMap<Food, f64, Directed>,
 }

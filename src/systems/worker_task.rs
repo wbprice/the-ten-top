@@ -1,11 +1,11 @@
 use amethyst::{
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, Write, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, Write, WriteStorage},
 };
 
 use crate::{
     components::{Destination, Dish, Ingredient, Plate, Stove, Subtask, Task, Worker},
-    resources::{Dishes, GameState, Ingredients, Status, Subtasks, Tasks},
+    resources::{Cookbook, Dishes, GameState, Ingredients, Status, Subtasks, Tasks},
 };
 
 pub struct WorkerTaskSystem;
@@ -23,6 +23,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         ReadStorage<'s, Stove>,
         WriteStorage<'s, Parent>,
         Write<'s, GameState>,
+        Read<'s, Cookbook>,
     );
 
     fn run(
@@ -39,6 +40,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             stoves,
             mut parents,
             mut game_state,
+            cookbook,
         ): Self::SystemData,
     ) {
         // If a new task was added to the backlog, figure out if it is actionable.

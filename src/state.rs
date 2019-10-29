@@ -9,9 +9,9 @@ use amethyst::{
 
 use crate::{
     common::Point,
-    components::{Cupboard, Patron},
+    components::Patron,
     entities::{init_cupboard, init_patron, init_plate, init_register, init_stove, init_worker},
-    resources::{GameState, Ingredients, SpriteResource},
+    resources::{Cookbook, GameState, Ingredients, SpriteResource},
 };
 
 use log::info;
@@ -39,6 +39,7 @@ impl SimpleState for MyState {
             sprite_sheet: sprite_sheet_handle.clone(),
         });
         world.insert(GameState::default());
+        world.insert(Cookbook::new());
 
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_register(world, sprite_sheet_handle.clone());
