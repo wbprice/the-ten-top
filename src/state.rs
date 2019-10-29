@@ -38,10 +38,10 @@ impl SimpleState for MyState {
 
         let sprite_sheet_handle = load_sprite_sheet(world);
         // Register sprite sheet handle with the world
-        world.add_resource(SpriteResource {
+        world.insert(SpriteResource {
             sprite_sheet: sprite_sheet_handle.clone(),
         });
-        world.add_resource(GameState::default());
+        world.insert(GameState::default());
 
         init_patron(world, sprite_sheet_handle.clone(), Patron::generate());
         init_register(world, sprite_sheet_handle.clone());
