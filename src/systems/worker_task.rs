@@ -5,7 +5,7 @@ use amethyst::{
 
 use crate::{
     components::{Destination, Dish, Ingredient, Plate, Stove, Subtask, Task, Worker},
-    resources::{Cookbook, Dishes, GameState, Ingredients, Status, Subtasks, Tasks},
+    resources::{Cookbook, Dishes, Food, GameState, Ingredients, Status, Subtasks, Tasks},
 };
 
 pub struct WorkerTaskSystem;
@@ -185,29 +185,18 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // Find an empty plate
                             match (&entities, &plates).join().next() {
                                 Some((plate_entity, plate)) => {
-                                    match dish {
-                                        Dishes::HotDog => {
-                                            // TODO, maybe this lives on a map somewhere?
-                                            let hot_dog_ingredients: Vec<Ingredients> = vec![
-                                                Ingredients::HotDogWeinerCooked,
-                                                Ingredients::HotDogBun,
-                                            ];
-
-                                            for ingredient in hot_dog_ingredients {
-                                                tasks_to_add_to_backlog.push(Task::new(
-                                                    Tasks::PlateIngredient {
-                                                        ingredient,
-                                                        plate: plate_entity,
-                                                    },
-                                                ));
-                                            }
-
-                                            task.status = Status::Blocked;
-                                        }
-                                        _ => {
-                                            unimplemented!();
-                                        }
+                                    // If an empty plate exists, find out what ingredients are required
+                                    // and queue up plating tasks for them.
+                                    for ingredient in cookbook.ingredients(Food::Dishes(dish)) {
+                                        tasks_to_add_to_backlog.push(Task::new(
+                                            Tasks::PlateIngredient {
+                                                ingredient,
+                                                plate: plate_entity,
+                                            },
+                                        ));
                                     }
+
+                                    task.status = Status::Blocked;
                                 }
                                 None => {
                                     // If no empty plates, that's a blocker
