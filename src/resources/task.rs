@@ -2,7 +2,7 @@ use amethyst::ecs::prelude::Entity;
 
 use crate::{
     components::{Destination, Emotion},
-    resources::cookbook::{Dishes, Ingredients},
+    resources::cookbook::{Food, Dishes, Ingredients},
 };
 
 #[derive(Debug, Copy, Clone, PartialEq)]
