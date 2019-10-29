@@ -1,10 +1,10 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-use crate::resources::{Food};
+use crate::resources::Ingredients;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Ingredient {
-    pub ingredient: Food::Ingredients,
+    pub ingredient: Ingredients,
 }
 
 impl Component for Ingredient {

@@ -4,14 +4,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{
-        Food, 
-        Dishes
-    },
-    resources::{
-        SpriteResource,
-        Food
-    }
+    components::Dish,
+    resources::{Dishes, Food, SpriteResource},
 };
 
 pub struct DishSystem;
@@ -33,8 +27,8 @@ impl<'s> System<'s> for DishSystem {
         for (entity, dish, _) in (&entities, &dishes, !&sprites).join() {
             let sprite_sheet = sprite_resource.sprite_sheet.clone();
 
-            match dishes.dish {
-                Food::Dishes(Dishes::HotDog) => {
+            match dish.dish {
+                Dishes::HotDog => {
                     sprites_to_insert.push((
                         entity,
                         SpriteRender {

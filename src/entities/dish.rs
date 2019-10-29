@@ -6,7 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::{Food, Foods};
+use crate::{components::Dish, resources::Dishes};
 
 pub fn init_dish(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) -> Entity {
     let mut local_transform = Transform::default();
@@ -22,7 +22,7 @@ pub fn init_dish(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) ->
         .create_entity()
         .with(sprite_render)
         .with(Dish {
-            food: Foods::HotDog,
+            dish: Dishes::HotDog,
         })
         .with(local_transform)
         .build()

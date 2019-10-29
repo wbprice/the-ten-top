@@ -8,7 +8,10 @@ use amethyst::{
 
 use crate::{
     common::Point,
-    components::{Cupboard, Ingredients},
+    components::{Cupboard},
+    resources::{
+        Ingredients
+    }
 };
 
 pub fn init_cupboard(

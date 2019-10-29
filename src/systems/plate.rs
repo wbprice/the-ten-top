@@ -3,7 +3,11 @@ use amethyst::{
     ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
 };
 
-use crate::components::{Food, Foods, Ingredient, Ingredients, Plate};
+use crate::{
+    components::{Dish, Ingredient, Plate},
+    resources::{Dishes, Ingredients}
+};
+
 
 pub struct PlateSystem;
 
@@ -13,16 +17,16 @@ impl<'s> System<'s> for PlateSystem {
         WriteStorage<'s, Parent>,
         ReadStorage<'s, Plate>,
         ReadStorage<'s, Ingredient>,
-        WriteStorage<'s, Food>,
+        WriteStorage<'s, Dish>,
         WriteStorage<'s, Transform>,
     );
 
     fn run(
         &mut self,
-        (entities, mut parents, plates, ingredients, mut foods, mut locals): Self::SystemData,
+        (entities, mut parents, plates, ingredients, mut dishes, mut locals): Self::SystemData,
     ) {
         let mut entities_to_remove: Vec<Entity> = vec![];
-        let mut entities_to_create: Vec<(Entity, Foods)> = vec![];
+        let mut entities_to_create: Vec<(Entity, Dishes)> = vec![];
 
         for (plate_entity, plate) in (&entities, &plates).join() {
             // Iterate through the plates.
@@ -48,7 +52,7 @@ impl<'s> System<'s> for PlateSystem {
             {
                 for (entity, parent, _) in ingredients_and_entity {
                     entities_to_remove.push(entity);
-                    entities_to_create.push((plate_entity, Foods::HotDog));
+                    entities_to_create.push((plate_entity, Dishes::HotDog));
                 }
             }
 
@@ -60,10 +64,10 @@ impl<'s> System<'s> for PlateSystem {
                 entities
                     .build_entity()
                     .with(
-                        Food {
-                            food: Foods::HotDog,
+                        Dish {
+                            dish: Dishes::HotDog
                         },
-                        &mut foods,
+                        &mut dishes,
                     )
                     .with(
                         Parent {

@@ -1,20 +1,15 @@
-use petgraph::{
-    graphmap::GraphMap,
-    Directed, Direction,
-};
-
-pub const COOKBOOK : Cookbook = Cookbook::new();
+use petgraph::{graphmap::GraphMap, Directed, Direction};
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Hash)]
 pub enum Food {
     Actions(Actions),
     Dishes(Dishes),
-    Ingredients(Ingredients)
+    Ingredients(Ingredients),
 }
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Hash)]
 pub enum Actions {
-    Cook
+    Cook,
 }
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Hash)]
@@ -42,12 +37,12 @@ pub enum Ingredients {
     HotDogWeinerCooked,
 }
 
-struct Cookbook {
+pub struct Cookbook {
     graph: GraphMap<Food, f64, Directed>,
 }
 
 impl Cookbook {
-    fn new() -> Cookbook {
+    pub fn new() -> Cookbook {
         let mut graph = GraphMap::new();
 
         // Add nodes for actions
@@ -84,13 +79,13 @@ impl Cookbook {
         Cookbook { graph }
     }
 
-    fn ingredients(&self, food_node: Food) -> Vec<Food> {
+    pub fn ingredients(&self, food_node: Food) -> Vec<Food> {
         self.graph
             .neighbors_directed(food_node, Direction::Incoming)
             .collect()
     }
 
-    fn makes(&self, food_node: Food) -> Vec<Food> {
+    pub fn makes(&self, food_node: Food) -> Vec<Food> {
         self.graph
             .neighbors_directed(food_node, Direction::Outgoing)
             .collect()

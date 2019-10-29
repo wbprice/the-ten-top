@@ -1,11 +1,11 @@
 use amethyst::{
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, Write, WriteStorage},
+    ecs::prelude::{Entities, Join, ReadStorage, System, Write, WriteStorage},
 };
 
 use crate::{
-    components::{Destination, Feeling, Food, Foods, Patron, Register, Task, Velocity},
-    resources::{GameState, Tasks},
+    components::{Destination, Feeling, Dish, Patron, Register, Task, Velocity},
+    resources::{GameState, Tasks, Dishes},
 };
 
 pub struct RegisterSystem;
@@ -24,7 +24,7 @@ impl<'s> System<'s> for RegisterSystem {
         Entities<'s>,
         WriteStorage<'s, Patron>,
         ReadStorage<'s, Register>,
-        ReadStorage<'s, Food>,
+        ReadStorage<'s, Dish>,
         WriteStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
         WriteStorage<'s, Destination>,
@@ -40,7 +40,7 @@ impl<'s> System<'s> for RegisterSystem {
             entities,
             mut patrons,
             registers,
-            foods,
+            dishes,
             mut parents,
             mut locals,
             mut destinations,
@@ -70,7 +70,7 @@ impl<'s> System<'s> for RegisterSystem {
                                 patron_entity,
                                 Task::new(Tasks::GiveOrder {
                                     register: register_entity,
-                                    food: Foods::HotDog,
+                                    dish: Dishes::HotDog
                                 }),
                             )
                             .unwrap();

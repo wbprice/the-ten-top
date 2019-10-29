@@ -1,15 +1,9 @@
 use amethyst::{
-    assets::Handle,
-    core::transform::Transform,
-    ecs::prelude::World,
-    prelude::*,
-    renderer::{SpriteRender, SpriteSheet},
+    assets::Handle, core::transform::Transform, ecs::prelude::World, prelude::*,
+    renderer::SpriteSheet,
 };
 
-use crate::{
-    common::Point,
-    components::{Cupboard, Ingredient, Ingredients},
-};
+use crate::{common::Point, components::Ingredient, resources::Ingredients};
 
 pub fn init_ingredient(
     world: &mut World,

@@ -5,8 +5,11 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Emotion, Feeling, Foods, Patron, ThoughtBubble},
-    resources::SpriteResource,
+    components::{Emotion, Feeling, Patron, ThoughtBubble},
+    resources::{
+        SpriteResource,
+        Dishes
+    }
 };
 
 pub struct MoveFeelingSystem;
@@ -127,10 +130,10 @@ impl<'s> System<'s> for MoveFeelingSystem {
                             {
                                 match &feeling.symbol {
                                     Emotion::Craving(craving) => match craving {
-                                        Foods::HotDog => {
+                                        Dishes::HotDog => {
                                             sprite.sprite_number = 20;
                                         }
-                                        Foods::Hamburger => {
+                                        Dishes::Hamburger => {
                                             sprite.sprite_number = 17;
                                         }
                                         _ => {

@@ -17,7 +17,7 @@ mod state;
 mod systems;
 
 use crate::systems::{
-    CupboardSystem, DestinationSystem, FoodSystem, IngredientSystem, MoveFeelingSystem,
+    CupboardSystem, DestinationSystem, DishSystem, IngredientSystem, MoveFeelingSystem,
     MovePatronSystem, MoveThoughtBubbleSystem, PatronTaskSystem, PlateSystem, RegisterSystem,
     SimpleAnimationSystem, StoveSystem, WorkerSystem, WorkerTaskSystem,
 };
@@ -63,8 +63,8 @@ fn main() -> amethyst::Result<()> {
             "destination_system",
             &["register_system"],
         )
-        .with(FoodSystem, "food_system", &["destination_system"])
-        .with(WorkerSystem, "worker_system", &["food_system"])
+        .with(DishSystem, "dish_system", &["destination_system"])
+        .with(WorkerSystem, "worker_system", &["dish_system"])
         .with(WorkerTaskSystem, "task_system", &["worker_system"])
         .with(CupboardSystem, "cupboard_system", &["worker_system"])
         .with(IngredientSystem, "ingredient_system", &["worker_system"])

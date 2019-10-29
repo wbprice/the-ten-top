@@ -9,12 +9,9 @@ use amethyst::{
 
 use crate::{
     common::Point,
-    components::{Cupboard, Ingredients, Patron},
-    entities::{
-        init_cupboard, init_patron, init_plate, init_register,
-        init_stove, init_worker,
-    },
-    resources::{GameState, SpriteResource},
+    components::{Cupboard, Patron},
+    entities::{init_cupboard, init_patron, init_plate, init_register, init_stove, init_worker},
+    resources::{GameState, SpriteResource, Ingredients},
 };
 
 use log::info;
@@ -61,7 +58,7 @@ impl SimpleState for MyState {
         init_stove(
             world,
             sprite_sheet_handle.clone(),
-            Point { x: 60.0, y: 120.0 }
+            Point { x: 60.0, y: 120.0 },
         );
         init_plate(
             world,

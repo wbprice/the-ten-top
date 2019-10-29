@@ -1,13 +1,13 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-use crate::components::Foods;
+use crate::resources::Dishes;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Emotion {
     Happy,
     Sad,
     Neutral,
-    Craving(Foods),
+    Craving(Dishes),
 }
 
 #[derive(Debug, Copy, Clone)]

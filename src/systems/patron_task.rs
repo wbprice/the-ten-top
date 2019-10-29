@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Emotion, Feeling, Food, Patron, Subtask, Task, Worker},
+    components::{Destination, Emotion, Feeling, Dish, Patron, Subtask, Task, Worker},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 
@@ -23,7 +23,7 @@ impl<'s> System<'s> for PatronTaskSystem {
         WriteStorage<'s, Patron>,
         ReadStorage<'s, Worker>,
         WriteStorage<'s, Transform>,
-        ReadStorage<'s, Food>,
+        ReadStorage<'s, Dish>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
         WriteStorage<'s, Parent>,
@@ -55,14 +55,14 @@ impl<'s> System<'s> for PatronTaskSystem {
         {
             // Populate task subactivities based on type of activity.
             match task.activity {
-                Tasks::GiveOrder { register, food } => {
+                Tasks::GiveOrder { register, dish } => {
                     task.subtasks
                         .push(Subtask::new(Subtasks::MoveToEntity { entity: register }));
                     task.subtasks.push(Subtask::new(Subtasks::WaitForWorker));
                     task.subtasks
-                        .push(Subtask::new(Subtasks::SubmitOrder { food }));
+                        .push(Subtask::new(Subtasks::SubmitOrder { dish }));
                     task.subtasks
-                        .push(Subtask::new(Subtasks::WaitForOrder { food }));
+                        .push(Subtask::new(Subtasks::WaitForOrder { dish }));
                     task.subtasks.push(Subtask::new(Subtasks::UpdateFeeling {
                         symbol: Emotion::Happy,
                     }));
@@ -171,7 +171,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                             }
                         }
-                        Subtasks::SubmitOrder { food } => {
+                        Subtasks::SubmitOrder { dish } => {
                             match subtask.status {
                                 Status::New => {
                                     dbg!("[SubmitOrder] starting task");
@@ -181,7 +181,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 Status::InProgress => {
                                     // Hide the speech bubble.
                                     dbg!("[SubmitOrder] ordering dish");
-                                    game_state.schedule_deliver_order(patron_entity, food);
+                                    game_state.schedule_deliver_order(patron_entity, dish);
                                     subtask.status = Status::Completed;
                                     dbg!("[SubmitOrder] dish ordered");
                                 }
@@ -196,7 +196,7 @@ impl<'s> System<'s> for PatronTaskSystem {
                                 }
                             }
                         }
-                        Subtasks::WaitForOrder { food } => {
+                        Subtasks::WaitForOrder { dish } => {
                             match subtask.status {
                                 Status::New => {
                                     dbg!("[WaitForOrder] task started");

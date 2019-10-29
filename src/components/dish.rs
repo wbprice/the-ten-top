@@ -1,10 +1,10 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-use crate::resources::{Food};
+use crate::resources::Dishes;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Dish {
-    pub dish: Food::Dishes
+    pub dish: Dishes,
 }
 
 impl Component for Dish {
