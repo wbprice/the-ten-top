@@ -3,6 +3,8 @@ use petgraph::{
     Directed, Direction,
 };
 
+pub const COOKBOOK : Cookbook = Cookbook::new();
+
 #[derive(Debug, PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Hash)]
 pub enum Food {
     Actions(Actions),
@@ -40,7 +42,7 @@ pub enum Ingredients {
     HotDogWeinerCooked,
 }
 
-pub struct Cookbook {
+struct Cookbook {
     graph: GraphMap<Food, f64, Directed>,
 }
 
