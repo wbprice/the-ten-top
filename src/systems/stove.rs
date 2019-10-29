@@ -6,7 +6,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Cooked, Ingredient, Stove},
+    components::{Cooked, Ingredient, Ingredients, Stove},
     resources::SpriteResource,
 };
 
@@ -53,12 +53,12 @@ impl<'s> System<'s> for StoveSystem {
             .collect();
 
         let stoves_in_use = stove_entities
-            .iter()
+            .into_iter()
             .filter(|stove_entity| ingredient_parents.contains(stove_entity));
 
         // Cupboards that are empty should regenerate their ingredient after 10 seconds.
         for stove_entity in stoves_in_use {
-            let stove = stoves.get_mut(*stove_entity).unwrap();
+            let stove = stoves.get_mut(stove_entity).unwrap();
 
             if stove.cook_time <= 0.0 {
                 // Update ingredient to be of the cooked variety.
@@ -67,17 +67,18 @@ impl<'s> System<'s> for StoveSystem {
                 // Find the ingredient entity of the food on the stove.
                 let ingredient_entities: Vec<Entity> = (&entities, &mut ingredients, &mut parents)
                     .join()
-                    .filter(|(_, _, parent)| parent.entity == *stove_entity)
+                    .filter(|(_, _, parent)| parent.entity == stove_entity)
                     .map(|(ingredient_entity, _, _)| ingredient_entity)
                     .collect();
 
                 let ingredient_entity: Entity = ingredient_entities[0];
 
-                // Add the cooked component to that entity to indicate that the ingredient has
-                // been cooked.
-                cooked.insert(ingredient_entity, Cooked {}).unwrap();
+                // Replace the ingredient with a cooked counterpart
+                ingredients.insert(ingredient_entity, Ingredient {
+                    ingredient: Ingredients::HotDogWeinerCooked
+                }).unwrap();
 
-                stove.cook_time = 10.0;
+                stove.cook_time = 6.0;
             } else {
                 // tick down cooldown
                 stove.cook_time = stove.cook_time - time.delta_seconds();

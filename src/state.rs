@@ -11,7 +11,7 @@ use crate::{
     common::Point,
     components::{Cupboard, Ingredients, Patron},
     entities::{
-        init_cupboard, init_food, init_ingredient, init_patron, init_plate, init_register,
+        init_cupboard, init_patron, init_plate, init_register,
         init_stove, init_worker,
     },
     resources::{GameState, SpriteResource},
@@ -56,7 +56,12 @@ impl SimpleState for MyState {
             world,
             sprite_sheet_handle.clone(),
             Ingredients::HotDogWeiner,
-            Point { x: 48.0, y: 120.0 },
+            Point { x: 40.0, y: 120.0 },
+        );
+        init_stove(
+            world,
+            sprite_sheet_handle.clone(),
+            Point { x: 60.0, y: 120.0 }
         );
         init_plate(
             world,

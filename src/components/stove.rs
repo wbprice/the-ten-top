@@ -7,7 +7,7 @@ pub struct Stove {
 
 impl Stove {
     pub fn new() -> Stove {
-        Stove { cook_time: 0.0 }
+        Stove { cook_time: 6.0 }
     }
 }
 
