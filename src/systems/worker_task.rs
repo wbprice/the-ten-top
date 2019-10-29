@@ -5,7 +5,7 @@ use amethyst::{
 
 use crate::{
     components::{Destination, Dish, Ingredient, Plate, Stove, Subtask, Task, Worker},
-    resources::{Cookbook, Dishes, Food, GameState, Ingredients, Status, Subtasks, Tasks},
+    resources::{Actions, Cookbook, Dishes, Food, GameState, Ingredients, Status, Subtasks, Tasks},
 };
 
 pub struct WorkerTaskSystem;
@@ -105,7 +105,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // The action required is dependent on the ingredient.
                             // If the appropriate appliance isn't available, the task is blocked.
                             match ingredient {
-                                Ingredients::HotDogWeinerCooked => {
+                                Ingredients::HotDogWeiner => {
                                     // A hot dog weiner needs to be cooked on a stove.
                                     // See if a stove is available.
                                     let stove_entities: Vec<Entity> = (&entities, &stoves)
@@ -150,14 +150,25 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 Some(_) => task.status = Status::Actionable,
                                 None => {
                                     task.status = Status::Blocked;
-                                    // Does the task require cooking?
-                                    match ingredient {
-                                        Ingredients::HotDogWeinerCooked => {
-                                            tasks_to_add_to_backlog.push(Task::new(
-                                                Tasks::PrepIngredient { ingredient },
-                                            ));
+
+                                    // Does this ingredient need to be cooked?
+                                    let nodes = cookbook.ingredients(Food::Ingredients(ingredient));
+                                    let needs_cooking = &nodes.iter().any(|node| {
+                                        if let Food::Actions(action) = node {
+                                            return action == &Actions::Cook;
                                         }
-                                        _ => {}
+                                        return false;
+                                    });
+
+                                    if *needs_cooking {
+                                        // Find out what needs to be cooked.
+                                        for node in nodes {
+                                            if let Food::Ingredients(ingredient) = node {
+                                                tasks_to_add_to_backlog.push(Task::new(
+                                                    Tasks::PrepIngredient { ingredient },
+                                                ));
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -261,15 +272,10 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         }
                     }
                     Tasks::PrepIngredient { ingredient } => {
-                        let uncooked_ingredient = match ingredient {
-                            Ingredients::HotDogWeinerCooked => Ingredients::HotDogWeiner,
-                            _ => unimplemented!(),
-                        };
-
-                        // Does the uncooked variant exist?
-                        if let Some((ingredient_entity, ingredient)) = (&entities, &ingredients)
+                        // Does the ingredient exist?
+                        if let Some((ingredient_entity, ingred)) = (&entities, &ingredients)
                             .join()
-                            .find(|(e, i)| i.ingredient == uncooked_ingredient)
+                            .find(|(e, i)| i.ingredient == ingredient)
                         {
                             // A hot dog weiner needs to be cooked on a stove.
                             // See if a stove is available.
