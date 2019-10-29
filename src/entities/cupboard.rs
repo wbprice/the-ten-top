@@ -6,13 +6,7 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::{
-    common::Point,
-    components::{Cupboard},
-    resources::{
-        Ingredients
-    }
-};
+use crate::{common::Point, components::Cupboard, resources::Ingredients};
 
 pub fn init_cupboard(
     world: &mut World,

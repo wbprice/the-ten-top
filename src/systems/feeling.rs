@@ -6,10 +6,7 @@ use amethyst::{
 
 use crate::{
     components::{Emotion, Feeling, Patron, ThoughtBubble},
-    resources::{
-        SpriteResource,
-        Dishes
-    }
+    resources::{Dishes, SpriteResource},
 };
 
 pub struct MoveFeelingSystem;

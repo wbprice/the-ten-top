@@ -4,7 +4,7 @@ mod sprite;
 mod task;
 
 pub use self::{
-    cookbook::{Actions, Dishes, Food, Ingredients, Cookbook},
+    cookbook::{Actions, Cookbook, Dishes, Food, Ingredients},
     game::GameState,
     sprite::SpriteResource,
     task::Status,

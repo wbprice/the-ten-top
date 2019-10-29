@@ -4,7 +4,7 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Emotion, Feeling, Dish, Patron, Subtask, Task, Worker},
+    components::{Destination, Dish, Emotion, Feeling, Patron, Subtask, Task, Worker},
     resources::{GameState, Status, Subtasks, Tasks},
 };
 

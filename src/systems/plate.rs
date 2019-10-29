@@ -5,9 +5,8 @@ use amethyst::{
 
 use crate::{
     components::{Dish, Ingredient, Plate},
-    resources::{Dishes, Ingredients}
+    resources::{Dishes, Ingredients},
 };
-
 
 pub struct PlateSystem;
 
@@ -65,7 +64,7 @@ impl<'s> System<'s> for PlateSystem {
                     .build_entity()
                     .with(
                         Dish {
-                            dish: Dishes::HotDog
+                            dish: Dishes::HotDog,
                         },
                         &mut dishes,
                     )

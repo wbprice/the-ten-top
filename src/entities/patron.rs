@@ -8,7 +8,7 @@ use amethyst::{
 
 use crate::{
     components::{Emotion, Feeling, Patron, Velocity},
-    resources::{Dishes}
+    resources::Dishes,
 };
 
 pub fn init_patron(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>, patron: Patron) {

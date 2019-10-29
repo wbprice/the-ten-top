@@ -1,9 +1,6 @@
 use crate::{
-    components::{Task},
-    resources::{
-        Tasks,
-        Dishes
-    }
+    components::Task,
+    resources::{Dishes, Tasks},
 };
 use amethyst::ecs::Entity;
 

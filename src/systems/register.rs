@@ -4,8 +4,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Destination, Feeling, Dish, Patron, Register, Task, Velocity},
-    resources::{GameState, Tasks, Dishes},
+    components::{Destination, Dish, Feeling, Patron, Register, Task, Velocity},
+    resources::{Dishes, GameState, Tasks},
 };
 
 pub struct RegisterSystem;
@@ -70,7 +70,7 @@ impl<'s> System<'s> for RegisterSystem {
                                 patron_entity,
                                 Task::new(Tasks::GiveOrder {
                                     register: register_entity,
-                                    dish: Dishes::HotDog
+                                    dish: Dishes::HotDog,
                                 }),
                             )
                             .unwrap();

@@ -11,7 +11,7 @@ use crate::{
     common::Point,
     components::{Cupboard, Patron},
     entities::{init_cupboard, init_patron, init_plate, init_register, init_stove, init_worker},
-    resources::{GameState, SpriteResource, Ingredients},
+    resources::{GameState, Ingredients, SpriteResource},
 };
 
 use log::info;

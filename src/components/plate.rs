@@ -1,14 +1,11 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-use crate::{
-    components::{Ingredient},
-    resources::{Dishes}
-};
+use crate::{components::Ingredient, resources::Dishes};
 
 #[derive(Debug)]
 pub struct Plate {
     stacked_ingredients: Vec<Ingredient>,
-    target_food: Option<Dishes>
+    target_food: Option<Dishes>,
 }
 
 impl Plate {

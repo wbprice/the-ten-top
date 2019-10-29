@@ -8,7 +8,7 @@ use amethyst::{
 
 use crate::{
     components::{Emotion, Feeling},
-    resources::{Dishes}
+    resources::Dishes,
 };
 
 pub fn init_feeling(

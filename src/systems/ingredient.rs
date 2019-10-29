@@ -4,11 +4,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Ingredient},
-    resources::{
-        SpriteResource,
-        Ingredients
-    }
+    components::Ingredient,
+    resources::{Ingredients, SpriteResource},
 };
 
 pub struct IngredientSystem;

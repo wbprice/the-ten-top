@@ -7,10 +7,7 @@ use amethyst::{
 
 use crate::{
     components::{Cooked, Ingredient, Stove},
-    resources::{
-        SpriteResource,
-        Ingredients
-    }
+    resources::{Ingredients, SpriteResource},
 };
 
 pub struct StoveSystem;

@@ -2,10 +2,7 @@ use amethyst::ecs::prelude::Entity;
 
 use crate::{
     components::{Destination, Emotion},
-    resources::{
-        Ingredients,
-        Dishes
-    }
+    resources::{Dishes, Ingredients},
 };
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -15,7 +12,7 @@ pub enum Tasks {
     },
     DeliverOrder {
         patron: Entity,
-        dish: Dishes
+        dish: Dishes,
     },
     FetchIngredient {
         ingredient: Ingredients,
@@ -32,7 +29,7 @@ pub enum Tasks {
     },
     GiveOrder {
         register: Entity,
-        dish: Dishes
+        dish: Dishes,
     },
 }
 

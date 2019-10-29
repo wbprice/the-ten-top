@@ -1,5 +1,5 @@
-use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use crate::resources::Ingredients;
+use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 #[derive(Debug)]
 pub struct Cupboard {

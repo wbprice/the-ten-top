@@ -4,10 +4,8 @@ use amethyst::{
 };
 
 use crate::{
-    components::{
-        Destination, Dish, Ingredient, Plate, Stove, Subtask, Task, Worker,
-    },
-    resources::{GameState, Status, Subtasks, Tasks, Dishes, Ingredients},
+    components::{Destination, Dish, Ingredient, Plate, Stove, Subtask, Task, Worker},
+    resources::{Dishes, GameState, Ingredients, Status, Subtasks, Tasks},
 };
 
 pub struct WorkerTaskSystem;
