@@ -1,17 +1,5 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Ingredients {
-    HamburgerBun,
-    HamburgerPatty,
-    HamburgerPattyCooked,
-    Lettuce,
-    Tomato,
-    HotDogBun,
-    HotDogWeiner,
-    HotDogWeinerCooked,
-}
-
 #[derive(Debug, Copy, Clone)]
 pub struct Ingredient {
     pub ingredient: Ingredients,
