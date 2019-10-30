@@ -1,11 +1,11 @@
 use amethyst::{
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, WriteStorage},
 };
 
 use crate::{
     components::{Dish, Ingredient, Plate},
-    resources::{Dishes, Ingredients},
+    resources::{Cookbook, Dishes, Ingredients},
 };
 
 pub struct PlateSystem;
@@ -18,11 +18,12 @@ impl<'s> System<'s> for PlateSystem {
         ReadStorage<'s, Ingredient>,
         WriteStorage<'s, Dish>,
         WriteStorage<'s, Transform>,
+        Read<'s, Cookbook>,
     );
 
     fn run(
         &mut self,
-        (entities, mut parents, plates, ingredients, mut dishes, mut locals): Self::SystemData,
+        (entities, mut parents, plates, ingredients, mut dishes, mut locals, cookbook): Self::SystemData,
     ) {
         let mut entities_to_remove: Vec<Entity> = vec![];
         let mut entities_to_create: Vec<(Entity, Dishes)> = vec![];
