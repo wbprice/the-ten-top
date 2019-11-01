@@ -7,7 +7,7 @@ use amethyst::{
 
 use crate::{
     components::{Cooked, Ingredient, Stove},
-    resources::{Ingredients, SpriteResource},
+    resources::{Ingredients, SpriteResource, Cookbook, Food},
 };
 
 pub struct StoveSystem;
@@ -22,6 +22,7 @@ impl<'s> System<'s> for StoveSystem {
         WriteStorage<'s, Parent>,
         WriteStorage<'s, Transform>,
         WriteStorage<'s, Cooked>,
+        Read<'s, Cookbook>,
         Read<'s, Time>,
     );
 
@@ -36,6 +37,7 @@ impl<'s> System<'s> for StoveSystem {
             mut parents,
             mut locals,
             mut cooked,
+            cookbook,
             time,
         ): Self::SystemData,
     ) {
@@ -64,14 +66,19 @@ impl<'s> System<'s> for StoveSystem {
                 // Update ingredient to be of the cooked variety.
                 // reset the cooldown to 10.0 seconds
 
-                // Find the ingredient entity of the food on the stove.
-                let ingredient_entities: Vec<Entity> = (&entities, &mut ingredients, &mut parents)
+                // What kind of ingredient is on the stove?
+                // Grab its entity and ingredient component
+                let ingredient_info = (&entities, &mut ingredients, &mut parents)
                     .join()
                     .filter(|(_, _, parent)| parent.entity == stove_entity)
-                    .map(|(ingredient_entity, _, _)| ingredient_entity)
-                    .collect();
+                    .next()
+                    .unwrap();
 
-                let ingredient_entity: Entity = ingredient_entities[0];
+                let ingredient_entity = ingredient_info.0;
+                let ingredient_component = ingredient_info.1;
+                let cooked_version = cookbook.makes(Food::Ingredients(ingredient_component.ingredient))
+                    .next()
+                    .unwrap();
 
                 // Replace the ingredient with a cooked counterpart
                 ingredients
