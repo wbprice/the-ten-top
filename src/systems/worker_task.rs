@@ -151,22 +151,25 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 None => {
                                     task.status = Status::Blocked;
 
-                                    // Does this ingredient need to be cooked?
-                                    let nodes = cookbook.ingredients(Food::Ingredients(ingredient));
-                                    let needs_cooking = &nodes.iter().any(|node| {
-                                        if let Food::Actions(action) = node {
-                                            return action == &Actions::Cook;
-                                        }
-                                        return false;
-                                    });
-
-                                    if *needs_cooking {
-                                        // Find out what needs to be cooked.
-                                        for node in nodes {
-                                            if let Food::Ingredients(ingredient) = node {
-                                                tasks_to_add_to_backlog.push(Task::new(
-                                                    Tasks::PrepIngredient { ingredient },
-                                                ));
+                                    // If an ingredient requires cooking
+                                    for action in cookbook.actions(Food::Ingredients(ingredient)) {
+                                        match action {
+                                            Actions::Chop => {
+                                                unimplemented!();
+                                            }
+                                            Actions::Cook => {
+                                                for ingred in cookbook
+                                                    .ingredients(Food::Ingredients(ingredient))
+                                                {
+                                                    tasks_to_add_to_backlog.push(Task::new(
+                                                        Tasks::PrepIngredient {
+                                                            ingredient: ingred,
+                                                        },
+                                                    ))
+                                                }
+                                            }
+                                            _ => {
+                                                unimplemented!();
                                             }
                                         }
                                     }
@@ -198,15 +201,13 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 Some((plate_entity, _)) => {
                                     // If an empty plate exists, find out what ingredients are required
                                     // and queue up plating tasks for them.
-                                    for node in cookbook.ingredients(Food::Dishes(dish)) {
-                                        if let Food::Ingredients(ingredient) = node {
-                                            tasks_to_add_to_backlog.push(Task::new(
-                                                Tasks::PlateIngredient {
-                                                    ingredient,
-                                                    plate: plate_entity,
-                                                },
-                                            ));
-                                        }
+                                    for ingredient in cookbook.ingredients(Food::Dishes(dish)) {
+                                        tasks_to_add_to_backlog.push(Task::new(
+                                            Tasks::PlateIngredient {
+                                                ingredient,
+                                                plate: plate_entity,
+                                            },
+                                        ));
                                     }
 
                                     task.status = Status::Blocked;
