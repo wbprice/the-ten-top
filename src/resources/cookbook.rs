@@ -111,6 +111,18 @@ impl Cookbook {
         ingredients
     }
 
+    pub fn prepped_ingredient(&self, ingredient: Ingredients) -> Option<Ingredients> {
+        for node in self
+            .graph
+            .neighbors_directed(Food::Ingredients(ingredient), Direction::Outgoing)
+        {
+            if let Food::Ingredients(ingredient) = node {
+                return Some(ingredient);
+            }
+        }
+        None
+    }
+
     pub fn makes(&self, food_node: Food) -> Vec<Dishes> {
         let mut dishes: Vec<Dishes> = vec![];
 

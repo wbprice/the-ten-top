@@ -7,7 +7,7 @@ use amethyst::{
 
 use crate::{
     components::{Cooked, Ingredient, Stove},
-    resources::{Ingredients, SpriteResource, Cookbook, Food},
+    resources::{Cookbook, Food, Ingredients, SpriteResource},
 };
 
 pub struct StoveSystem;
@@ -76,8 +76,8 @@ impl<'s> System<'s> for StoveSystem {
 
                 let ingredient_entity = ingredient_info.0;
                 let ingredient_component = ingredient_info.1;
-                let cooked_version = cookbook.makes(Food::Ingredients(ingredient_component.ingredient))
-                    .next()
+                let cooked_version = cookbook
+                    .prepped_ingredient(ingredient_component.ingredient)
                     .unwrap();
 
                 // Replace the ingredient with a cooked counterpart
@@ -85,7 +85,7 @@ impl<'s> System<'s> for StoveSystem {
                     .insert(
                         ingredient_entity,
                         Ingredient {
-                            ingredient: Ingredients::HotDogWeinerCooked,
+                            ingredient: cooked_version,
                         },
                     )
                     .unwrap();
