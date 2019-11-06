@@ -5,10 +5,30 @@ use amethyst::{
 
 use crate::{
     components::{Dish, Ingredient, Plate},
-    resources::{Cookbook, Dishes, Ingredients},
+    resources::{Cookbook, Dishes, Ingredients, Food},
 };
 
 pub struct PlateSystem;
+
+fn get_dish_from_ingredients(cookbook: Cookbook, ingredients: Vec<Ingredients>) -> Option<Dishes> {
+    // Do all the ingredients contribute to the same result?
+    if let Some(first_ingredient) = ingredients.pop() {
+        let potential_dishes = cookbook.makes(Food::Ingredients(first_ingredient));
+
+        for ingredient in ingredient_types.into_iter() {
+            let ingredient_makes = cookbook.makes(Food::Ingredients(ingredient));
+            for other_ingred in ingredient_makes.iter() {
+                if !potential_dishes.contains(other_ingred) {
+                    return None;
+                }
+            }
+        }
+
+        Some(potential_dishes[0])
+    }
+
+    None;
+}
 
 impl<'s> System<'s> for PlateSystem {
     type SystemData = (
@@ -37,10 +57,13 @@ impl<'s> System<'s> for PlateSystem {
                     .filter(|(_, parent, _)| &parent.entity == &plate_entity)
                     .collect();
 
-            let ingredient_types: Vec<Ingredients> = ingredients_and_entity
+            let mut ingredient_types: Vec<Ingredients> = ingredients_and_entity
                 .iter()
                 .map(|(_, _, ingredient)| ingredient.ingredient)
                 .collect();
+
+
+
 
             // Do they make a hot dog?
             let hot_dog_ingredients: Vec<Ingredients> =
