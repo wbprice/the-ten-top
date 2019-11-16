@@ -10,13 +10,14 @@ use crate::{
 
 pub struct PlateSystem;
 
-fn get_dish_from_ingredients(cookbook: Cookbook, ingredients: Vec<Ingredients>) -> Option<Dishes> {
+fn get_dish_from_ingredients(cookbook: &Cookbook, ingredients: &Vec<Ingredients>) -> Option<Dishes> {
     // Do all the ingredients contribute to the same result?
-    if let Some(first_ingredient) = ingredients.pop() {
+    if !ingredients.is_empty() {
+        let first_ingredient = ingredients[0];
         let potential_dishes = cookbook.makes(Food::Ingredients(first_ingredient));
 
-        for ingredient in ingredient_types.into_iter() {
-            let ingredient_makes = cookbook.makes(Food::Ingredients(ingredient));
+        for ingredient in ingredients.into_iter() {
+            let ingredient_makes = cookbook.makes(Food::Ingredients(*ingredient));
             for other_ingred in ingredient_makes.iter() {
                 if !potential_dishes.contains(other_ingred) {
                     return None;
@@ -24,10 +25,10 @@ fn get_dish_from_ingredients(cookbook: Cookbook, ingredients: Vec<Ingredients>) 
             }
         }
 
-        Some(potential_dishes[0])
+        return Some(potential_dishes[0]);
     }
 
-    None;
+    None
 }
 
 impl<'s> System<'s> for PlateSystem {
@@ -62,44 +63,34 @@ impl<'s> System<'s> for PlateSystem {
                 .map(|(_, _, ingredient)| ingredient.ingredient)
                 .collect();
 
-
-
-
-            // Do they make a hot dog?
-            let hot_dog_ingredients: Vec<Ingredients> =
-                vec![Ingredients::HotDogWeinerCooked, Ingredients::HotDogBun];
-
-            if hot_dog_ingredients
-                .into_iter()
-                .all(|ingred| ingredient_types.contains(&ingred))
-            {
+            if let Some(dish) = get_dish_from_ingredients(&cookbook, &ingredient_types) {
                 for (entity, parent, _) in ingredients_and_entity {
                     entities_to_remove.push(entity);
                     entities_to_create.push((plate_entity, Dishes::HotDog));
                 }
-            }
 
-            for entity in &entities_to_remove {
-                entities.delete(*entity).unwrap();
-            }
+                for entity in &entities_to_remove {
+                    entities.delete(*entity).unwrap();
+                }
 
-            for entity in &entities_to_create {
-                entities
-                    .build_entity()
-                    .with(
-                        Dish {
-                            dish: Dishes::HotDog,
-                        },
-                        &mut dishes,
-                    )
-                    .with(
-                        Parent {
-                            entity: plate_entity,
-                        },
-                        &mut parents,
-                    )
-                    .with(Transform::default(), &mut locals)
-                    .build();
+                for entity in &entities_to_create {
+                    entities
+                        .build_entity()
+                        .with(
+                            Dish {
+                                dish: Dishes::HotDog,
+                            },
+                            &mut dishes,
+                        )
+                        .with(
+                            Parent {
+                                entity: plate_entity,
+                            },
+                            &mut parents,
+                        )
+                        .with(Transform::default(), &mut locals)
+                        .build();
+                }
             }
         }
     }
