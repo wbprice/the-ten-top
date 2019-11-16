@@ -75,33 +75,30 @@ impl<'s> System<'s> for PlateSystem {
                     .all(|ingredient| ingredient_types.contains(ingredient));
 
                 if all_ingredients_found {
-                    for (entity, parent, _) in ingredients_and_entity {
+                    for (entity, _, _) in ingredients_and_entity {
                         entities_to_remove.push(entity);
-                        entities_to_create.push((plate_entity, Dishes::HotDog));
                     }
 
                     for entity in &entities_to_remove {
                         entities.delete(*entity).unwrap();
                     }
 
-                    for entity in &entities_to_create {
-                        entities
-                            .build_entity()
-                            .with(
-                                Dish {
-                                    dish: Dishes::HotDog,
-                                },
-                                &mut dishes,
-                            )
-                            .with(
-                                Parent {
-                                    entity: plate_entity,
-                                },
-                                &mut parents,
-                            )
-                            .with(Transform::default(), &mut locals)
-                            .build();
-                    }
+                    entities
+                        .build_entity()
+                        .with(
+                            Dish {
+                                dish: dish
+                            },
+                            &mut dishes,
+                        )
+                        .with(
+                            Parent {
+                                entity: plate_entity,
+                            },
+                            &mut parents,
+                        )
+                        .with(Transform::default(), &mut locals)
+                        .build();
                 }
             }
         }
