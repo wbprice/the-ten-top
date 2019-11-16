@@ -5,12 +5,15 @@ use amethyst::{
 
 use crate::{
     components::{Dish, Ingredient, Plate},
-    resources::{Cookbook, Dishes, Ingredients, Food},
+    resources::{Cookbook, Dishes, Food, Ingredients},
 };
 
 pub struct PlateSystem;
 
-fn get_dish_from_ingredients(cookbook: &Cookbook, ingredients: &Vec<Ingredients>) -> Option<Dishes> {
+fn get_dish_from_ingredients(
+    cookbook: &Cookbook,
+    ingredients: &Vec<Ingredients>,
+) -> Option<Dishes> {
     // Do all the ingredients contribute to the same result?
     if !ingredients.is_empty() {
         let first_ingredient = ingredients[0];
@@ -63,33 +66,42 @@ impl<'s> System<'s> for PlateSystem {
                 .map(|(_, _, ingredient)| ingredient.ingredient)
                 .collect();
 
+            // If the ingredients all contribute to the same dish
             if let Some(dish) = get_dish_from_ingredients(&cookbook, &ingredient_types) {
-                for (entity, parent, _) in ingredients_and_entity {
-                    entities_to_remove.push(entity);
-                    entities_to_create.push((plate_entity, Dishes::HotDog));
-                }
+                // and all ingredients are in place:
+                let required_ingredients = cookbook.ingredients(Food::Dishes(dish));
+                let all_ingredients_found = required_ingredients
+                    .iter()
+                    .all(|ingredient| ingredient_types.contains(ingredient));
 
-                for entity in &entities_to_remove {
-                    entities.delete(*entity).unwrap();
-                }
+                if all_ingredients_found {
+                    for (entity, parent, _) in ingredients_and_entity {
+                        entities_to_remove.push(entity);
+                        entities_to_create.push((plate_entity, Dishes::HotDog));
+                    }
 
-                for entity in &entities_to_create {
-                    entities
-                        .build_entity()
-                        .with(
-                            Dish {
-                                dish: Dishes::HotDog,
-                            },
-                            &mut dishes,
-                        )
-                        .with(
-                            Parent {
-                                entity: plate_entity,
-                            },
-                            &mut parents,
-                        )
-                        .with(Transform::default(), &mut locals)
-                        .build();
+                    for entity in &entities_to_remove {
+                        entities.delete(*entity).unwrap();
+                    }
+
+                    for entity in &entities_to_create {
+                        entities
+                            .build_entity()
+                            .with(
+                                Dish {
+                                    dish: Dishes::HotDog,
+                                },
+                                &mut dishes,
+                            )
+                            .with(
+                                Parent {
+                                    entity: plate_entity,
+                                },
+                                &mut parents,
+                            )
+                            .with(Transform::default(), &mut locals)
+                            .build();
+                    }
                 }
             }
         }
