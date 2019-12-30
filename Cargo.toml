@@ -8,6 +8,7 @@ edition = "2018"
 amethyst = { version = "0.13.0" }
 log = { version = "0.4.6", features = ["serde"] }
 rand = { version = "0.7.0" }
+petgraph = { version = "0.4.13" }
 
 [features]
 default = ["metal"]

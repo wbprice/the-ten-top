@@ -1,6 +1,9 @@
 use amethyst::ecs::prelude::Entity;
 
-use crate::components::{Destination, Emotion, Foods, Ingredients};
+use crate::{
+    components::{Destination, Emotion},
+    resources::cookbook::{Dishes, Food, Ingredients},
+};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Tasks {
@@ -9,24 +12,24 @@ pub enum Tasks {
     },
     DeliverOrder {
         patron: Entity,
-        food: Foods,
+        dish: Dishes,
     },
     FetchIngredient {
         ingredient: Ingredients,
     },
     PrepIngredient {
-        ingredient: Ingredients
+        ingredient: Ingredients,
     },
     PlateIngredient {
         ingredient: Ingredients,
         plate: Entity,
     },
     PrepOrder {
-        food: Foods,
+        dish: Dishes,
     },
     GiveOrder {
         register: Entity,
-        food: Foods,
+        dish: Dishes,
     },
 }
 
@@ -36,8 +39,8 @@ pub enum Subtasks {
     SetEntityOwner { entity: Entity, owner: Entity },
     MoveTo { destination: Destination },
     WaitForWorker,
-    SubmitOrder { food: Foods },
-    WaitForOrder { food: Foods },
+    SubmitOrder { dish: Dishes },
+    WaitForOrder { dish: Dishes },
     UpdateFeeling { symbol: Emotion },
 }
 

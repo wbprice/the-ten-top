@@ -1,11 +1,11 @@
 use amethyst::{
     core::transform::{Parent, Transform},
-    ecs::prelude::{Entities, Entity, Join, ReadStorage, System, Write, WriteStorage},
+    ecs::prelude::{Entities, Entity, Join, Read, ReadStorage, System, Write, WriteStorage},
 };
 
 use crate::{
-    components::{Destination, Food, Foods, Ingredient, Ingredients, Plate, Subtask, Task, Worker, Stove},
-    resources::{GameState, Status, Subtasks, Tasks},
+    components::{Destination, Dish, Ingredient, Plate, Stove, Subtask, Task, Worker},
+    resources::{Actions, Cookbook, Dishes, Food, GameState, Ingredients, Status, Subtasks, Tasks},
 };
 
 pub struct WorkerTaskSystem;
@@ -15,7 +15,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         Entities<'s>,
         ReadStorage<'s, Worker>,
         WriteStorage<'s, Transform>,
-        ReadStorage<'s, Food>,
+        ReadStorage<'s, Dish>,
         ReadStorage<'s, Ingredient>,
         WriteStorage<'s, Destination>,
         WriteStorage<'s, Task>,
@@ -23,6 +23,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
         ReadStorage<'s, Stove>,
         WriteStorage<'s, Parent>,
         Write<'s, GameState>,
+        Read<'s, Cookbook>,
     );
 
     fn run(
@@ -31,7 +32,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             entities,
             workers,
             mut locals,
-            foods,
+            dishes,
             ingredients,
             mut destinations,
             mut tasks,
@@ -39,6 +40,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
             stoves,
             mut parents,
             mut game_state,
+            cookbook,
         ): Self::SystemData,
     ) {
         // If a new task was added to the backlog, figure out if it is actionable.
@@ -69,27 +71,27 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         _ => {}
                     }
                 }
-                Tasks::DeliverOrder { patron: _, food } => {
+                Tasks::DeliverOrder { patron: _, dish } => {
                     match task.status {
                         Status::New => {
                             // In order for food to be deliverable, it has to exist.
                             // If the food exists, tell a worker to pick it up and take it to the patron
                             // If the food doesn't exist, mark this task blocked
                             // Put a task "PrepOrder" into the backlog for creating the food
-                            match (&entities, &foods).join().find(|(_, f)| f.food == food) {
+                            match (&entities, &dishes).join().find(|(_, d)| d.dish == dish) {
                                 Some(_) => {
                                     task.status = Status::Actionable;
                                 }
                                 None => {
                                     task.status = Status::Blocked;
                                     tasks_to_add_to_backlog
-                                        .push(Task::new(Tasks::PrepOrder { food }));
+                                        .push(Task::new(Tasks::PrepOrder { dish }));
                                 }
                             }
                         }
                         Status::Blocked => {
                             // This task can set to actionable if a food of the given type is found.
-                            if let Some(_) = (&foods).join().find(|f| f.food == food) {
+                            if let Some(_) = (&dishes).join().find(|d| d.dish == dish) {
                                 task.status = Status::Actionable
                             }
                         }
@@ -103,7 +105,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                             // The action required is dependent on the ingredient.
                             // If the appropriate appliance isn't available, the task is blocked.
                             match ingredient {
-                                Ingredients::HotDogWeinerCooked => {
+                                Ingredients::HotDogWeiner => {
                                     // A hot dog weiner needs to be cooked on a stove.
                                     // See if a stove is available.
                                     let stove_entities: Vec<Entity> = (&entities, &stoves)
@@ -111,14 +113,17 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                         .map(|(entity, _)| entity)
                                         .collect();
 
-                                    let ingredient_parents: Vec<Entity> = (&entities, &ingredients, &parents)
-                                        .join()
-                                        .map(|(_, _, parent)| parent.entity)
-                                        .collect();
+                                    let ingredient_parents: Vec<Entity> =
+                                        (&entities, &ingredients, &parents)
+                                            .join()
+                                            .map(|(_, _, parent)| parent.entity)
+                                            .collect();
 
                                     let stoves_not_in_use = stove_entities
                                         .iter()
-                                        .filter(|stove_entity| !ingredient_parents.contains(stove_entity))
+                                        .filter(|stove_entity| {
+                                            !ingredient_parents.contains(stove_entity)
+                                        })
                                         .count();
 
                                     if stoves_not_in_use > 0 {
@@ -143,14 +148,30 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 .find(|ingred| ingred.ingredient == ingredient)
                             {
                                 Some(_) => task.status = Status::Actionable,
-                                None => { 
+                                None => {
                                     task.status = Status::Blocked;
-                                    // Does the task require cooking?
-                                    match ingredient {
-                                        Ingredients::HotDogWeinerCooked => {
-                                            tasks_to_add_to_backlog.push(Task::new(Tasks::PrepIngredient { ingredient }));
+
+                                    // If an ingredient requires cooking
+                                    for action in cookbook.actions(Food::Ingredients(ingredient)) {
+                                        match action {
+                                            Actions::Chop => {
+                                                unimplemented!();
+                                            }
+                                            Actions::Cook => {
+                                                for ingred in cookbook
+                                                    .ingredients(Food::Ingredients(ingredient))
+                                                {
+                                                    tasks_to_add_to_backlog.push(Task::new(
+                                                        Tasks::PrepIngredient {
+                                                            ingredient: ingred,
+                                                        },
+                                                    ))
+                                                }
+                                            }
+                                            _ => {
+                                                unimplemented!();
+                                            }
                                         }
-                                        _ => {}
                                     }
                                 }
                             }
@@ -168,7 +189,7 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         _ => {}
                     }
                 }
-                Tasks::PrepOrder { food } => {
+                Tasks::PrepOrder { dish } => {
                     match task.status {
                         Status::New => {
                             // In order to prep an order, all the ingredients need to exist.
@@ -177,30 +198,19 @@ impl<'s> System<'s> for WorkerTaskSystem {
 
                             // Find an empty plate
                             match (&entities, &plates).join().next() {
-                                Some((plate_entity, plate)) => {
-                                    match food {
-                                        Foods::HotDog => {
-                                            // TODO, maybe this lives on a map somewhere?
-                                            let hot_dog_ingredients: Vec<Ingredients> = vec![
-                                                Ingredients::HotDogWeinerCooked,
-                                                Ingredients::HotDogBun,
-                                            ];
-
-                                            for ingredient in hot_dog_ingredients {
-                                                tasks_to_add_to_backlog.push(Task::new(
-                                                    Tasks::PlateIngredient {
-                                                        ingredient,
-                                                        plate: plate_entity,
-                                                    },
-                                                ));
-                                            }
-
-                                            task.status = Status::Blocked;
-                                        }
-                                        _ => {
-                                            unimplemented!();
-                                        }
+                                Some((plate_entity, _)) => {
+                                    // If an empty plate exists, find out what ingredients are required
+                                    // and queue up plating tasks for them.
+                                    for ingredient in cookbook.ingredients(Food::Dishes(dish)) {
+                                        tasks_to_add_to_backlog.push(Task::new(
+                                            Tasks::PlateIngredient {
+                                                ingredient,
+                                                plate: plate_entity,
+                                            },
+                                        ));
                                     }
+
+                                    task.status = Status::Blocked;
                                 }
                                 None => {
                                     // If no empty plates, that's a blocker
@@ -263,18 +273,11 @@ impl<'s> System<'s> for WorkerTaskSystem {
                         }
                     }
                     Tasks::PrepIngredient { ingredient } => {
-
-                        let uncooked_ingredient = match ingredient {
-                            Ingredients::HotDogWeinerCooked => Ingredients::HotDogWeiner,
-                            _ => unimplemented!()
-                        };
-
-                        // Does the uncooked variant exist?
-                        if let Some((ingredient_entity, ingredient)) = (&entities, &ingredients)
+                        // Does the ingredient exist?
+                        if let Some((ingredient_entity, ingred)) = (&entities, &ingredients)
                             .join()
-                            .find(|(e, i)| i.ingredient == uncooked_ingredient) 
+                            .find(|(e, i)| i.ingredient == ingredient)
                         {
-
                             // A hot dog weiner needs to be cooked on a stove.
                             // See if a stove is available.
                             let stove_entities: Vec<Entity> = (&entities, &stoves)
@@ -282,31 +285,36 @@ impl<'s> System<'s> for WorkerTaskSystem {
                                 .map(|(entity, _)| entity)
                                 .collect();
 
-                            let ingredient_parents: Vec<Entity> = (&entities, &ingredients, &parents)
-                                .join()
-                                .map(|(_, _, parent)| parent.entity)
-                                .collect();
+                            let ingredient_parents: Vec<Entity> =
+                                (&entities, &ingredients, &parents)
+                                    .join()
+                                    .map(|(_, _, parent)| parent.entity)
+                                    .collect();
 
                             if let Some(stove_entity) = stove_entities
                                 .into_iter()
                                 .filter(|stove_entity| !ingredient_parents.contains(stove_entity))
                                 .next()
                             {
-                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: ingredient_entity }));
-                                task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity {
                                     entity: ingredient_entity,
-                                    owner: worker_entity
                                 }));
-                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity { entity: stove_entity }));
                                 task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
                                     entity: ingredient_entity,
-                                    owner: stove_entity
+                                    owner: worker_entity,
+                                }));
+                                task.subtasks.push(Subtask::new(Subtasks::MoveToEntity {
+                                    entity: stove_entity,
+                                }));
+                                task.subtasks.push(Subtask::new(Subtasks::SetEntityOwner {
+                                    entity: ingredient_entity,
+                                    owner: stove_entity,
                                 }));
                             }
                         }
-                    },
-                    Tasks::DeliverOrder { patron, food } => {
-                        match (&entities, &foods).join().find(|(_, f)| f.food == food) {
+                    }
+                    Tasks::DeliverOrder { patron, dish } => {
+                        match (&entities, &dishes).join().find(|(_, d)| d.dish == dish) {
                             Some((food_entity, _)) => {
                                 task.subtasks.push(Subtask {
                                     activity: Subtasks::MoveToEntity {

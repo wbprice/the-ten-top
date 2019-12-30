@@ -1,4 +1,4 @@
-use crate::components::Ingredients;
+use crate::resources::Ingredients;
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 
 #[derive(Debug)]

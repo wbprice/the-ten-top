@@ -1,8 +1,8 @@
 mod cooked;
 mod cupboard;
 mod destination;
+mod dish;
 mod feeling;
-mod food;
 mod ingredient;
 mod patron;
 mod plate;
@@ -15,9 +15,8 @@ mod velocity;
 mod worker;
 
 pub use self::{
-    cooked::Cooked, cupboard::Cupboard, destination::Destination, feeling::Emotion,
-    feeling::Feeling, food::Food, food::Foods, ingredient::Ingredient, ingredient::Ingredients,
-    patron::Patron, plate::Plate, register::Register, simple_animation::SimpleAnimation,
-    stove::Stove, task::Subtask, task::Task, thought_bubble::ThoughtBubble, velocity::Direction,
-    velocity::Velocity, worker::Worker,
+    cooked::Cooked, cupboard::Cupboard, destination::Destination, dish::Dish, feeling::Emotion,
+    feeling::Feeling, ingredient::Ingredient, patron::Patron, plate::Plate, register::Register,
+    simple_animation::SimpleAnimation, stove::Stove, task::Subtask, task::Task,
+    thought_bubble::ThoughtBubble, velocity::Direction, velocity::Velocity, worker::Worker,
 };

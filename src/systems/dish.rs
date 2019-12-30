@@ -4,31 +4,31 @@ use amethyst::{
 };
 
 use crate::{
-    components::{Food, Foods},
-    resources::SpriteResource,
+    components::Dish,
+    resources::{Dishes, Food, SpriteResource},
 };
 
-pub struct FoodSystem;
+pub struct DishSystem;
 
-impl<'s> System<'s> for FoodSystem {
+impl<'s> System<'s> for DishSystem {
     type SystemData = (
         Entities<'s>,
-        ReadStorage<'s, Food>,
+        ReadStorage<'s, Dish>,
         WriteStorage<'s, SpriteRender>,
         ReadExpect<'s, SpriteResource>,
     );
 
-    fn run(&mut self, (entities, foods, mut sprites, sprite_resource): Self::SystemData) {
+    fn run(&mut self, (entities, dishes, mut sprites, sprite_resource): Self::SystemData) {
         // One time food setup
         // Identity new foods that need sprites
 
         let mut sprites_to_insert: Vec<(Entity, SpriteRender)> = vec![];
 
-        for (entity, food, _) in (&entities, &foods, !&sprites).join() {
+        for (entity, dish, _) in (&entities, &dishes, !&sprites).join() {
             let sprite_sheet = sprite_resource.sprite_sheet.clone();
 
-            match food.food {
-                Foods::HotDog => {
+            match dish.dish {
+                Dishes::HotDog => {
                     sprites_to_insert.push((
                         entity,
                         SpriteRender {
